@@ -5,9 +5,11 @@ pandas
 # Machine Learning
 scikit-learn
 
-# Visualization
+# Visualization & Dashboard
 matplotlib
 seaborn
+plotly
+streamlit
 
 # Model Serialization
 joblib

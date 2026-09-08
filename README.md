@@ -224,6 +224,13 @@ docker compose logs -f
 docker compose down
 ```
 
+### Option 3: Interactive Streamlit Web Dashboard
+```bash
+# Launch interactive intelligence dashboard
+streamlit run src/dashboard/app.py
+```
+Open in browser: **`http://localhost:8501`** (Includes real-time risk gauge, local XAI drivers, 2D PCA customer mapping, and ROI simulator).
+
 ---
 
 ## ☁️ Deployment Guide
@@ -265,6 +272,8 @@ CustomerIQ/
 │   └── feature_importance.csv     # Ranked feature contributions
 ├── src/
 │   ├── api/                       # FastAPI application & Pydantic schemas
+│   ├── dashboard/                 # Streamlit interactive web dashboard
+│   │   └── app.py                 # Multi-tab customer intelligence application
 │   ├── data/                      # Data ingestion & cleaning modules
 │   ├── features/                  # Feature engineering & preprocessor pipelines
 │   ├── models/                    # Training harnesses (baseline, comparison, clustering)

@@ -40,5 +40,5 @@ HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 \
     CMD curl -f http://localhost:8000/health || exit 1
 
 # Command to execute when the container starts
-# Bind to 0.0.0.0 so the container is accessible outside localhost
-CMD ["uvicorn", "src.api.main:app", "--host", "0.0.0.0", "--port", "8000"]
+# Bind to 0.0.0.0 and use $PORT provided by cloud host (Render, Railway), fallback to 8000
+CMD ["sh", "-c", "uvicorn src.api.main:app --host 0.0.0.0 --port ${PORT:-8000}"]

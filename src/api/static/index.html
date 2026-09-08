@@ -718,6 +718,16 @@
           <span class="pill-badge" id="customer-badge">Elena Vance</span>
         </div>
 
+        <div class="form-group" style="margin-bottom: 22px;">
+          <label for="customer-name-input" style="font-size: 0.85rem; font-weight: 700; color: #CBD5E1; margin-bottom: 6px; display: flex; align-items: center; gap: 6px;">
+            <span>👤</span> Customer Full Name
+          </label>
+          <input type="text" id="customer-name-input" value="Elena Vance" 
+            placeholder="Type any name (e.g. John Doe, Sarah, Jasir...)" 
+            oninput="updateCustomName(this.value)"
+            style="width: 100%; background: var(--bg-surface-elevated); border: 1px solid rgba(99, 102, 241, 0.4); color: #FFFFFF; padding: 11px 16px; border-radius: 12px; font-family: inherit; font-size: 0.95rem; font-weight: 600; outline: none; box-shadow: 0 0 15px rgba(99, 102, 241, 0.15);" />
+        </div>
+
         <form id="churn-form" onsubmit="event.preventDefault(); predictChurn();">
           <!-- Section 1: Account Terms -->
           <div class="form-section">
@@ -958,6 +968,7 @@
     // Archetype definitions
     const PERSONAS = {
       elena: {
+        name: "Elena Vance",
         badge: "Elena Vance (Flight Risk)",
         tenure: 2,
         monthly: 94.5,
@@ -972,6 +983,7 @@
         dependents: "No"
       },
       arthur: {
+        name: "Arthur Pendelton",
         badge: "Arthur Pendelton (Loyalist)",
         tenure: 64,
         monthly: 62.0,
@@ -986,6 +998,7 @@
         dependents: "Yes"
       },
       clara: {
+        name: "Clara Oswald",
         badge: "Clara Oswald (Budget)",
         tenure: 36,
         monthly: 20.25,
@@ -1000,6 +1013,7 @@
         dependents: "No"
       },
       marcus: {
+        name: "Marcus Sterling",
         badge: "Marcus Sterling (Crossroads)",
         tenure: 14,
         monthly: 104.5,
@@ -1014,6 +1028,14 @@
         dependents: "No"
       }
     };
+
+    function updateCustomName(val) {
+      const name = val.trim() || "Customer";
+      document.getElementById('customer-badge').innerText = name;
+      const playbookTitle = document.getElementById('playbook-title');
+      if (playbookTitle) playbookTitle.innerText = "🎯 Frontline Retention Playbook for " + name;
+      autoRecalculate();
+    }
 
     function updateTenure(val) {
       document.getElementById('tenure-val').innerText = val + ' mos';
@@ -1042,7 +1064,11 @@
       const activeBtn = document.getElementById('btn-' + key);
       if (activeBtn) activeBtn.classList.add('active');
 
-      document.getElementById('customer-badge').innerText = p.badge;
+      document.getElementById('customer-name-input').value = p.name;
+      document.getElementById('customer-badge').innerText = p.name;
+      const playbookTitle = document.getElementById('playbook-title');
+      if (playbookTitle) playbookTitle.innerText = "🎯 Frontline Retention Playbook for " + p.name;
+
       document.getElementById('tenure').value = p.tenure;
       document.getElementById('tenure-val').innerText = p.tenure + ' mos';
 
@@ -1141,21 +1167,23 @@
       let tierClass = 'low';
       let tierLabel = 'LOW RISK';
 
+      const custName = document.getElementById('customer-name-input').value.trim() || 'Customer';
+
       if (prob >= 0.50) {
         tierColor = '#F43F5E';
         tierClass = 'high';
         tierLabel = 'CRITICAL RISK';
-        descEl.innerHTML = 'Customer exceeds <strong>0.35 boundary</strong>. Proactive intervention urgent.';
+        descEl.innerHTML = `<strong>${custName}</strong> exceeds <strong>0.35 boundary</strong>. Proactive intervention urgent.`;
       } else if (prob >= 0.35) {
         tierColor = '#F59E0B';
         tierClass = 'mod';
         tierLabel = 'ELEVATED RISK';
-        descEl.innerHTML = 'Customer flagged by <strong>0.35 cost-sensitive threshold</strong> before canceling.';
+        descEl.innerHTML = `<strong>${custName}</strong> flagged by <strong>0.35 cost-sensitive threshold</strong> before canceling.`;
       } else {
         tierColor = '#10B981';
         tierClass = 'low';
         tierLabel = 'HEALTHY & ANCHORED';
-        descEl.innerHTML = 'Customer is safely below the <strong>0.35 boundary</strong>. Highly stable.';
+        descEl.innerHTML = `<strong>${custName}</strong> is safely below the <strong>0.35 boundary</strong>. Highly stable.`;
       }
 
       tierPill.className = 'tier-badge ' + tierClass;

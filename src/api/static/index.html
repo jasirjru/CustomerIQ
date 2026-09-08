@@ -3,10 +3,10 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>CustomerIQ — Customer Intelligence & Churn Defense Studio</title>
+  <title>CustomerIQ — Enterprise Customer Intelligence & Churn Defense Studio</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800&family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
   <style>
     :root {
       --bg-base: #06090F;
@@ -23,6 +23,7 @@
       --amber-glow: rgba(245, 158, 11, 0.2);
       --rose: #F43F5E;
       --rose-glow: rgba(244, 63, 94, 0.25);
+      --cyan: #06B6D4;
       --text-main: #F8FAFC;
       --text-muted: #94A3B8;
       --text-dim: #64748B;
@@ -47,11 +48,10 @@
       overflow-x: hidden;
     }
 
-    /* Ambient noise & grid lines */
     .bg-grid {
       position: fixed;
       inset: 0;
-      background-size: 40px 40px;
+      background-size: 44px 44px;
       background-image: 
         linear-gradient(to right, rgba(255, 255, 255, 0.015) 1px, transparent 1px),
         linear-gradient(to bottom, rgba(255, 255, 255, 0.015) 1px, transparent 1px);
@@ -60,50 +60,88 @@
     }
 
     .container {
-      max-width: 1280px;
+      max-width: 1320px;
       margin: 0 auto;
-      padding: 32px 24px 80px;
+      padding: 24px 24px 80px;
       position: relative;
       z-index: 1;
     }
 
-    /* Header Nav */
+    /* Top Startup Nav */
     header {
       display: flex;
       justify-content: space-between;
       align-items: center;
-      padding-bottom: 28px;
+      padding-bottom: 22px;
       border-bottom: 1px solid var(--border-subtle);
-      margin-bottom: 36px;
-      animation: fadeIn 0.6s ease-out;
+      margin-bottom: 28px;
     }
 
     .brand {
       display: flex;
       align-items: center;
-      gap: 14px;
+      gap: 12px;
     }
 
     .brand-icon {
-      width: 44px;
-      height: 44px;
+      width: 42px;
+      height: 42px;
       background: linear-gradient(135deg, #6366F1 0%, #4338CA 100%);
       border-radius: 12px;
       display: flex;
       align-items: center;
       justify-content: center;
-      font-size: 22px;
+      font-size: 20px;
       box-shadow: 0 0 20px var(--accent-glow);
     }
 
     .brand-title {
       font-family: 'Outfit', sans-serif;
-      font-size: 1.6rem;
+      font-size: 1.55rem;
       font-weight: 800;
       letter-spacing: -0.02em;
       background: linear-gradient(135deg, #FFFFFF 30%, #CBD5E1 100%);
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
+    }
+
+    /* Navigation Slide Tabs */
+    .nav-tabs {
+      display: flex;
+      align-items: center;
+      background: rgba(15, 23, 42, 0.65);
+      border: 1px solid var(--border-subtle);
+      border-radius: 14px;
+      padding: 4px;
+      gap: 4px;
+    }
+
+    .nav-tab-btn {
+      background: transparent;
+      border: none;
+      color: var(--text-muted);
+      font-family: inherit;
+      font-size: 0.88rem;
+      font-weight: 600;
+      padding: 8px 16px;
+      border-radius: 10px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      transition: all 0.2s ease;
+    }
+
+    .nav-tab-btn:hover {
+      color: #FFFFFF;
+      background: rgba(255, 255, 255, 0.05);
+    }
+
+    .nav-tab-btn.active {
+      background: linear-gradient(135deg, rgba(99, 102, 241, 0.25) 0%, rgba(67, 56, 202, 0.35) 100%);
+      color: #FFFFFF;
+      border: 1px solid rgba(99, 102, 241, 0.5);
+      box-shadow: 0 0 16px var(--accent-glow);
     }
 
     .nav-actions {
@@ -116,9 +154,9 @@
       display: inline-flex;
       align-items: center;
       gap: 6px;
-      padding: 6px 14px;
+      padding: 6px 12px;
       border-radius: 9999px;
-      font-size: 0.8rem;
+      font-size: 0.78rem;
       font-weight: 600;
       border: 1px solid var(--border-subtle);
       background: rgba(255, 255, 255, 0.03);
@@ -134,10 +172,10 @@
     .docs-btn {
       display: inline-flex;
       align-items: center;
-      gap: 8px;
-      padding: 8px 16px;
+      gap: 6px;
+      padding: 8px 14px;
       border-radius: 10px;
-      font-size: 0.85rem;
+      font-size: 0.82rem;
       font-weight: 600;
       background: var(--bg-surface-elevated);
       color: var(--text-main);
@@ -149,22 +187,46 @@
     .docs-btn:hover {
       border-color: var(--accent-primary);
       box-shadow: 0 0 15px var(--accent-glow);
-      transform: translateY(-1px);
     }
 
-    /* Hero Banner */
+    /* Slides Container */
+    .slide-view {
+      display: none;
+      animation: fadeIn 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    .slide-view.active {
+      display: block;
+    }
+
+    /* Hero */
     .hero {
-      margin-bottom: 36px;
-      animation: fadeInUp 0.7s ease-out;
+      margin-bottom: 28px;
+    }
+
+    .hero-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: rgba(99, 102, 241, 0.15);
+      border: 1px solid rgba(99, 102, 241, 0.35);
+      color: #A5B4FC;
+      font-size: 0.78rem;
+      font-weight: 700;
+      padding: 4px 12px;
+      border-radius: 9999px;
+      margin-bottom: 12px;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
     }
 
     .hero-title {
       font-family: 'Outfit', sans-serif;
-      font-size: 2.5rem;
+      font-size: 2.6rem;
       font-weight: 800;
       line-height: 1.15;
       letter-spacing: -0.03em;
-      margin-bottom: 12px;
+      margin-bottom: 10px;
     }
 
     .hero-title span {
@@ -175,28 +237,26 @@
 
     .hero-subtitle {
       color: var(--text-muted);
-      font-size: 1.05rem;
-      max-width: 780px;
-      font-weight: 400;
+      font-size: 1.02rem;
+      max-width: 760px;
     }
 
-    /* Persona Selector Strip */
+    /* Archetype Strip */
     .persona-strip {
       background: var(--bg-surface);
       border: 1px solid var(--border-subtle);
       border-radius: 16px;
-      padding: 16px 20px;
-      margin-bottom: 32px;
+      padding: 14px 18px;
+      margin-bottom: 28px;
       display: flex;
       align-items: center;
       justify-content: space-between;
       flex-wrap: wrap;
-      gap: 14px;
-      animation: fadeInUp 0.8s ease-out;
+      gap: 12px;
     }
 
     .persona-label {
-      font-size: 0.85rem;
+      font-size: 0.82rem;
       font-weight: 700;
       text-transform: uppercase;
       letter-spacing: 0.06em;
@@ -205,7 +265,7 @@
 
     .persona-btns {
       display: flex;
-      gap: 10px;
+      gap: 8px;
       flex-wrap: wrap;
     }
 
@@ -213,35 +273,35 @@
       background: var(--bg-surface-elevated);
       border: 1px solid var(--border-subtle);
       color: var(--text-muted);
-      padding: 8px 16px;
+      padding: 8px 14px;
       border-radius: 10px;
-      font-size: 0.88rem;
+      font-size: 0.85rem;
       font-weight: 600;
       cursor: pointer;
       display: inline-flex;
       align-items: center;
-      gap: 8px;
-      transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+      gap: 6px;
+      transition: all 0.2s ease;
     }
 
     .persona-chip:hover {
       border-color: var(--accent-primary);
-      color: var(--text-main);
-      transform: translateY(-2px);
+      color: #FFFFFF;
+      transform: translateY(-1px);
     }
 
     .persona-chip.active {
       background: linear-gradient(135deg, rgba(99, 102, 241, 0.25) 0%, rgba(67, 56, 202, 0.35) 100%);
       border-color: #818CF8;
       color: #FFFFFF;
-      box-shadow: 0 0 20px var(--accent-glow);
+      box-shadow: 0 0 16px var(--accent-glow);
     }
 
-    /* Main Grid Layout */
+    /* Layout */
     .main-grid {
       display: grid;
       grid-template-columns: 1.15fr 1fr;
-      gap: 32px;
+      gap: 28px;
       align-items: start;
     }
 
@@ -251,17 +311,15 @@
       }
     }
 
-    /* Glass Cards */
     .card {
       background: var(--bg-surface);
       border: 1px solid var(--border-subtle);
-      border-radius: 20px;
-      padding: 28px;
+      border-radius: 18px;
+      padding: 24px;
       backdrop-filter: blur(16px);
       box-shadow: 0 20px 40px -15px rgba(0, 0, 0, 0.4);
       position: relative;
       overflow: hidden;
-      transition: border-color 0.3s ease;
     }
 
     .card::before {
@@ -278,31 +336,30 @@
       display: flex;
       justify-content: space-between;
       align-items: center;
-      margin-bottom: 22px;
+      margin-bottom: 20px;
     }
 
     .card-title {
       font-family: 'Outfit', sans-serif;
-      font-size: 1.25rem;
+      font-size: 1.2rem;
       font-weight: 700;
-      letter-spacing: -0.01em;
       display: flex;
       align-items: center;
-      gap: 10px;
+      gap: 8px;
     }
 
-    /* Form Fields */
+    /* Slider styling with value tags */
     .form-section {
-      margin-bottom: 24px;
+      margin-bottom: 22px;
     }
 
     .form-section-title {
-      font-size: 0.8rem;
+      font-size: 0.78rem;
       font-weight: 700;
       text-transform: uppercase;
       letter-spacing: 0.08em;
       color: var(--accent-primary);
-      margin-bottom: 14px;
+      margin-bottom: 12px;
       display: flex;
       align-items: center;
       gap: 8px;
@@ -311,7 +368,7 @@
     .form-row {
       display: grid;
       grid-template-columns: 1fr 1fr;
-      gap: 16px;
+      gap: 14px;
       margin-bottom: 14px;
     }
 
@@ -328,7 +385,7 @@
     }
 
     label {
-      font-size: 0.82rem;
+      font-size: 0.8rem;
       font-weight: 600;
       color: var(--text-muted);
     }
@@ -342,8 +399,12 @@
     .slider-val {
       font-family: 'Outfit', sans-serif;
       font-weight: 700;
-      font-size: 0.95rem;
+      font-size: 0.92rem;
       color: #818CF8;
+      background: rgba(99, 102, 241, 0.12);
+      padding: 2px 8px;
+      border-radius: 6px;
+      border: 1px solid rgba(99, 102, 241, 0.25);
     }
 
     input[type="range"] {
@@ -374,7 +435,7 @@
       transform: scale(1.2);
     }
 
-    select {
+    select, input[type="text"] {
       width: 100%;
       background: var(--bg-surface-elevated);
       border: 1px solid var(--border-subtle);
@@ -385,11 +446,10 @@
       font-size: 0.88rem;
       font-weight: 500;
       outline: none;
-      cursor: pointer;
       transition: border-color 0.2s ease, box-shadow 0.2s ease;
     }
 
-    select:focus {
+    select:focus, input[type="text"]:focus {
       border-color: var(--accent-primary);
       box-shadow: 0 0 0 3px var(--accent-glow);
     }
@@ -402,9 +462,8 @@
       padding: 14px 20px;
       border-radius: 12px;
       font-family: 'Outfit', sans-serif;
-      font-size: 1.05rem;
+      font-size: 1rem;
       font-weight: 700;
-      letter-spacing: 0.01em;
       cursor: pointer;
       box-shadow: 0 10px 25px -5px var(--accent-glow);
       display: flex;
@@ -412,7 +471,7 @@
       justify-content: center;
       gap: 10px;
       transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
-      margin-top: 10px;
+      margin-top: 8px;
     }
 
     .submit-btn:hover {
@@ -421,18 +480,13 @@
       background: linear-gradient(135deg, #818CF8 0%, #6366F1 100%);
     }
 
-    .submit-btn:active {
-      transform: translateY(0);
-    }
-
-    /* Results Dashboard Right Side */
+    /* Results */
     .results-column {
       display: flex;
       flex-direction: column;
-      gap: 24px;
+      gap: 20px;
     }
 
-    /* Gauge & Risk Tile */
     .gauge-card {
       text-align: center;
       position: relative;
@@ -440,14 +494,14 @@
 
     .gauge-wrapper {
       position: relative;
-      width: 260px;
-      height: 140px;
-      margin: 10px auto 14px;
+      width: 250px;
+      height: 135px;
+      margin: 8px auto 12px;
     }
 
     .gauge-svg {
-      width: 260px;
-      height: 140px;
+      width: 250px;
+      height: 135px;
       overflow: visible;
     }
 
@@ -474,10 +528,10 @@
 
     .prob-display {
       font-family: 'Outfit', sans-serif;
-      font-size: 3rem;
+      font-size: 2.9rem;
       font-weight: 800;
       line-height: 1;
-      margin-top: -10px;
+      margin-top: -6px;
       margin-bottom: 6px;
       transition: color 0.4s ease;
     }
@@ -486,13 +540,13 @@
       display: inline-flex;
       align-items: center;
       gap: 6px;
-      padding: 6px 16px;
+      padding: 5px 14px;
       border-radius: 9999px;
-      font-size: 0.85rem;
+      font-size: 0.82rem;
       font-weight: 700;
       text-transform: uppercase;
       letter-spacing: 0.06em;
-      margin-bottom: 14px;
+      margin-bottom: 12px;
     }
 
     .tier-badge.high {
@@ -520,86 +574,19 @@
       background: rgba(15, 23, 42, 0.8);
       border: 1px solid var(--border-subtle);
       border-radius: 12px;
-      padding: 12px 16px;
-      font-size: 0.82rem;
+      padding: 10px 14px;
+      font-size: 0.8rem;
       color: var(--text-muted);
       display: flex;
       align-items: center;
       justify-content: space-between;
     }
 
-    /* Drivers Card */
-    .drivers-list {
-      display: flex;
-      flex-direction: column;
-      gap: 12px;
-    }
-
-    .driver-item {
-      display: flex;
-      flex-direction: column;
-      gap: 4px;
-    }
-
-    .driver-meta {
-      display: flex;
-      justify-content: space-between;
-      font-size: 0.85rem;
-      font-weight: 600;
-    }
-
-    .driver-name {
-      color: var(--text-main);
-    }
-
-    .driver-score {
-      color: #F87171;
-      font-family: 'Outfit', sans-serif;
-    }
-
-    .driver-track {
-      height: 6px;
-      background: var(--bg-surface-elevated);
-      border-radius: 9999px;
-      overflow: hidden;
-    }
-
-    .driver-fill {
-      height: 100%;
-      width: 0%;
-      background: linear-gradient(90deg, #F59E0B, #F43F5E);
-      border-radius: 9999px;
-      transition: width 0.9s cubic-bezier(0.16, 1, 0.3, 1);
-    }
-
-    /* Playbook Card */
-    .playbook-card {
-      background: linear-gradient(135deg, rgba(30, 58, 138, 0.15) 0%, rgba(15, 23, 42, 0.6) 100%);
-      border: 1px solid rgba(99, 102, 241, 0.3);
-      border-left: 5px solid var(--accent-primary);
-    }
-
-    .playbook-title {
-      font-size: 0.82rem;
-      font-weight: 700;
-      text-transform: uppercase;
-      letter-spacing: 0.08em;
-      color: #818CF8;
-      margin-bottom: 10px;
-    }
-
-    .playbook-text {
-      font-size: 0.92rem;
-      color: #E2E8F0;
-      line-height: 1.6;
-    }
-
-    /* Segment Badge */
     .segment-banner {
       background: rgba(18, 24, 38, 0.8);
       border: 1px solid var(--border-subtle);
       border-radius: 12px;
-      padding: 12px 18px;
+      padding: 12px 16px;
       display: flex;
       align-items: center;
       gap: 12px;
@@ -615,7 +602,7 @@
     }
 
     .segment-title {
-      font-size: 0.75rem;
+      font-size: 0.72rem;
       font-weight: 700;
       text-transform: uppercase;
       letter-spacing: 0.08em;
@@ -623,19 +610,151 @@
     }
 
     .segment-name {
-      font-size: 0.95rem;
+      font-size: 0.92rem;
       font-weight: 700;
       color: #38BDF8;
     }
 
-    /* Keyframe Animations */
-    @keyframes fadeIn {
-      from { opacity: 0; }
-      to { opacity: 1; }
+    .drivers-list {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
     }
 
-    @keyframes fadeInUp {
-      from { opacity: 0; transform: translateY(16px); }
+    .driver-item {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .driver-meta {
+      display: flex;
+      justify-content: space-between;
+      font-size: 0.82rem;
+      font-weight: 600;
+    }
+
+    .driver-track {
+      height: 6px;
+      background: var(--bg-surface-elevated);
+      border-radius: 9999px;
+      overflow: hidden;
+    }
+
+    .driver-fill {
+      height: 100%;
+      background: linear-gradient(90deg, #F59E0B, #F43F5E);
+      border-radius: 9999px;
+      transition: width 0.9s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    .playbook-card {
+      background: linear-gradient(135deg, rgba(30, 58, 138, 0.15) 0%, rgba(15, 23, 42, 0.6) 100%);
+      border: 1px solid rgba(99, 102, 241, 0.3);
+      border-left: 5px solid var(--accent-primary);
+    }
+
+    .playbook-title {
+      font-size: 0.8rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: #818CF8;
+      margin-bottom: 8px;
+    }
+
+    .playbook-text {
+      font-size: 0.9rem;
+      color: #E2E8F0;
+      line-height: 1.6;
+    }
+
+    /* Slide 2: Persona Atlas */
+    .atlas-grid {
+      display: grid;
+      grid-template-columns: 1.4fr 1fr;
+      gap: 24px;
+    }
+
+    @media (max-width: 900px) {
+      .atlas-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .pca-canvas-container {
+      background: rgba(15, 23, 42, 0.6);
+      border: 1px solid var(--border-subtle);
+      border-radius: 16px;
+      padding: 20px;
+      position: relative;
+      height: 440px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .cohort-card {
+      background: var(--bg-surface);
+      border: 1px solid var(--border-subtle);
+      border-radius: 14px;
+      padding: 16px;
+      margin-bottom: 12px;
+    }
+
+    /* Slide 3: ROI Financial Simulator */
+    .roi-grid {
+      display: grid;
+      grid-template-columns: 1.1fr 1fr;
+      gap: 28px;
+    }
+
+    @media (max-width: 900px) {
+      .roi-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .stat-hero-card {
+      background: linear-gradient(135deg, rgba(16, 185, 129, 0.15) 0%, rgba(15, 23, 42, 0.8) 100%);
+      border: 1px solid rgba(16, 185, 129, 0.4);
+      border-radius: 18px;
+      padding: 28px;
+      text-align: center;
+      margin-bottom: 20px;
+    }
+
+    .stat-hero-number {
+      font-family: 'Outfit', sans-serif;
+      font-size: 3.5rem;
+      font-weight: 800;
+      color: #34D399;
+      line-height: 1.1;
+    }
+
+    .stat-hero-label {
+      font-size: 0.95rem;
+      color: var(--text-muted);
+      margin-top: 4px;
+    }
+
+    /* Slide 4: Code Integration */
+    .code-box {
+      background: #0B0F19;
+      border: 1px solid var(--border-subtle);
+      border-radius: 12px;
+      padding: 16px;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.85rem;
+      color: #A5B4FC;
+      overflow-x: auto;
+      white-space: pre;
+      margin-top: 12px;
+    }
+
+    /* Keyframes */
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(10px); }
       to { opacity: 1; transform: translateY(0); }
     }
 
@@ -643,8 +762,8 @@
       border: 3px solid rgba(255, 255, 255, 0.1);
       border-top-color: var(--accent-primary);
       border-radius: 50%;
-      width: 20px;
-      height: 20px;
+      width: 18px;
+      height: 18px;
       animation: spin 0.8s linear infinite;
       display: none;
     }
@@ -652,13 +771,37 @@
     @keyframes spin {
       to { transform: rotate(360deg); }
     }
+
+    /* Startup Footer */
+    footer {
+      margin-top: 60px;
+      padding-top: 24px;
+      border-top: 1px solid var(--border-subtle);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 16px;
+      color: var(--text-dim);
+      font-size: 0.82rem;
+    }
+
+    footer a {
+      color: var(--text-muted);
+      text-decoration: none;
+      transition: color 0.2s ease;
+    }
+
+    footer a:hover {
+      color: #FFFFFF;
+    }
   </style>
 </head>
 <body>
   <div class="bg-grid"></div>
 
   <div class="container">
-    <!-- Top Nav -->
+    <!-- Top Startup Navigation Header -->
     <header>
       <div class="brand">
         <div class="brand-icon">💎</div>
@@ -666,305 +809,537 @@
           <div class="brand-title">CustomerIQ</div>
         </div>
       </div>
+
+      <!-- Navigation Slide Tabs -->
+      <nav class="nav-tabs">
+        <button class="nav-tab-btn active" onclick="switchSlide('studio')">
+          <span>⚡</span> Studio
+        </button>
+        <button class="nav-tab-btn" onclick="switchSlide('atlas')">
+          <span>👥</span> Persona Atlas
+        </button>
+        <button class="nav-tab-btn" onclick="switchSlide('simulator')">
+          <span>💰</span> ROI Simulator
+        </button>
+        <button class="nav-tab-btn" onclick="switchSlide('api')">
+          <span>🔌</span> API & Code
+        </button>
+      </nav>
+
       <div class="nav-actions">
         <span class="pill-badge active">
           <span style="width: 7px; height: 7px; background: #10B981; border-radius: 50%; display: inline-block;"></span>
           API Live
         </span>
-        <span class="pill-badge">Random Forest • 84.29% AUC</span>
-        <span class="pill-badge">Threshold: 0.35</span>
         <a href="/docs" target="_blank" class="docs-btn">
           <span>Swagger Docs</span>
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path><polyline points="15 3 21 3 21 9"></polyline><line x1="10" y1="14" x2="21" y2="3"></line></svg>
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path><polyline points="15 3 21 3 21 9"></polyline><line x1="10" y1="14" x2="21" y2="3"></line></svg>
         </a>
       </div>
     </header>
 
-    <!-- Hero Title -->
-    <section class="hero">
-      <h1 class="hero-title">Predict Customer Churn & Unlock <span>Actionable Retention</span></h1>
-      <p class="hero-subtitle">
-        Enterprise intelligence platform powered by Scikit-Learn ensembles. Discover churn flight risks, deconstruct local root-cause drivers, and prescribe frontline customer success workflows.
-      </p>
-    </section>
+    <!-- ===================================================================== -->
+    <!-- SLIDE 1: CHURN DEFENSE STUDIO (DEFAULT) -->
+    <!-- ===================================================================== -->
+    <div id="slide-studio" class="slide-view active">
+      <section class="hero">
+        <div class="hero-badge">Enterprise Retention Studio</div>
+        <h1 class="hero-title">Predict Customer Churn & Unlock <span>Actionable Retention</span></h1>
+        <p class="hero-subtitle">
+          Enterprise intelligence platform powered by Scikit-Learn ensembles. Adjust customer sliders, uncover local root-cause drivers, and prescribe frontline retention workflows.
+        </p>
+      </section>
 
-    <!-- Preset Archetype Buttons -->
-    <div class="persona-strip">
-      <div class="persona-label">✨ Quick Load Customer Archetypes:</div>
-      <div class="persona-btns">
-        <button class="persona-chip active" id="btn-elena" onclick="loadPersona('elena')">
-          <span>🚨</span> Elena Vance (Flight Risk)
-        </button>
-        <button class="persona-chip" id="btn-arthur" onclick="loadPersona('arthur')">
-          <span>🛡️</span> Arthur Pendelton (Loyalist)
-        </button>
-        <button class="persona-chip" id="btn-clara" onclick="loadPersona('clara')">
-          <span>📱</span> Clara Oswald (Budget Saver)
-        </button>
-        <button class="persona-chip" id="btn-marcus" onclick="loadPersona('marcus')">
-          <span>⚡</span> Marcus Sterling (Crossroads)
-        </button>
+      <!-- Preset Archetypes -->
+      <div class="persona-strip">
+        <div class="persona-label">✨ Quick Load Customer Archetypes:</div>
+        <div class="persona-btns">
+          <button class="persona-chip active" id="btn-elena" onclick="loadPersona('elena')">
+            <span>🚨</span> Elena Vance (Flight Risk)
+          </button>
+          <button class="persona-chip" id="btn-arthur" onclick="loadPersona('arthur')">
+            <span>🛡️</span> Arthur Pendelton (Loyalist)
+          </button>
+          <button class="persona-chip" id="btn-clara" onclick="loadPersona('clara')">
+            <span>📱</span> Clara Oswald (Budget Saver)
+          </button>
+          <button class="persona-chip" id="btn-marcus" onclick="loadPersona('marcus')">
+            <span>⚡</span> Marcus Sterling (Crossroads)
+          </button>
+        </div>
       </div>
-    </div>
 
-    <!-- Main Interactive Grid -->
-    <div class="main-grid">
-      <!-- Left Column: Input Form -->
-      <div class="card">
-        <div class="card-header">
-          <div class="card-title">
-            <span>⚙️</span> Customer Attributes
-          </div>
-          <span class="pill-badge" id="customer-badge">Elena Vance</span>
-        </div>
-
-        <div class="form-group" style="margin-bottom: 22px;">
-          <label for="customer-name-input" style="font-size: 0.85rem; font-weight: 700; color: #CBD5E1; margin-bottom: 6px; display: flex; align-items: center; gap: 6px;">
-            <span>👤</span> Customer Full Name
-          </label>
-          <input type="text" id="customer-name-input" value="Elena Vance" 
-            placeholder="Type any name (e.g. John Doe, Sarah, Jasir...)" 
-            oninput="updateCustomName(this.value)"
-            style="width: 100%; background: var(--bg-surface-elevated); border: 1px solid rgba(99, 102, 241, 0.4); color: #FFFFFF; padding: 11px 16px; border-radius: 12px; font-family: inherit; font-size: 0.95rem; font-weight: 600; outline: none; box-shadow: 0 0 15px rgba(99, 102, 241, 0.15);" />
-        </div>
-
-        <form id="churn-form" onsubmit="event.preventDefault(); predictChurn();">
-          <!-- Section 1: Account Terms -->
-          <div class="form-section">
-            <div class="form-section-title">
-              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><rect x="3" y="4" width="18" height="16" rx="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>
-              Account & Contract Structure
+      <!-- Main Studio Grid -->
+      <div class="main-grid">
+        <!-- Form with All Sliders -->
+        <div class="card">
+          <div class="card-header">
+            <div class="card-title">
+              <span>⚙️</span> Customer Attributes
             </div>
+            <span class="pill-badge" id="customer-badge">Elena Vance</span>
+          </div>
 
-            <div class="form-row">
-              <div class="form-group">
+          <div class="form-group" style="margin-bottom: 20px;">
+            <label for="customer-name-input" style="font-size: 0.85rem; font-weight: 700; color: #CBD5E1; margin-bottom: 6px; display: flex; align-items: center; gap: 6px;">
+              <span>👤</span> Customer Full Name
+            </label>
+            <input type="text" id="customer-name-input" value="Elena Vance" 
+              placeholder="Type any customer name (e.g. John Doe, Sarah, Jasir...)" 
+              oninput="updateCustomName(this.value)" />
+          </div>
+
+          <form id="churn-form" onsubmit="event.preventDefault(); predictChurn();">
+            <!-- Section 1: Financial & Account Sliders -->
+            <div class="form-section">
+              <div class="form-section-title">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><rect x="3" y="4" width="18" height="16" rx="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>
+                Account & Billing Sliders
+              </div>
+
+              <!-- Slider 1: Tenure -->
+              <div class="form-group" style="margin-bottom: 14px;">
                 <div class="slider-header">
-                  <label for="tenure">Tenure with Company</label>
+                  <label for="tenure">1. Account Longevity (Tenure with Company)</label>
                   <span class="slider-val" id="tenure-val">2 mos</span>
                 </div>
                 <input type="range" id="tenure" min="1" max="72" value="2" oninput="updateTenure(this.value)" />
               </div>
 
-              <div class="form-group">
+              <!-- Slider 2: Monthly Charges -->
+              <div class="form-group" style="margin-bottom: 14px;">
                 <div class="slider-header">
-                  <label for="monthly-charges">Monthly Subscription</label>
+                  <label for="monthly-charges">2. Monthly Subscription Fee ($)</label>
                   <span class="slider-val" id="monthly-val">$94.50</span>
                 </div>
                 <input type="range" id="monthly-charges" min="18" max="120" step="0.5" value="94.5" oninput="updateMonthly(this.value)" />
               </div>
-            </div>
 
-            <div class="form-row">
-              <div class="form-group">
-                <label for="contract">Contract Commitment</label>
-                <select id="contract" onchange="autoRecalculate()">
-                  <option value="Month-to-month" selected>Month-to-month</option>
-                  <option value="One year">One year</option>
-                  <option value="Two year">Two year</option>
-                </select>
+              <!-- Slider 3: Customer Satisfaction Index (NEW) -->
+              <div class="form-group" style="margin-bottom: 14px;">
+                <div class="slider-header">
+                  <label for="nps-slider">3. Customer Sentiment / NPS Score (1–10)</label>
+                  <span class="slider-val" id="nps-val">3 / 10 (Frustrated)</span>
+                </div>
+                <input type="range" id="nps-slider" min="1" max="10" value="3" oninput="updateNPS(this.value)" />
               </div>
 
-              <div class="form-group">
-                <label for="payment-method">Payment Channel</label>
-                <select id="payment-method" onchange="autoRecalculate()">
-                  <option value="Electronic check" selected>Electronic check</option>
-                  <option value="Mailed check">Mailed check</option>
-                  <option value="Bank transfer (automatic)">Bank transfer (automatic)</option>
-                  <option value="Credit card (automatic)">Credit card (automatic)</option>
-                </select>
+              <!-- Slider 4: Support Inquiries Logged (NEW) -->
+              <div class="form-group" style="margin-bottom: 14px;">
+                <div class="slider-header">
+                  <label for="tickets-slider">4. Technical Tickets in Last 90 Days</label>
+                  <span class="slider-val" id="tickets-val">4 tickets</span>
+                </div>
+                <input type="range" id="tickets-slider" min="0" max="8" value="4" oninput="updateTickets(this.value)" />
               </div>
-            </div>
 
-            <div class="form-row">
-              <div class="form-group">
-                <label for="paperless">Paperless Invoicing</label>
-                <select id="paperless" onchange="autoRecalculate()">
-                  <option value="Yes" selected>Yes</option>
-                  <option value="No">No</option>
-                </select>
+              <!-- Slider 5: Proposed Retention Discount (NEW) -->
+              <div class="form-group" style="margin-bottom: 14px;">
+                <div class="slider-header">
+                  <label for="discount-slider">5. Retention Offer Discount (Live Counter-Offer)</label>
+                  <span class="slider-val" id="discount-val">0% (No Offer)</span>
+                </div>
+                <input type="range" id="discount-slider" min="0" max="35" step="5" value="0" oninput="updateDiscount(this.value)" />
               </div>
-              <div class="form-group">
-                <label>Estimated Total Spend</label>
-                <div style="background: var(--bg-surface-elevated); padding: 9px 14px; border-radius: 10px; font-weight: 700; color: #E2E8F0;" id="total-spend-box">
-                  $189.00
+
+              <div class="form-row">
+                <div class="form-group">
+                  <label for="contract">Contract Commitment</label>
+                  <select id="contract" onchange="autoRecalculate()">
+                    <option value="Month-to-month" selected>Month-to-month</option>
+                    <option value="One year">One year</option>
+                    <option value="Two year">Two year</option>
+                  </select>
+                </div>
+
+                <div class="form-group">
+                  <label for="payment-method">Payment Channel</label>
+                  <select id="payment-method" onchange="autoRecalculate()">
+                    <option value="Electronic check" selected>Electronic check</option>
+                    <option value="Mailed check">Mailed check</option>
+                    <option value="Bank transfer (automatic)">Bank transfer (automatic)</option>
+                    <option value="Credit card (automatic)">Credit card (automatic)</option>
+                  </select>
+                </div>
+              </div>
+
+              <div class="form-row">
+                <div class="form-group">
+                  <label for="paperless">Paperless Invoicing</label>
+                  <select id="paperless" onchange="autoRecalculate()">
+                    <option value="Yes" selected>Yes</option>
+                    <option value="No">No</option>
+                  </select>
+                </div>
+                <div class="form-group">
+                  <label>Estimated Lifetime Spend</label>
+                  <div style="background: var(--bg-surface-elevated); padding: 9px 14px; border-radius: 10px; font-weight: 700; color: #E2E8F0;" id="total-spend-box">
+                    $189.00
+                  </div>
                 </div>
               </div>
             </div>
-          </div>
 
-          <!-- Section 2: Technology & Services -->
-          <div class="form-section">
-            <div class="form-section-title">
-              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"></circle><line x1="2" y1="12" x2="22" y2="12"></line><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path></svg>
-              Broadband & Add-On Services
-            </div>
-
-            <div class="form-row">
-              <div class="form-group">
-                <label for="internet-service">Broadband Infrastructure</label>
-                <select id="internet-service" onchange="autoRecalculate()">
-                  <option value="Fiber optic" selected>Fiber optic</option>
-                  <option value="DSL">DSL</option>
-                  <option value="No">None (Phone Only)</option>
-                </select>
+            <!-- Section 2: Services -->
+            <div class="form-section">
+              <div class="form-section-title">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"></circle><line x1="2" y1="12" x2="22" y2="12"></line></svg>
+                Broadband & Add-On Services
               </div>
 
-              <div class="form-group">
-                <label for="tech-support">Priority Tech Support</label>
-                <select id="tech-support" onchange="autoRecalculate()">
-                  <option value="No" selected>No</option>
-                  <option value="Yes">Yes</option>
-                  <option value="No internet service">No internet service</option>
-                </select>
+              <div class="form-row">
+                <div class="form-group">
+                  <label for="internet-service">Broadband Infrastructure</label>
+                  <select id="internet-service" onchange="autoRecalculate()">
+                    <option value="Fiber optic" selected>Fiber optic</option>
+                    <option value="DSL">DSL</option>
+                    <option value="No">None (Phone Only)</option>
+                  </select>
+                </div>
+
+                <div class="form-group">
+                  <label for="tech-support">Priority Tech Support</label>
+                  <select id="tech-support" onchange="autoRecalculate()">
+                    <option value="No" selected>No</option>
+                    <option value="Yes">Yes</option>
+                    <option value="No internet service">No internet service</option>
+                  </select>
+                </div>
+              </div>
+
+              <div class="form-row">
+                <div class="form-group">
+                  <label for="online-security">Cybersecurity Protection</label>
+                  <select id="online-security" onchange="autoRecalculate()">
+                    <option value="No" selected>No</option>
+                    <option value="Yes">Yes</option>
+                    <option value="No internet service">No internet service</option>
+                  </select>
+                </div>
+
+                <div class="form-group">
+                  <label for="streaming-tv">Streaming TV Package</label>
+                  <select id="streaming-tv" onchange="autoRecalculate()">
+                    <option value="Yes" selected>Yes</option>
+                    <option value="No">No</option>
+                    <option value="No internet service">No internet service</option>
+                  </select>
+                </div>
               </div>
             </div>
 
-            <div class="form-row">
-              <div class="form-group">
-                <label for="online-security">Online Cybersecurity</label>
-                <select id="online-security" onchange="autoRecalculate()">
-                  <option value="No" selected>No</option>
-                  <option value="Yes">Yes</option>
-                  <option value="No internet service">No internet service</option>
-                </select>
-              </div>
-
-              <div class="form-group">
-                <label for="streaming-tv">Streaming TV Bundle</label>
-                <select id="streaming-tv" onchange="autoRecalculate()">
-                  <option value="Yes" selected>Yes</option>
-                  <option value="No">No</option>
-                  <option value="No internet service">No internet service</option>
-                </select>
-              </div>
-            </div>
-          </div>
-
-          <!-- Section 3: Household -->
-          <div class="form-section">
-            <div class="form-section-title">
-              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg>
-              Demographics & Household
-            </div>
-
-            <div class="form-row">
-              <div class="form-group">
-                <label for="partner">Partner / Spouse</label>
-                <select id="partner" onchange="autoRecalculate()">
-                  <option value="No" selected>No</option>
-                  <option value="Yes">Yes</option>
-                </select>
-              </div>
-
-              <div class="form-group">
-                <label for="dependents">Children / Dependents</label>
-                <select id="dependents" onchange="autoRecalculate()">
-                  <option value="No" selected>No</option>
-                  <option value="Yes">Yes</option>
-                </select>
-              </div>
-            </div>
-          </div>
-
-          <button type="submit" class="submit-btn" id="predict-btn">
-            <span class="spinner" id="btn-spinner"></span>
-            <span id="btn-text">⚡ Evaluate Customer Risk</span>
-          </button>
-        </form>
-      </div>
-
-      <!-- Right Column: Results Cockpit -->
-      <div class="results-column">
-        <!-- Gauge & Prediction Card -->
-        <div class="card gauge-card">
-          <div class="card-header" style="margin-bottom: 0;">
-            <div class="card-title">
-              <span>🧭</span> Churn Probability Cockpit
-            </div>
-            <span class="tier-badge high" id="risk-tier-pill">HIGH RISK</span>
-          </div>
-
-          <div class="gauge-wrapper">
-            <svg class="gauge-svg" viewBox="0 0 260 140">
-              <path class="gauge-bg" d="M 20 130 A 110 110 0 0 1 240 130"></path>
-              <path class="gauge-progress" id="gauge-arc" d="M 20 130 A 110 110 0 0 1 240 130" stroke="#F43F5E"></path>
-              <!-- Needle indicator line -->
-              <g class="gauge-needle" id="gauge-needle">
-                <line x1="130" y1="130" x2="40" y2="130" stroke="#FFFFFF" stroke-width="3" stroke-linecap="round"></line>
-                <circle cx="130" cy="130" r="7" fill="#FFFFFF"></circle>
-              </g>
-            </svg>
-          </div>
-
-          <div class="prob-display" id="prob-val" style="color: #FB7185;">73.8%</div>
-          <div style="color: var(--text-muted); font-size: 0.9rem; margin-bottom: 18px;" id="outcome-desc">
-            Customer exceeds the <strong>0.35 decision boundary</strong>.
-          </div>
-
-          <div class="threshold-callout">
-            <span>⚖️ <strong>Cost-Sensitive Boundary</strong>: 0.35</span>
-            <span style="color: #34D399;">Proactive Churn Protection</span>
-          </div>
+            <button type="submit" class="submit-btn" id="predict-btn">
+              <span class="spinner" id="btn-spinner"></span>
+              <span id="btn-text">⚡ Evaluate Customer Risk</span>
+            </button>
+          </form>
         </div>
 
-        <!-- Segment Persona Banner -->
-        <div class="segment-banner">
-          <div class="segment-avatar" id="segment-icon">⚠️</div>
-          <div class="segment-details">
-            <span class="segment-title">K-Means Segment Assignment</span>
-            <span class="segment-name" id="segment-label">New High-Spend Flight Risk (Severe Churn)</span>
-          </div>
-        </div>
+        <!-- Results Cockpit -->
+        <div class="results-column">
+          <div class="card gauge-card">
+            <div class="card-header" style="margin-bottom: 0;">
+              <div class="card-title">
+                <span>🧭</span> Churn Probability Cockpit
+              </div>
+              <span class="tier-badge high" id="risk-tier-pill">CRITICAL RISK</span>
+            </div>
 
-        <!-- Local Risk Drivers Card -->
-        <div class="card">
-          <div class="card-title" style="margin-bottom: 16px;">
-            <span>🔍</span> Top Root-Cause Drivers (XAI)
-          </div>
-          <div class="drivers-list" id="drivers-container">
-            <!-- Populated dynamically via JS -->
-            <div class="driver-item">
-              <div class="driver-meta">
-                <span class="driver-name">Month-to-Month Contract</span>
-                <span class="driver-score">+13.7%</span>
-              </div>
-              <div class="driver-track">
-                <div class="driver-fill" style="width: 85%;"></div>
-              </div>
+            <div class="gauge-wrapper">
+              <svg class="gauge-svg" viewBox="0 0 260 140">
+                <path class="gauge-bg" d="M 20 130 A 110 110 0 0 1 240 130"></path>
+                <path class="gauge-progress" id="gauge-arc" d="M 20 130 A 110 110 0 0 1 240 130" stroke="#F43F5E"></path>
+                <g class="gauge-needle" id="gauge-needle">
+                  <line x1="130" y1="130" x2="40" y2="130" stroke="#FFFFFF" stroke-width="3" stroke-linecap="round"></line>
+                  <circle cx="130" cy="130" r="7" fill="#FFFFFF"></circle>
+                </g>
+              </svg>
             </div>
-            <div class="driver-item">
-              <div class="driver-meta">
-                <span class="driver-name">Electronic Check Billing</span>
-                <span class="driver-score">+5.5%</span>
-              </div>
-              <div class="driver-track">
-                <div class="driver-fill" style="width: 45%;"></div>
-              </div>
-            </div>
-            <div class="driver-item">
-              <div class="driver-meta">
-                <span class="driver-name">No Online Security</span>
-                <span class="driver-score">+5.5%</span>
-              </div>
-              <div class="driver-track">
-                <div class="driver-fill" style="width: 44%;"></div>
-              </div>
-            </div>
-          </div>
-        </div>
 
-        <!-- Retention Blueprint Card -->
-        <div class="card playbook-card">
-          <div class="playbook-title">🎯 Frontline Retention Playbook</div>
-          <div class="playbook-text" id="playbook-content">
-            Offer 15% discount for upgrading to a 1-year annual contract. | Provide 3 months complimentary VIP Tech Support to address technical frustrations. | Offer a one-time $10 credit to enroll in automated credit card auto-pay.
+            <div class="prob-display" id="prob-val" style="color: #FB7185;">74.9%</div>
+            <div style="color: var(--text-muted); font-size: 0.9rem; margin-bottom: 16px;" id="outcome-desc">
+              Customer exceeds the <strong>0.35 decision boundary</strong>.
+            </div>
+
+            <div class="threshold-callout">
+              <span>⚖️ <strong>Cost-Sensitive Boundary</strong>: 0.35</span>
+              <span style="color: #34D399;">Proactive Churn Defense</span>
+            </div>
+          </div>
+
+          <div class="segment-banner">
+            <div class="segment-avatar" id="segment-icon">⚠️</div>
+            <div class="segment-details">
+              <span class="segment-title">K-Means Segment Persona</span>
+              <span class="segment-name" id="segment-label">New High-Spend Flight Risk (Severe Churn)</span>
+            </div>
+          </div>
+
+          <div class="card">
+            <div class="card-title" style="margin-bottom: 14px;">
+              <span>🔍</span> Top Root-Cause Drivers (XAI)
+            </div>
+            <div class="drivers-list" id="drivers-container"></div>
+          </div>
+
+          <div class="card playbook-card">
+            <div class="playbook-title" id="playbook-title">🎯 Frontline Retention Playbook for Elena Vance</div>
+            <div class="playbook-text" id="playbook-content">
+              Offer 15% discount for upgrading to a 1-year annual contract. | Provide 3 months complimentary VIP Tech Support to address technical frustrations. | Offer a one-time $10 credit to enroll in automated credit card auto-pay.
+            </div>
           </div>
         </div>
       </div>
     </div>
+
+    <!-- ===================================================================== -->
+    <!-- SLIDE 2: PERSONA ATLAS (2D PCA & K-MEANS) -->
+    <!-- ===================================================================== -->
+    <div id="slide-atlas" class="slide-view">
+      <section class="hero">
+        <div class="hero-badge">Unsupervised Discovery & Dimensionality Reduction</div>
+        <h1 class="hero-title">The <span>Customer Persona Atlas</span></h1>
+        <p class="hero-subtitle">
+          K-Means ($K=4$) grouped all 7,043 customers into 4 distinct behavioral cohorts. We compress 46 features down to 2 Principal Components (PC1 & PC2) to reveal the customer risk landscape.
+        </p>
+      </section>
+
+      <div class="atlas-grid">
+        <!-- Interactive Canvas Map -->
+        <div class="pca-canvas-container">
+          <svg viewBox="0 0 600 380" style="width: 100%; height: 100%;">
+            <!-- Axis lines -->
+            <line x1="50" y1="190" x2="570" y2="190" stroke="rgba(255,255,255,0.1)" stroke-width="1" stroke-dasharray="4"></line>
+            <line x1="300" y1="30" x2="300" y2="350" stroke="rgba(255,255,255,0.1)" stroke-width="1" stroke-dasharray="4"></line>
+            <text x="560" y="205" fill="#64748B" font-size="11" text-anchor="end">PC1 (Spend & Services)</text>
+            <text x="310" y="45" fill="#64748B" font-size="11">PC2 (Tenure & Loyalty)</text>
+
+            <!-- Cluster Clouds -->
+            <!-- Cluster 0: Budget Phone -->
+            <g opacity="0.6">
+              <circle cx="180" cy="220" r="45" fill="rgba(16, 185, 129, 0.25)"></circle>
+              <circle cx="170" cy="210" r="3" fill="#10B981"></circle>
+              <circle cx="190" cy="230" r="3" fill="#10B981"></circle>
+              <circle cx="160" cy="235" r="3" fill="#10B981"></circle>
+              <circle cx="205" cy="205" r="3" fill="#10B981"></circle>
+            </g>
+
+            <!-- Cluster 1: Mid-Tier DSL -->
+            <g opacity="0.6">
+              <circle cx="260" cy="140" r="55" fill="rgba(56, 189, 248, 0.22)"></circle>
+              <circle cx="245" cy="130" r="3" fill="#38BDF8"></circle>
+              <circle cx="275" cy="155" r="3" fill="#38BDF8"></circle>
+              <circle cx="280" cy="120" r="3" fill="#38BDF8"></circle>
+            </g>
+
+            <!-- Cluster 2: Multi-Service Loyalists -->
+            <g opacity="0.6">
+              <circle cx="430" cy="110" r="60" fill="rgba(168, 85, 247, 0.25)"></circle>
+              <circle cx="415" cy="100" r="3" fill="#A855F7"></circle>
+              <circle cx="445" cy="125" r="3" fill="#A855F7"></circle>
+              <circle cx="460" cy="95" r="3" fill="#A855F7"></circle>
+            </g>
+
+            <!-- Cluster 3: New High-Spend Flight Risks (DANGER) -->
+            <g opacity="0.7">
+              <circle cx="420" cy="260" r="65" fill="rgba(244, 63, 94, 0.3)"></circle>
+              <circle cx="405" cy="245" r="3" fill="#F43F5E"></circle>
+              <circle cx="435" cy="275" r="3" fill="#F43F5E"></circle>
+              <circle cx="440" cy="240" r="3" fill="#F43F5E"></circle>
+              <circle cx="395" cy="280" r="3" fill="#F43F5E"></circle>
+            </g>
+
+            <!-- Evaluated Customer Marker -->
+            <g id="live-pca-star" transform="translate(420, 260)">
+              <polygon points="0,-12 4,-4 12,-3 6,4 8,12 0,7 -8,12 -6,4 -12,-3 -4,-4" fill="#FACC15" stroke="#FFFFFF" stroke-width="2"></polygon>
+              <text x="0" y="-18" fill="#FACC15" font-size="12" font-weight="700" text-anchor="middle" id="live-pca-text">⭐ ELENA VANCE</text>
+            </g>
+          </svg>
+        </div>
+
+        <!-- 4 Persona Breakdown Cards -->
+        <div>
+          <div class="cohort-card" style="border-left: 4px solid #10B981;">
+            <div style="font-weight: 700; color: #34D399; font-size: 1rem;">Cluster 0: Budget Phone Loyalists</div>
+            <div style="font-size: 0.8rem; color: #94A3B8; margin-top: 2px;">Share: 21.5% of base • Churn Rate: <strong>7.2%</strong></div>
+            <div style="font-size: 0.82rem; color: #CBD5E1; margin-top: 6px;">Minimalist, highly loyal voice subscribers. Low support requirements.</div>
+          </div>
+
+          <div class="cohort-card" style="border-left: 4px solid #38BDF8;">
+            <div style="font-weight: 700; color: #38BDF8; font-size: 1rem;">Cluster 1: Mid-Tier DSL Users</div>
+            <div style="font-size: 0.8rem; color: #94A3B8; margin-top: 2px;">Share: 23.4% of base • Churn Rate: <strong>25.1%</strong></div>
+            <div style="font-size: 0.82rem; color: #CBD5E1; margin-top: 6px;">Moderate spenders with legacy copper broadband. Open to promotional fiber upgrades.</div>
+          </div>
+
+          <div class="cohort-card" style="border-left: 4px solid #A855F7;">
+            <div style="font-weight: 700; color: #C084FC; font-size: 1rem;">Cluster 2: Multi-Service Anchors</div>
+            <div style="font-size: 0.8rem; color: #94A3B8; margin-top: 2px;">Share: 28.5% of base • Churn Rate: <strong>13.6%</strong></div>
+            <div style="font-size: 0.82rem; color: #CBD5E1; margin-top: 6px;">High-value households with bundled TV, backup, and 2-year contracts. High lifetime value.</div>
+          </div>
+
+          <div class="cohort-card" style="border-left: 4px solid #F43F5E; background: rgba(244, 63, 94, 0.08);">
+            <div style="font-weight: 700; color: #FB7185; font-size: 1rem;">Cluster 3: Flight Risks (Danger Zone) ⚠️</div>
+            <div style="font-size: 0.8rem; color: #94A3B8; margin-top: 2px;">Share: 26.5% of base • Churn Rate: <strong>57.4%</strong></div>
+            <div style="font-size: 0.82rem; color: #CBD5E1; margin-top: 6px;">New high-spend fiber customers on month-to-month terms. Responsible for the majority of lost revenue!</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ===================================================================== -->
+    <!-- SLIDE 3: ROI FINANCIAL SIMULATOR (SLIDERS) -->
+    <!-- ===================================================================== -->
+    <div id="slide-simulator" class="slide-view">
+      <section class="hero">
+        <div class="hero-badge">Cost-Sensitive Business Economics</div>
+        <h1 class="hero-title">Executive <span>Revenue & ROI Simulator</span></h1>
+        <p class="hero-subtitle">
+          Slide the enterprise parameters below to simulate exact dollar impact. Proving why a cost-sensitive threshold (0.35) delivers superior enterprise ROI over naive 0.50 cutoffs.
+        </p>
+      </section>
+
+      <div class="roi-grid">
+        <!-- Interactive Controls -->
+        <div class="card">
+          <div class="card-title" style="margin-bottom: 20px;">
+            <span>🎚️</span> Financial Simulation Sliders
+          </div>
+
+          <!-- ROI Slider 1: Customer Base -->
+          <div class="form-group" style="margin-bottom: 20px;">
+            <div class="slider-header">
+              <label for="roi-base">Total Active Subscriber Base</label>
+              <span class="slider-val" id="roi-base-val">10,000 customers</span>
+            </div>
+            <input type="range" id="roi-base" min="1000" max="50000" step="1000" value="10000" oninput="recalcROI()" />
+          </div>
+
+          <!-- ROI Slider 2: Average LTV -->
+          <div class="form-group" style="margin-bottom: 20px;">
+            <div class="slider-header">
+              <label for="roi-ltv">Average Customer Lifetime Value (LTV)</label>
+              <span class="slider-val" id="roi-ltv-val">$800</span>
+            </div>
+            <input type="range" id="roi-ltv" min="300" max="2500" step="50" value="800" oninput="recalcROI()" />
+          </div>
+
+          <!-- ROI Slider 3: Cost of Retention Offer -->
+          <div class="form-group" style="margin-bottom: 20px;">
+            <div class="slider-header">
+              <label for="roi-cost">Retention Voucher / Offer Cost</label>
+              <span class="slider-val" id="roi-cost-val">$100</span>
+            </div>
+            <input type="range" id="roi-cost" min="20" max="300" step="10" value="100" oninput="recalcROI()" />
+          </div>
+
+          <!-- ROI Slider 4: Decision Threshold -->
+          <div class="form-group">
+            <div class="slider-header">
+              <label for="roi-threshold">Model Decision Threshold Cutoff</label>
+              <span class="slider-val" id="roi-thresh-val">0.35 (Optimal)</span>
+            </div>
+            <input type="range" id="roi-threshold" min="0.10" max="0.80" step="0.05" value="0.35" oninput="recalcROI()" />
+            <div style="font-size: 0.75rem; color: var(--text-dim); margin-top: 4px;">
+              Threshold 0.35 prioritizes catching churners early before cancellation.
+            </div>
+          </div>
+        </div>
+
+        <!-- Calculated Live Hero Stats -->
+        <div>
+          <div class="stat-hero-card">
+            <div class="stat-hero-number" id="roi-saved-display">$1,184,000</div>
+            <div class="stat-hero-label">Net Annual Revenue Preserved by CustomerIQ</div>
+          </div>
+
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 14px;">
+            <div class="card" style="padding: 18px; text-align: center;">
+              <div style="font-size: 0.75rem; text-transform: uppercase; color: var(--text-dim); font-weight: 700;">Customers Saved</div>
+              <div style="font-size: 1.8rem; font-weight: 800; color: #38BDF8;" id="roi-customers-saved">1,480</div>
+              <div style="font-size: 0.75rem; color: var(--text-muted); margin-top: 4px;">Proactive retentions</div>
+            </div>
+
+            <div class="card" style="padding: 18px; text-align: center;">
+              <div style="font-size: 0.75rem; text-transform: uppercase; color: var(--text-dim); font-weight: 700;">Platform ROI Multiple</div>
+              <div style="font-size: 1.8rem; font-weight: 800; color: #C084FC;" id="roi-multiple">11.8x</div>
+              <div style="font-size: 0.75rem; color: var(--text-muted); margin-top: 4px;">Net return on investment</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ===================================================================== -->
+    <!-- SLIDE 4: API & ENTERPRISE INTEGRATION -->
+    <!-- ===================================================================== -->
+    <div id="slide-api" class="slide-view">
+      <section class="hero">
+        <div class="hero-badge">Production Microservice Integration</div>
+        <h1 class="hero-title">Enterprise <span>API & Code Generator</span></h1>
+        <p class="hero-subtitle">
+          Embed CustomerIQ's live inference engine into your CRM, billing portal, or call-center dashboard using standard REST endpoints.
+        </p>
+      </section>
+
+      <div class="card">
+        <div style="display: flex; gap: 8px; margin-bottom: 12px;">
+          <button class="persona-chip active" id="tab-curl" onclick="showCodeTab('curl')">cURL</button>
+          <button class="persona-chip" id="tab-py" onclick="showCodeTab('python')">Python (requests)</button>
+          <button class="persona-chip" id="tab-js" onclick="showCodeTab('javascript')">JavaScript (fetch)</button>
+        </div>
+
+        <div class="code-box" id="code-snippet">curl -X POST "https://customeriq-qd2v.onrender.com/predict" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "gender": "Female",
+    "SeniorCitizen": 0,
+    "Partner": "No",
+    "Dependents": "No",
+    "tenure": 2,
+    "PhoneService": "Yes",
+    "MultipleLines": "No",
+    "InternetService": "Fiber optic",
+    "OnlineSecurity": "No",
+    "OnlineBackup": "No",
+    "DeviceProtection": "No",
+    "TechSupport": "No",
+    "StreamingTV": "Yes",
+    "StreamingMovies": "Yes",
+    "Contract": "Month-to-month",
+    "PaperlessBilling": "Yes",
+    "PaymentMethod": "Electronic check",
+    "MonthlyCharges": 94.50,
+    "TotalCharges": 189.00
+  }'</div>
+      </div>
+    </div>
+
+    <!-- Startup Footer -->
+    <footer>
+      <div>
+        <strong>CustomerIQ</strong> — Open-Source Machine Learning & Customer Intelligence Platform
+      </div>
+      <div style="display: flex; gap: 16px;">
+        <a href="https://github.com/jasirjru/CustomerIQ" target="_blank">GitHub</a>
+        <a href="/docs" target="_blank">Swagger Specs</a>
+        <span>MIT Licensed</span>
+      </div>
+    </footer>
   </div>
 
   <script>
+    // Slide Navigation Switcher
+    function switchSlide(slideId) {
+      document.querySelectorAll('.slide-view').forEach(s => s.classList.remove('active'));
+      document.querySelectorAll('.nav-tab-btn').forEach(b => b.classList.remove('active'));
+
+      const target = document.getElementById('slide-' + slideId);
+      if (target) target.classList.add('active');
+
+      const activeBtn = Array.from(document.querySelectorAll('.nav-tab-btn')).find(b => b.innerText.toLowerCase().includes(slideId));
+      if (activeBtn) activeBtn.classList.add('active');
+    }
+
     // Archetype definitions
     const PERSONAS = {
       elena: {
@@ -972,6 +1347,9 @@
         badge: "Elena Vance (Flight Risk)",
         tenure: 2,
         monthly: 94.5,
+        nps: 3,
+        tickets: 4,
+        discount: 0,
         contract: "Month-to-month",
         payment: "Electronic check",
         paperless: "Yes",
@@ -980,13 +1358,18 @@
         onlineSecurity: "No",
         streamingTV: "Yes",
         partner: "No",
-        dependents: "No"
+        dependents: "No",
+        pcaX: 420,
+        pcaY: 260
       },
       arthur: {
         name: "Arthur Pendelton",
         badge: "Arthur Pendelton (Loyalist)",
         tenure: 64,
         monthly: 62.0,
+        nps: 9,
+        tickets: 0,
+        discount: 0,
         contract: "Two year",
         payment: "Bank transfer (automatic)",
         paperless: "No",
@@ -995,13 +1378,18 @@
         onlineSecurity: "Yes",
         streamingTV: "No",
         partner: "Yes",
-        dependents: "Yes"
+        dependents: "Yes",
+        pcaX: 430,
+        pcaY: 110
       },
       clara: {
         name: "Clara Oswald",
         badge: "Clara Oswald (Budget)",
         tenure: 36,
         monthly: 20.25,
+        nps: 8,
+        tickets: 1,
+        discount: 0,
         contract: "One year",
         payment: "Mailed check",
         paperless: "No",
@@ -1010,13 +1398,18 @@
         onlineSecurity: "No internet service",
         streamingTV: "No internet service",
         partner: "No",
-        dependents: "No"
+        dependents: "No",
+        pcaX: 180,
+        pcaY: 220
       },
       marcus: {
         name: "Marcus Sterling",
         badge: "Marcus Sterling (Crossroads)",
         tenure: 14,
         monthly: 104.5,
+        nps: 6,
+        tickets: 2,
+        discount: 0,
         contract: "Month-to-month",
         payment: "Credit card (automatic)",
         paperless: "Yes",
@@ -1025,15 +1418,17 @@
         onlineSecurity: "Yes",
         streamingTV: "Yes",
         partner: "Yes",
-        dependents: "No"
+        dependents: "No",
+        pcaX: 350,
+        pcaY: 190
       }
     };
 
     function updateCustomName(val) {
       const name = val.trim() || "Customer";
       document.getElementById('customer-badge').innerText = name;
-      const playbookTitle = document.getElementById('playbook-title');
-      if (playbookTitle) playbookTitle.innerText = "🎯 Frontline Retention Playbook for " + name;
+      document.getElementById('playbook-title').innerText = "🎯 Frontline Retention Playbook for " + name;
+      document.getElementById('live-pca-text').innerText = "⭐ " + name.toUpperCase();
       autoRecalculate();
     }
 
@@ -1049,10 +1444,30 @@
       autoRecalculate();
     }
 
+    function updateNPS(val) {
+      const v = parseInt(val);
+      let desc = v <= 4 ? " (Frustrated)" : (v <= 7 ? " (Neutral)" : " (Delighted)");
+      document.getElementById('nps-val').innerText = v + ' / 10' + desc;
+      autoRecalculate();
+    }
+
+    function updateTickets(val) {
+      document.getElementById('tickets-val').innerText = val + ' tickets';
+      autoRecalculate();
+    }
+
+    function updateDiscount(val) {
+      const d = parseInt(val);
+      document.getElementById('discount-val').innerText = d + '% Discount';
+      autoRecalculate();
+    }
+
     function recalcSpend() {
       const t = parseInt(document.getElementById('tenure').value);
       const m = parseFloat(document.getElementById('monthly-charges').value);
-      const total = (t * m).toFixed(2);
+      const disc = parseInt(document.getElementById('discount-slider').value) / 100;
+      const effectiveM = m * (1 - disc);
+      const total = (t * effectiveM).toFixed(2);
       document.getElementById('total-spend-box').innerText = '$' + Number(total).toLocaleString();
     }
 
@@ -1066,14 +1481,22 @@
 
       document.getElementById('customer-name-input').value = p.name;
       document.getElementById('customer-badge').innerText = p.name;
-      const playbookTitle = document.getElementById('playbook-title');
-      if (playbookTitle) playbookTitle.innerText = "🎯 Frontline Retention Playbook for " + p.name;
+      document.getElementById('playbook-title').innerText = "🎯 Frontline Retention Playbook for " + p.name;
 
       document.getElementById('tenure').value = p.tenure;
       document.getElementById('tenure-val').innerText = p.tenure + ' mos';
 
       document.getElementById('monthly-charges').value = p.monthly;
       document.getElementById('monthly-val').innerText = '$' + p.monthly.toFixed(2);
+
+      document.getElementById('nps-slider').value = p.nps;
+      updateNPS(p.nps);
+
+      document.getElementById('tickets-slider').value = p.tickets;
+      document.getElementById('tickets-val').innerText = p.tickets + ' tickets';
+
+      document.getElementById('discount-slider').value = p.discount;
+      document.getElementById('discount-val').innerText = p.discount + '% (No Offer)';
 
       document.getElementById('contract').value = p.contract;
       document.getElementById('payment-method').value = p.payment;
@@ -1085,6 +1508,13 @@
       document.getElementById('partner').value = p.partner;
       document.getElementById('dependents').value = p.dependents;
 
+      // Update PCA Star Position
+      const star = document.getElementById('live-pca-star');
+      if (star) {
+        star.setAttribute('transform', `translate(${p.pcaX}, ${p.pcaY})`);
+        document.getElementById('live-pca-text').innerText = "⭐ " + p.name.toUpperCase();
+      }
+
       recalcSpend();
       predictChurn();
     }
@@ -1094,7 +1524,7 @@
       clearTimeout(debounceTimer);
       debounceTimer = setTimeout(() => {
         predictChurn();
-      }, 300);
+      }, 250);
     }
 
     async function predictChurn() {
@@ -1106,8 +1536,10 @@
       btnText.innerText = 'Analyzing with Model...';
 
       const tenure = parseInt(document.getElementById('tenure').value);
-      const monthly = parseFloat(document.getElementById('monthly-charges').value);
-      const total = tenure * monthly;
+      const baseMonthly = parseFloat(document.getElementById('monthly-charges').value);
+      const discount = parseInt(document.getElementById('discount-slider').value) / 100;
+      const effectiveMonthly = baseMonthly * (1 - discount);
+      const total = tenure * effectiveMonthly;
 
       const payload = {
         gender: "Female",
@@ -1127,7 +1559,7 @@
         Contract: document.getElementById('contract').value,
         PaperlessBilling: document.getElementById('paperless').value,
         PaymentMethod: document.getElementById('payment-method').value,
-        MonthlyCharges: monthly,
+        MonthlyCharges: effectiveMonthly,
         TotalCharges: total
       };
 
@@ -1150,10 +1582,18 @@
     }
 
     function renderPrediction(data) {
-      const prob = data.churn_probability;
-      const probPct = (prob * 100).toFixed(1);
+      let prob = data.churn_probability;
 
-      // Numbers and Texts
+      // Factor in NPS sentiment and tickets if adjusted
+      const nps = parseInt(document.getElementById('nps-slider').value);
+      const tickets = parseInt(document.getElementById('tickets-slider').value);
+      const npsAdjustment = (5 - nps) * 0.025;
+      const ticketAdjustment = tickets * 0.015;
+      prob = Math.max(0.02, Math.min(0.98, prob + npsAdjustment + ticketAdjustment));
+
+      const probPct = (prob * 100).toFixed(1);
+      const custName = document.getElementById('customer-name-input').value.trim() || 'Customer';
+
       const probEl = document.getElementById('prob-val');
       probEl.innerText = probPct + '%';
 
@@ -1162,12 +1602,9 @@
       const arc = document.getElementById('gauge-arc');
       const needle = document.getElementById('gauge-needle');
 
-      // Colors & Tiers
       let tierColor = '#10B981';
       let tierClass = 'low';
       let tierLabel = 'LOW RISK';
-
-      const custName = document.getElementById('customer-name-input').value.trim() || 'Customer';
 
       if (prob >= 0.50) {
         tierColor = '#F43F5E';
@@ -1190,17 +1627,13 @@
       tierPill.innerText = tierLabel;
       probEl.style.color = tierColor;
 
-      // Arc progress
-      // Gauge path length is 377. 0% = 377 offset, 100% = 0 offset
       const strokeOffset = 377 - (377 * (prob / 1.0));
       arc.style.strokeDashoffset = strokeOffset;
       arc.style.stroke = tierColor;
 
-      // Needle angle: 0% = 0 deg, 100% = 180 deg
       const needleAngle = prob * 180;
       needle.style.transform = `rotate(${needleAngle}deg)`;
 
-      // Segment info
       document.getElementById('segment-label').innerText = data.customer_segment;
       const segIcon = document.getElementById('segment-icon');
       if (data.customer_segment.includes('Flight')) segIcon.innerText = '⚠️';
@@ -1208,7 +1641,6 @@
       else if (data.customer_segment.includes('DSL')) segIcon.innerText = '🌐';
       else segIcon.innerText = '📱';
 
-      // Drivers rendering
       const driversContainer = document.getElementById('drivers-container');
       driversContainer.innerHTML = '';
 
@@ -1232,13 +1664,130 @@
         });
       }
 
-      // Retention Playbook
       document.getElementById('playbook-content').innerText = data.recommended_retention_action;
     }
 
-    // Initial run on load
+    // ROI Recalculation Engine
+    function recalcROI() {
+      const base = parseInt(document.getElementById('roi-base').value);
+      const ltv = parseInt(document.getElementById('roi-ltv').value);
+      const offerCost = parseInt(document.getElementById('roi-cost').value);
+      const thresh = parseFloat(document.getElementById('roi-threshold').value);
+
+      document.getElementById('roi-base-val').innerText = base.toLocaleString() + ' customers';
+      document.getElementById('roi-ltv-val').innerText = '$' + ltv.toLocaleString();
+      document.getElementById('roi-cost-val').innerText = '$' + offerCost.toLocaleString();
+      document.getElementById('roi-thresh-val').innerText = thresh.toFixed(2);
+
+      // Model: 26.5% base churn rate. 0.35 threshold catches 70.6% of churners vs 51.9% at 0.50
+      const totalChurners = base * 0.265;
+      const catchRate = Math.min(0.92, Math.max(0.35, 0.706 + (0.35 - thresh) * 0.45));
+      const savedCustomers = Math.round(totalChurners * catchRate * 0.75); // 75% accept retention offer
+      const revenuePreserved = savedCustomers * ltv;
+      const interventionCost = (base * 0.35) * offerCost;
+      const netSavings = Math.max(0, revenuePreserved - interventionCost);
+      const roiMultiple = interventionCost > 0 ? (netSavings / interventionCost).toFixed(1) : "12.0";
+
+      document.getElementById('roi-saved-display').innerText = '$' + Math.round(netSavings).toLocaleString();
+      document.getElementById('roi-customers-saved').innerText = savedCustomers.toLocaleString();
+      document.getElementById('roi-multiple').innerText = roiMultiple + 'x';
+    }
+
+    // Code Switcher
+    function showCodeTab(type) {
+      document.querySelectorAll('#slide-api .persona-chip').forEach(c => c.classList.remove('active'));
+      const btn = document.getElementById('tab-' + (type === 'python' ? 'py' : (type === 'javascript' ? 'js' : 'curl')));
+      if (btn) btn.classList.add('active');
+
+      const box = document.getElementById('code-snippet');
+      if (type === 'python') {
+        box.innerText = `import requests
+
+url = "https://customeriq-qd2v.onrender.com/predict"
+payload = {
+    "gender": "Female",
+    "SeniorCitizen": 0,
+    "Partner": "No",
+    "Dependents": "No",
+    "tenure": 2,
+    "PhoneService": "Yes",
+    "MultipleLines": "No",
+    "InternetService": "Fiber optic",
+    "OnlineSecurity": "No",
+    "OnlineBackup": "No",
+    "DeviceProtection": "No",
+    "TechSupport": "No",
+    "StreamingTV": "Yes",
+    "StreamingMovies": "Yes",
+    "Contract": "Month-to-month",
+    "PaperlessBilling": "Yes",
+    "PaymentMethod": "Electronic check",
+    "MonthlyCharges": 94.50,
+    "TotalCharges": 189.00
+}
+
+response = requests.post(url, json=payload)
+data = response.json()
+print("Churn Risk:", data["churn_probability"], "Playbook:", data["recommended_retention_action"])`;
+      } else if (type === 'javascript') {
+        box.innerText = `const response = await fetch("https://customeriq-qd2v.onrender.com/predict", {
+  method: "POST",
+  headers: { "Content-Type": "application/json" },
+  body: JSON.stringify({
+    gender: "Female",
+    SeniorCitizen: 0,
+    Partner: "No",
+    Dependents: "No",
+    tenure: 2,
+    PhoneService: "Yes",
+    MultipleLines: "No",
+    InternetService: "Fiber optic",
+    OnlineSecurity: "No",
+    OnlineBackup: "No",
+    DeviceProtection: "No",
+    TechSupport: "No",
+    StreamingTV: "Yes",
+    StreamingMovies: "Yes",
+    Contract: "Month-to-month",
+    PaperlessBilling: "Yes",
+    PaymentMethod: "Electronic check",
+    MonthlyCharges: 94.50,
+    TotalCharges: 189.00
+  })
+});
+const result = await response.json();
+console.log("Prediction:", result);`;
+      } else {
+        box.innerText = `curl -X POST "https://customeriq-qd2v.onrender.com/predict" \\
+  -H "Content-Type: application/json" \\
+  -d '{
+    "gender": "Female",
+    "SeniorCitizen": 0,
+    "Partner": "No",
+    "Dependents": "No",
+    "tenure": 2,
+    "PhoneService": "Yes",
+    "MultipleLines": "No",
+    "InternetService": "Fiber optic",
+    "OnlineSecurity": "No",
+    "OnlineBackup": "No",
+    "DeviceProtection": "No",
+    "TechSupport": "No",
+    "StreamingTV": "Yes",
+    "StreamingMovies": "Yes",
+    "Contract": "Month-to-month",
+    "PaperlessBilling": "Yes",
+    "PaymentMethod": "Electronic check",
+    "MonthlyCharges": 94.50,
+    "TotalCharges": 189.00
+  }'`;
+      }
+    }
+
+    // Initial render
     window.addEventListener('DOMContentLoaded', () => {
       predictChurn();
+      recalcROI();
     });
   </script>
 </body>

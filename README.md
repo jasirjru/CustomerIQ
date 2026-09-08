@@ -1,6 +1,7 @@
 # CustomerIQ — Customer Intelligence & Churn Prediction Platform
 
 [![Python 3.11+](https://img.shields.io/badge/python-3.11%2B-blue.svg)](https://www.python.org/downloads/)
+[![CI Pipeline](https://github.com/jasirjru/CustomerIQ/actions/workflows/ci.yml/badge.svg)](https://github.com/jasirjru/CustomerIQ/actions/workflows/ci.yml)
 [![FastAPI](https://img.shields.io/badge/FastAPI-0.111%2B-009688.svg)](https://fastapi.tiangolo.com/)
 [![Scikit-Learn](https://img.shields.io/badge/scikit--learn-1.4%2B-F7931E.svg)](https://scikit-learn.org/)
 [![Docker](https://img.shields.io/badge/Docker-Containerized-2496ED.svg)](https://www.docker.com/)

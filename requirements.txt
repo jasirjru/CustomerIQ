@@ -1,0 +1,25 @@
+# Core Data Science
+numpy
+pandas
+
+# Machine Learning
+scikit-learn
+
+# Visualization
+matplotlib
+seaborn
+
+# Model Serialization
+joblib
+
+# Jupyter Notebooks
+jupyter
+ipykernel
+
+# API (FastAPI Production Serving)
+fastapi
+uvicorn[standard]
+pydantic
+
+# Testing (Phase 9)
+pytest

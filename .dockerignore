@@ -1,0 +1,32 @@
+# Git & VCS
+.git/
+.gitignore
+
+# Python bytecode & environments
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.Python
+venv/
+env/
+.venv/
+
+# Testing & Caches
+.pytest_cache/
+.coverage
+htmlcov/
+
+# Notebooks & exploration (not needed in production API container)
+notebooks/
+.ipynb_checkpoints/
+
+# Raw data (large; not needed for model inference)
+data/raw/
+reports/figures/
+
+# Local IDE configuration
+.idea/
+.vscode/
+.DS_Store
+Thumbs.db

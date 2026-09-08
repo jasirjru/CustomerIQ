@@ -527,30 +527,31 @@
     }
 
     .gauge-svg {
-      width: 250px;
-      height: 135px;
+      width: 260px;
+      height: 145px;
       overflow: visible;
     }
 
     .gauge-bg {
       fill: none;
-      stroke: rgba(255, 255, 255, 0.07);
-      stroke-width: 20;
+      stroke: rgba(255, 255, 255, 0.08);
+      stroke-width: 18;
       stroke-linecap: round;
     }
 
     .gauge-progress {
       fill: none;
-      stroke-width: 20;
+      stroke-width: 18;
       stroke-linecap: round;
-      stroke-dasharray: 377;
-      stroke-dashoffset: 377;
-      transition: stroke-dashoffset 1.2s cubic-bezier(0.16, 1, 0.3, 1), stroke 0.4s ease;
+      stroke-dasharray: 330;
+      stroke-dashoffset: 330;
+      transition: stroke-dashoffset 0.6s cubic-bezier(0.16, 1, 0.3, 1), stroke 0.3s ease;
     }
 
     .gauge-needle {
       transform-origin: 130px 130px;
-      transition: transform 1.2s cubic-bezier(0.16, 1, 0.3, 1);
+      transform-box: view-box;
+      transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
     }
 
     .prob-display {
@@ -1246,6 +1247,23 @@
                   </div>
                 </div>
               </div>
+
+              <div class="form-row">
+                <div class="form-group">
+                  <label for="partner">Partner / Spouse Status</label>
+                  <select id="partner" onchange="autoRecalculate()">
+                    <option value="No" selected>No (Individual)</option>
+                    <option value="Yes">Yes (Partnered)</option>
+                  </select>
+                </div>
+                <div class="form-group">
+                  <label for="dependents">Dependents / Family</label>
+                  <select id="dependents" onchange="autoRecalculate()">
+                    <option value="No" selected>No (None)</option>
+                    <option value="Yes">Yes (Has Dependents)</option>
+                  </select>
+                </div>
+              </div>
             </div>
 
             <div class="form-section">
@@ -1313,12 +1331,12 @@
             </div>
 
             <div class="gauge-wrapper">
-              <svg class="gauge-svg" viewBox="0 0 260 140">
-                <path class="gauge-bg" d="M 20 130 A 110 110 0 0 1 240 130"></path>
-                <path class="gauge-progress" id="gauge-arc" d="M 20 130 A 110 110 0 0 1 240 130" stroke="#F43F5E"></path>
-                <g class="gauge-needle" id="gauge-needle">
-                  <line x1="130" y1="130" x2="40" y2="130" stroke="#FFFFFF" stroke-width="3" stroke-linecap="round"></line>
-                  <circle cx="130" cy="130" r="7" fill="#FFFFFF"></circle>
+              <svg class="gauge-svg" viewBox="0 0 260 145">
+                <path class="gauge-bg" d="M 25 130 A 105 105 0 0 1 235 130"></path>
+                <path class="gauge-progress" id="gauge-arc" d="M 25 130 A 105 105 0 0 1 235 130" stroke="#F43F5E"></path>
+                <g class="gauge-needle" id="gauge-needle" transform="rotate(0, 130, 130)">
+                  <line x1="130" y1="130" x2="35" y2="130" stroke="#FFFFFF" stroke-width="4" stroke-linecap="round"></line>
+                  <circle cx="130" cy="130" r="8" fill="#FFFFFF" stroke="#0E131F" stroke-width="3"></circle>
                 </g>
               </svg>
             </div>
@@ -1895,12 +1913,13 @@
     }
 
     function recalcSpend() {
-      const t = parseInt(document.getElementById('tenure').value);
-      const m = parseFloat(document.getElementById('monthly-charges').value);
-      const disc = parseInt(document.getElementById('discount-slider').value) / 100;
+      const t = parseInt(document.getElementById('tenure')?.value || 12);
+      const m = parseFloat(document.getElementById('monthly-charges')?.value || 65.0);
+      const disc = parseInt(document.getElementById('discount-slider')?.value || 0) / 100;
       const effectiveM = m * (1 - disc);
       const total = (t * effectiveM).toFixed(2);
-      document.getElementById('total-spend-box').innerText = '$' + Number(total).toLocaleString();
+      const box = document.getElementById('total-spend-box');
+      if (box) box.innerText = '$' + Number(total).toLocaleString();
     }
 
     function loadPersona(key) {
@@ -1911,39 +1930,52 @@
       const activeBtn = document.getElementById('btn-' + key);
       if (activeBtn) activeBtn.classList.add('active');
 
-      document.getElementById('customer-name-input').value = p.name;
-      document.getElementById('customer-badge').innerText = p.name;
-      document.getElementById('playbook-title').innerText = "🎯 Frontline Retention Playbook for " + p.name;
+      const nameInput = document.getElementById('customer-name-input');
+      if (nameInput) nameInput.value = p.name;
+      const badge = document.getElementById('customer-badge');
+      if (badge) badge.innerText = p.name;
+      const pTitle = document.getElementById('playbook-title');
+      if (pTitle) pTitle.innerText = "🎯 Frontline Retention Playbook for " + p.name;
 
-      document.getElementById('tenure').value = p.tenure;
-      document.getElementById('tenure-val').innerText = p.tenure + ' mos';
+      const setVal = (id, val) => {
+        const el = document.getElementById(id);
+        if (el) el.value = val;
+      };
 
-      document.getElementById('monthly-charges').value = p.monthly;
-      document.getElementById('monthly-val').innerText = '$' + p.monthly.toFixed(2);
+      setVal('tenure', p.tenure);
+      const tenureVal = document.getElementById('tenure-val');
+      if (tenureVal) tenureVal.innerText = p.tenure + ' mos';
 
-      document.getElementById('nps-slider').value = p.nps;
+      setVal('monthly-charges', p.monthly);
+      const mVal = document.getElementById('monthly-val');
+      if (mVal) mVal.innerText = '$' + p.monthly.toFixed(2);
+
+      setVal('nps-slider', p.nps);
       updateNPS(p.nps);
 
-      document.getElementById('tickets-slider').value = p.tickets;
-      document.getElementById('tickets-val').innerText = p.tickets + ' tickets';
+      setVal('tickets-slider', p.tickets);
+      const tVal = document.getElementById('tickets-val');
+      if (tVal) tVal.innerText = p.tickets + ' tickets';
 
-      document.getElementById('discount-slider').value = p.discount;
-      document.getElementById('discount-val').innerText = p.discount + '% (No Offer)';
+      setVal('discount-slider', p.discount);
+      const dVal = document.getElementById('discount-val');
+      if (dVal) dVal.innerText = p.discount + '% (No Offer)';
 
-      document.getElementById('contract').value = p.contract;
-      document.getElementById('payment-method').value = p.payment;
-      document.getElementById('paperless').value = p.paperless;
-      document.getElementById('internet-service').value = p.internet;
-      document.getElementById('tech-support').value = p.techSupport;
-      document.getElementById('online-security').value = p.onlineSecurity;
-      document.getElementById('streaming-tv').value = p.streamingTV;
-      document.getElementById('partner').value = p.partner;
-      document.getElementById('dependents').value = p.dependents;
+      setVal('contract', p.contract);
+      setVal('payment-method', p.payment);
+      setVal('paperless', p.paperless);
+      setVal('internet-service', p.internet);
+      setVal('tech-support', p.techSupport);
+      setVal('online-security', p.onlineSecurity);
+      setVal('streaming-tv', p.streamingTV);
+      setVal('partner', p.partner);
+      setVal('dependents', p.dependents);
 
       const star = document.getElementById('live-pca-star');
       if (star) {
         star.setAttribute('transform', `translate(${p.pcaX}, ${p.pcaY})`);
-        document.getElementById('live-pca-text').innerText = "⭐ " + p.name.toUpperCase();
+        const starText = document.getElementById('live-pca-text');
+        if (starText) starText.innerText = "⭐ " + p.name.toUpperCase();
       }
 
       recalcSpend();
@@ -1955,77 +1987,83 @@
       clearTimeout(debounceTimer);
       debounceTimer = setTimeout(() => {
         predictChurn();
-      }, 250);
+      }, 180);
     }
 
     async function predictChurn() {
-      const btn = document.getElementById('predict-btn');
       const spinner = document.getElementById('btn-spinner');
       const btnText = document.getElementById('btn-text');
 
-      spinner.style.display = 'inline-block';
-      btnText.innerText = 'Analyzing with Model...';
-
-      const tenure = parseInt(document.getElementById('tenure').value);
-      const baseMonthly = parseFloat(document.getElementById('monthly-charges').value);
-      const discount = parseInt(document.getElementById('discount-slider').value) / 100;
-      const effectiveMonthly = baseMonthly * (1 - discount);
-      const total = tenure * effectiveMonthly;
-
-      const payload = {
-        gender: "Female",
-        SeniorCitizen: 0,
-        Partner: document.getElementById('partner').value,
-        Dependents: document.getElementById('dependents').value,
-        tenure: tenure,
-        PhoneService: "Yes",
-        MultipleLines: "No",
-        InternetService: document.getElementById('internet-service').value,
-        OnlineSecurity: document.getElementById('online-security').value,
-        OnlineBackup: "No",
-        DeviceProtection: "No",
-        TechSupport: document.getElementById('tech-support').value,
-        StreamingTV: document.getElementById('streaming-tv').value,
-        StreamingMovies: document.getElementById('streaming-tv').value,
-        Contract: document.getElementById('contract').value,
-        PaperlessBilling: document.getElementById('paperless').value,
-        PaymentMethod: document.getElementById('payment-method').value,
-        MonthlyCharges: effectiveMonthly,
-        TotalCharges: total
-      };
+      if (spinner) spinner.style.display = 'inline-block';
+      if (btnText) btnText.innerText = 'Analyzing with Model...';
 
       try {
+        const tenure = parseInt(document.getElementById('tenure')?.value || 12);
+        const baseMonthly = parseFloat(document.getElementById('monthly-charges')?.value || 65.0);
+        const discount = parseInt(document.getElementById('discount-slider')?.value || 0) / 100;
+        const effectiveMonthly = baseMonthly * (1 - discount);
+        const total = parseFloat((tenure * effectiveMonthly).toFixed(2));
+
+        const payload = {
+          gender: "Female",
+          SeniorCitizen: 0,
+          Partner: document.getElementById('partner')?.value || "No",
+          Dependents: document.getElementById('dependents')?.value || "No",
+          tenure: tenure,
+          PhoneService: "Yes",
+          MultipleLines: "No",
+          InternetService: document.getElementById('internet-service')?.value || "Fiber optic",
+          OnlineSecurity: document.getElementById('online-security')?.value || "No",
+          OnlineBackup: "No",
+          DeviceProtection: "No",
+          TechSupport: document.getElementById('tech-support')?.value || "No",
+          StreamingTV: document.getElementById('streaming-tv')?.value || "No",
+          StreamingMovies: document.getElementById('streaming-tv')?.value || "No",
+          Contract: document.getElementById('contract')?.value || "Month-to-month",
+          PaperlessBilling: document.getElementById('paperless')?.value || "Yes",
+          PaymentMethod: document.getElementById('payment-method')?.value || "Electronic check",
+          MonthlyCharges: effectiveMonthly,
+          TotalCharges: total
+        };
+
         const res = await fetch('/predict', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify(payload)
         });
 
-        if (!res.ok) throw new Error('API returned status ' + res.status);
+        if (!res.ok) {
+          const errBody = await res.text();
+          console.error('API Error Response:', res.status, errBody);
+          throw new Error('API returned status ' + res.status);
+        }
+
         const data = await res.json();
         renderPrediction(data);
       } catch (err) {
         console.error('Prediction error:', err);
       } finally {
-        spinner.style.display = 'none';
-        btnText.innerText = '⚡ Evaluate Customer Risk';
+        if (spinner) spinner.style.display = 'none';
+        if (btnText) btnText.innerText = '⚡ Evaluate Customer Risk';
       }
     }
 
     function renderPrediction(data) {
       let prob = data.churn_probability;
 
-      const nps = parseInt(document.getElementById('nps-slider').value);
-      const tickets = parseInt(document.getElementById('tickets-slider').value);
-      const npsAdjustment = (5 - nps) * 0.025;
+      const npsInput = document.getElementById('nps-slider');
+      const ticketsInput = document.getElementById('tickets-slider');
+      const nps = npsInput ? parseInt(npsInput.value) : 5;
+      const tickets = ticketsInput ? parseInt(ticketsInput.value) : 2;
+      const npsAdjustment = (5 - nps) * 0.02;
       const ticketAdjustment = tickets * 0.015;
       prob = Math.max(0.02, Math.min(0.98, prob + npsAdjustment + ticketAdjustment));
 
       const probPct = (prob * 100).toFixed(1);
-      const custName = document.getElementById('customer-name-input').value.trim() || 'Customer';
+      const custName = (document.getElementById('customer-name-input')?.value || 'Customer').trim() || 'Customer';
 
       const probEl = document.getElementById('prob-val');
-      probEl.innerText = probPct + '%';
+      if (probEl) probEl.innerText = probPct + '%';
 
       const tierPill = document.getElementById('risk-tier-pill');
       const descEl = document.getElementById('outcome-desc');
@@ -2040,73 +2078,104 @@
         tierColor = '#F43F5E';
         tierClass = 'high';
         tierLabel = 'CRITICAL RISK';
-        descEl.innerHTML = `<strong>${custName}</strong> exceeds <strong>0.35 boundary</strong>. Proactive intervention urgent.`;
+        if (descEl) descEl.innerHTML = `<strong>${custName}</strong> exceeds <strong>0.35 boundary</strong>. Proactive intervention urgent.`;
       } else if (prob >= 0.35) {
         tierColor = '#F59E0B';
         tierClass = 'mod';
         tierLabel = 'ELEVATED RISK';
-        descEl.innerHTML = `<strong>${custName}</strong> flagged by <strong>0.35 cost-sensitive threshold</strong> before canceling.`;
+        if (descEl) descEl.innerHTML = `<strong>${custName}</strong> flagged by <strong>0.35 cost-sensitive threshold</strong> before canceling.`;
       } else {
         tierColor = '#10B981';
         tierClass = 'low';
         tierLabel = 'HEALTHY & ANCHORED';
-        descEl.innerHTML = `<strong>${custName}</strong> is safely below the <strong>0.35 boundary</strong>. Highly stable.`;
+        if (descEl) descEl.innerHTML = `<strong>${custName}</strong> is safely below the <strong>0.35 boundary</strong>. Highly stable.`;
       }
 
-      tierPill.className = 'tier-badge ' + tierClass;
-      tierPill.innerText = tierLabel;
-      probEl.style.color = tierColor;
+      if (tierPill) {
+        tierPill.className = 'tier-badge ' + tierClass;
+        tierPill.innerText = tierLabel;
+      }
+      if (probEl) probEl.style.color = tierColor;
 
-      const strokeOffset = 377 - (377 * (prob / 1.0));
-      arc.style.strokeDashoffset = strokeOffset;
-      arc.style.stroke = tierColor;
+      if (arc) {
+        const strokeOffset = 330 * (1 - prob);
+        arc.style.strokeDashoffset = strokeOffset;
+        arc.style.stroke = tierColor;
+      }
 
-      const needleAngle = prob * 180;
-      needle.style.transform = `rotate(${needleAngle}deg)`;
+      if (needle) {
+        const needleAngle = Math.max(0, Math.min(180, prob * 180));
+        needle.style.transform = `rotate(${needleAngle}deg)`;
+        needle.setAttribute('transform', `rotate(${needleAngle}, 130, 130)`);
+      }
 
-      document.getElementById('segment-label').innerText = data.customer_segment;
+      const segLabel = document.getElementById('segment-label');
+      if (segLabel && data.customer_segment) {
+        segLabel.innerText = data.customer_segment;
+      }
+
       const segIcon = document.getElementById('segment-icon');
-      if (data.customer_segment.includes('Flight')) segIcon.innerText = '⚠️';
-      else if (data.customer_segment.includes('Multi')) segIcon.innerText = '💎';
-      else if (data.customer_segment.includes('DSL')) segIcon.innerText = '🌐';
-      else segIcon.innerText = '📱';
+      if (segIcon && data.customer_segment) {
+        if (data.customer_segment.includes('Flight') || data.customer_segment.includes('Severe')) segIcon.innerText = '⚠️';
+        else if (data.customer_segment.includes('Multi') || data.customer_segment.includes('Loyalist')) segIcon.innerText = '💎';
+        else if (data.customer_segment.includes('DSL')) segIcon.innerText = '🌐';
+        else segIcon.innerText = '📱';
+      }
 
       const driversContainer = document.getElementById('drivers-container');
-      driversContainer.innerHTML = '';
+      if (driversContainer) {
+        driversContainer.innerHTML = '';
+        if (data.top_risk_drivers && data.top_risk_drivers.length > 0) {
+          data.top_risk_drivers.forEach(d => {
+            let cleanName = (d.feature || '')
+              .replace('cat__', '')
+              .replace('num__', '')
+              .replace(/_/g, ': ');
+            const pct = Math.min(100, Math.max(15, Math.round((d.impact_score || 0.1) * 350)));
 
-      if (data.top_risk_drivers && data.top_risk_drivers.length > 0) {
-        data.top_risk_drivers.forEach(d => {
-          let cleanName = d.feature.replace('cat__', '').replace('num__', '').replace(/_/g, ': ');
-          const pct = Math.min(100, Math.max(10, Math.round(d.impact_score * 400)));
-
-          const item = document.createElement('div');
-          item.className = 'driver-item';
-          item.innerHTML = `
-            <div class="driver-meta">
-              <span class="driver-name">${cleanName}</span>
-              <span class="driver-score">+${(d.impact_score * 100).toFixed(1)}%</span>
-            </div>
-            <div class="driver-track">
-              <div class="driver-fill" style="width: ${pct}%;"></div>
-            </div>
-          `;
-          driversContainer.appendChild(item);
-        });
+            const item = document.createElement('div');
+            item.className = 'driver-item';
+            item.innerHTML = `
+              <div class="driver-meta">
+                <span class="driver-name" style="color: #CBD5E1; font-size: 0.82rem; font-weight: 600;">${cleanName}</span>
+                <span class="driver-score" style="color: #F87171; font-weight: 700;">+${((d.impact_score || 0) * 100).toFixed(1)}%</span>
+              </div>
+              <div class="driver-track">
+                <div class="driver-fill" style="width: ${pct}%;"></div>
+              </div>
+            `;
+            driversContainer.appendChild(item);
+          });
+        } else {
+          driversContainer.innerHTML = `<div style="color: #94A3B8; font-size: 0.82rem; font-style: italic;">No critical risk drivers identified. Account profile is stable.</div>`;
+        }
       }
 
-      document.getElementById('playbook-content').innerText = data.recommended_retention_action;
+      const playbook = document.getElementById('playbook-content');
+      if (playbook && data.recommended_retention_action) {
+        playbook.innerText = data.recommended_retention_action;
+      }
     }
 
     function recalcROI() {
-      const base = parseInt(document.getElementById('roi-base').value);
-      const ltv = parseInt(document.getElementById('roi-ltv').value);
-      const offerCost = parseInt(document.getElementById('roi-cost').value);
-      const thresh = parseFloat(document.getElementById('roi-threshold').value);
+      const baseEl = document.getElementById('roi-base');
+      const ltvEl = document.getElementById('roi-ltv');
+      const costEl = document.getElementById('roi-cost');
+      const threshEl = document.getElementById('roi-threshold');
 
-      document.getElementById('roi-base-val').innerText = base.toLocaleString() + ' customers';
-      document.getElementById('roi-ltv-val').innerText = '$' + ltv.toLocaleString();
-      document.getElementById('roi-cost-val').innerText = '$' + offerCost.toLocaleString();
-      document.getElementById('roi-thresh-val').innerText = thresh.toFixed(2);
+      const base = baseEl ? parseInt(baseEl.value) : 10000;
+      const ltv = ltvEl ? parseInt(ltvEl.value) : 800;
+      const offerCost = costEl ? parseInt(costEl.value) : 100;
+      const thresh = threshEl ? parseFloat(threshEl.value) : 0.35;
+
+      const baseVal = document.getElementById('roi-base-val');
+      if (baseVal) baseVal.innerText = base.toLocaleString() + ' customers';
+      const ltvVal = document.getElementById('roi-ltv-val');
+      if (ltvVal) ltvVal.innerText = '$' + ltv.toLocaleString();
+      const costVal = document.getElementById('roi-cost-val');
+      if (costVal) costVal.innerText = '$' + offerCost.toLocaleString();
+      const threshVal = document.getElementById('roi-thresh-val');
+      if (threshVal) threshVal.innerText = thresh.toFixed(2);
 
       const totalChurners = base * 0.265;
       const catchRate = Math.min(0.92, Math.max(0.35, 0.706 + (0.35 - thresh) * 0.45));
@@ -2116,13 +2185,16 @@
       const netSavings = Math.max(0, revenuePreserved - interventionCost);
       const roiMultiple = interventionCost > 0 ? (netSavings / interventionCost).toFixed(1) : "12.0";
 
-      document.getElementById('roi-saved-display').innerText = '$' + Math.round(netSavings).toLocaleString();
-      document.getElementById('roi-customers-saved').innerText = savedCustomers.toLocaleString();
-      document.getElementById('roi-multiple').innerText = roiMultiple + 'x';
+      const savedDisplay = document.getElementById('roi-saved-display');
+      if (savedDisplay) savedDisplay.innerText = '$' + Math.round(netSavings).toLocaleString();
+      const custSavedDisplay = document.getElementById('roi-customers-saved');
+      if (custSavedDisplay) custSavedDisplay.innerText = savedCustomers.toLocaleString();
+      const multDisplay = document.getElementById('roi-multiple');
+      if (multDisplay) multDisplay.innerText = roiMultiple + 'x';
     }
 
     window.addEventListener('DOMContentLoaded', () => {
-      predictChurn();
+      loadPersona('elena');
       recalcROI();
     });
   </script>

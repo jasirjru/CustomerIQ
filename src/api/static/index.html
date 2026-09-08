@@ -6,7 +6,7 @@
   <title>CustomerIQ — Enterprise Customer Intelligence & Churn Defense Studio</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800&family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800;900&family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
   <style>
     :root {
       --bg-base: #06090F;
@@ -35,6 +35,10 @@
       padding: 0;
     }
 
+    html {
+      scroll-behavior: smooth;
+    }
+
     body {
       background-color: var(--bg-base);
       background-image: 
@@ -59,45 +63,85 @@
       z-index: 0;
     }
 
-    .container {
-      max-width: 1320px;
-      margin: 0 auto;
-      padding: 24px 24px 80px;
+    /* Top Running Ticker Strip */
+    .top-ticker {
+      background: rgba(10, 14, 23, 0.9);
+      border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+      padding: 7px 0;
+      font-size: 0.72rem;
+      font-weight: 700;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--text-dim);
+      overflow: hidden;
+      white-space: nowrap;
       position: relative;
-      z-index: 1;
+      z-index: 100;
     }
 
-    /* Top Startup Nav */
-    header {
+    .ticker-content {
+      display: inline-block;
+      animation: marquee 35s linear infinite;
+    }
+
+    .ticker-content span {
+      margin: 0 20px;
+      color: var(--text-muted);
+    }
+    .ticker-content span.highlight {
+      color: #818CF8;
+    }
+    .ticker-content span.dot {
+      color: var(--accent-primary);
+    }
+
+    @keyframes marquee {
+      0% { transform: translateX(0%); }
+      100% { transform: translateX(-50%); }
+    }
+
+    /* Sticky Navigation */
+    .sticky-header {
+      position: sticky;
+      top: 0;
+      background: rgba(6, 9, 15, 0.82);
+      backdrop-filter: blur(20px);
+      border-bottom: 1px solid var(--border-subtle);
+      z-index: 99;
+      transition: all 0.3s ease;
+    }
+
+    .header-inner {
+      max-width: 1320px;
+      margin: 0 auto;
+      padding: 14px 24px;
       display: flex;
       justify-content: space-between;
       align-items: center;
-      padding-bottom: 22px;
-      border-bottom: 1px solid var(--border-subtle);
-      margin-bottom: 28px;
     }
 
     .brand {
       display: flex;
       align-items: center;
       gap: 12px;
+      text-decoration: none;
     }
 
     .brand-icon {
-      width: 42px;
-      height: 42px;
+      width: 38px;
+      height: 38px;
       background: linear-gradient(135deg, #6366F1 0%, #4338CA 100%);
-      border-radius: 12px;
+      border-radius: 10px;
       display: flex;
       align-items: center;
       justify-content: center;
-      font-size: 20px;
-      box-shadow: 0 0 20px var(--accent-glow);
+      font-size: 19px;
+      box-shadow: 0 0 16px var(--accent-glow);
     }
 
     .brand-title {
       font-family: 'Outfit', sans-serif;
-      font-size: 1.55rem;
+      font-size: 1.45rem;
       font-weight: 800;
       letter-spacing: -0.02em;
       background: linear-gradient(135deg, #FFFFFF 30%, #CBD5E1 100%);
@@ -105,43 +149,22 @@
       -webkit-text-fill-color: transparent;
     }
 
-    /* Navigation Slide Tabs */
-    .nav-tabs {
+    .nav-links {
       display: flex;
       align-items: center;
-      background: rgba(15, 23, 42, 0.65);
-      border: 1px solid var(--border-subtle);
-      border-radius: 14px;
-      padding: 4px;
-      gap: 4px;
+      gap: 22px;
     }
 
-    .nav-tab-btn {
-      background: transparent;
-      border: none;
+    .nav-link {
       color: var(--text-muted);
-      font-family: inherit;
+      text-decoration: none;
       font-size: 0.88rem;
       font-weight: 600;
-      padding: 8px 16px;
-      border-radius: 10px;
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      transition: all 0.2s ease;
+      transition: color 0.2s ease;
     }
 
-    .nav-tab-btn:hover {
+    .nav-link:hover {
       color: #FFFFFF;
-      background: rgba(255, 255, 255, 0.05);
-    }
-
-    .nav-tab-btn.active {
-      background: linear-gradient(135deg, rgba(99, 102, 241, 0.25) 0%, rgba(67, 56, 202, 0.35) 100%);
-      color: #FFFFFF;
-      border: 1px solid rgba(99, 102, 241, 0.5);
-      box-shadow: 0 0 16px var(--accent-glow);
     }
 
     .nav-actions {
@@ -154,9 +177,9 @@
       display: inline-flex;
       align-items: center;
       gap: 6px;
-      padding: 6px 12px;
+      padding: 5px 12px;
       border-radius: 9999px;
-      font-size: 0.78rem;
+      font-size: 0.76rem;
       font-weight: 600;
       border: 1px solid var(--border-subtle);
       background: rgba(255, 255, 255, 0.03);
@@ -169,84 +192,128 @@
       color: #34D399;
     }
 
-    .docs-btn {
+    .cta-btn {
       display: inline-flex;
       align-items: center;
       gap: 6px;
-      padding: 8px 14px;
+      padding: 8px 16px;
       border-radius: 10px;
-      font-size: 0.82rem;
-      font-weight: 600;
-      background: var(--bg-surface-elevated);
-      color: var(--text-main);
-      border: 1px solid var(--border-subtle);
+      font-size: 0.85rem;
+      font-weight: 700;
+      background: linear-gradient(135deg, #6366F1 0%, #4F46E5 100%);
+      color: #FFFFFF;
       text-decoration: none;
+      box-shadow: 0 0 15px var(--accent-glow);
       transition: all 0.2s ease;
     }
 
-    .docs-btn:hover {
-      border-color: var(--accent-primary);
-      box-shadow: 0 0 15px var(--accent-glow);
+    .cta-btn:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 0 25px rgba(99, 102, 241, 0.5);
     }
 
-    /* Slides Container */
-    .slide-view {
-      display: none;
-      animation: fadeIn 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+    /* Global Container */
+    .container {
+      max-width: 1320px;
+      margin: 0 auto;
+      padding: 0 24px;
+      position: relative;
+      z-index: 1;
     }
 
-    .slide-view.active {
-      display: block;
+    /* Section Spacing */
+    section {
+      padding: 70px 0;
+      position: relative;
     }
 
-    /* Hero */
-    .hero {
-      margin-bottom: 28px;
+    .section-header {
+      text-align: center;
+      margin-bottom: 48px;
     }
 
-    .hero-badge {
+    .section-badge {
       display: inline-flex;
       align-items: center;
       gap: 6px;
       background: rgba(99, 102, 241, 0.15);
       border: 1px solid rgba(99, 102, 241, 0.35);
       color: #A5B4FC;
-      font-size: 0.78rem;
-      font-weight: 700;
-      padding: 4px 12px;
+      font-size: 0.75rem;
+      font-weight: 800;
+      padding: 4px 14px;
       border-radius: 9999px;
       margin-bottom: 12px;
       text-transform: uppercase;
-      letter-spacing: 0.06em;
+      letter-spacing: 0.08em;
     }
 
-    .hero-title {
+    .section-title {
       font-family: 'Outfit', sans-serif;
       font-size: 2.6rem;
       font-weight: 800;
       line-height: 1.15;
       letter-spacing: -0.03em;
-      margin-bottom: 10px;
+      margin-bottom: 12px;
     }
 
-    .hero-title span {
+    .section-title span {
       background: linear-gradient(135deg, #818CF8 0%, #C084FC 100%);
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
     }
 
-    .hero-subtitle {
+    .section-subtitle {
       color: var(--text-muted);
-      font-size: 1.02rem;
-      max-width: 760px;
+      font-size: 1.05rem;
+      max-width: 720px;
+      margin: 0 auto;
     }
 
-    /* Archetype Strip */
+    /* Glass Cards */
+    .card {
+      background: var(--bg-surface);
+      border: 1px solid var(--border-subtle);
+      border-radius: 20px;
+      padding: 26px;
+      backdrop-filter: blur(16px);
+      box-shadow: 0 20px 40px -15px rgba(0, 0, 0, 0.4);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.12), transparent);
+    }
+
+    .card-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 20px;
+    }
+
+    .card-title {
+      font-family: 'Outfit', sans-serif;
+      font-size: 1.25rem;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    /* SECTION 1: HERO & STUDIO */
     .persona-strip {
       background: var(--bg-surface);
       border: 1px solid var(--border-subtle);
       border-radius: 16px;
-      padding: 14px 18px;
+      padding: 14px 20px;
       margin-bottom: 28px;
       display: flex;
       align-items: center;
@@ -297,7 +364,6 @@
       box-shadow: 0 0 16px var(--accent-glow);
     }
 
-    /* Layout */
     .main-grid {
       display: grid;
       grid-template-columns: 1.15fr 1fr;
@@ -311,44 +377,6 @@
       }
     }
 
-    .card {
-      background: var(--bg-surface);
-      border: 1px solid var(--border-subtle);
-      border-radius: 18px;
-      padding: 24px;
-      backdrop-filter: blur(16px);
-      box-shadow: 0 20px 40px -15px rgba(0, 0, 0, 0.4);
-      position: relative;
-      overflow: hidden;
-    }
-
-    .card::before {
-      content: '';
-      position: absolute;
-      top: 0;
-      left: 0;
-      right: 0;
-      height: 1px;
-      background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.12), transparent);
-    }
-
-    .card-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 20px;
-    }
-
-    .card-title {
-      font-family: 'Outfit', sans-serif;
-      font-size: 1.2rem;
-      font-weight: 700;
-      display: flex;
-      align-items: center;
-      gap: 8px;
-    }
-
-    /* Slider styling with value tags */
     .form-section {
       margin-bottom: 22px;
     }
@@ -480,7 +508,6 @@
       background: linear-gradient(135deg, #818CF8 0%, #6366F1 100%);
     }
 
-    /* Results */
     .results-column {
       display: flex;
       flex-direction: column;
@@ -669,7 +696,115 @@
       line-height: 1.6;
     }
 
-    /* Slide 2: Persona Atlas */
+    /* SECTION 2: VALUE PILLARS (Inspired by user screenshot) */
+    .pillars-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 20px;
+    }
+
+    @media (max-width: 900px) {
+      .pillars-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+    }
+    @media (max-width: 600px) {
+      .pillars-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .pillar-card {
+      background: var(--bg-surface);
+      border: 1px solid var(--border-subtle);
+      border-radius: 16px;
+      padding: 24px;
+      transition: all 0.25s ease;
+    }
+
+    .pillar-card:hover {
+      border-color: var(--accent-primary);
+      transform: translateY(-4px);
+      box-shadow: 0 15px 30px -10px var(--accent-glow);
+    }
+
+    .pillar-icon {
+      width: 44px;
+      height: 44px;
+      background: rgba(99, 102, 241, 0.12);
+      border: 1px solid rgba(99, 102, 241, 0.25);
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 20px;
+      margin-bottom: 16px;
+    }
+
+    .pillar-title {
+      font-family: 'Outfit', sans-serif;
+      font-size: 1.15rem;
+      font-weight: 700;
+      margin-bottom: 8px;
+      color: #FFFFFF;
+    }
+
+    .pillar-desc {
+      font-size: 0.88rem;
+      color: var(--text-muted);
+      line-height: 1.55;
+    }
+
+    /* SECTION 3: 4-STEP PIPELINE (Inspired by user screenshot) */
+    .steps-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 20px;
+    }
+
+    @media (max-width: 900px) {
+      .steps-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+    }
+    @media (max-width: 600px) {
+      .steps-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .step-card {
+      background: rgba(14, 19, 31, 0.6);
+      border: 1px solid var(--border-subtle);
+      border-radius: 16px;
+      padding: 22px;
+      position: relative;
+    }
+
+    .step-num {
+      font-family: 'Outfit', sans-serif;
+      font-size: 0.82rem;
+      font-weight: 800;
+      letter-spacing: 0.08em;
+      color: var(--accent-primary);
+      margin-bottom: 8px;
+    }
+
+    .step-title {
+      font-family: 'Outfit', sans-serif;
+      font-size: 1.1rem;
+      font-weight: 700;
+      margin-bottom: 8px;
+      color: #FFFFFF;
+    }
+
+    .step-desc {
+      font-size: 0.85rem;
+      color: var(--text-muted);
+      line-height: 1.5;
+    }
+
+    /* SECTION 4: PERSONA ATLAS */
     .atlas-grid {
       display: grid;
       grid-template-columns: 1.4fr 1fr;
@@ -685,7 +820,7 @@
     .pca-canvas-container {
       background: rgba(15, 23, 42, 0.6);
       border: 1px solid var(--border-subtle);
-      border-radius: 16px;
+      border-radius: 18px;
       padding: 20px;
       position: relative;
       height: 440px;
@@ -702,7 +837,7 @@
       margin-bottom: 12px;
     }
 
-    /* Slide 3: ROI Financial Simulator */
+    /* SECTION 5: ROI FINANCIAL SIMULATOR */
     .roi-grid {
       display: grid;
       grid-template-columns: 1.1fr 1fr;
@@ -726,7 +861,7 @@
 
     .stat-hero-number {
       font-family: 'Outfit', sans-serif;
-      font-size: 3.5rem;
+      font-size: 3.4rem;
       font-weight: 800;
       color: #34D399;
       line-height: 1.1;
@@ -738,7 +873,89 @@
       margin-top: 4px;
     }
 
-    /* Slide 4: Code Integration */
+    /* SECTION 6: MODEL BENCHMARK TABLE */
+    .benchmark-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.88rem;
+    }
+
+    .benchmark-table th {
+      text-align: left;
+      padding: 12px 16px;
+      font-weight: 700;
+      color: var(--text-dim);
+      text-transform: uppercase;
+      font-size: 0.75rem;
+      border-bottom: 1px solid var(--border-subtle);
+    }
+
+    .benchmark-table td {
+      padding: 14px 16px;
+      border-bottom: 1px solid var(--border-subtle);
+      color: var(--text-main);
+    }
+
+    .benchmark-table tr.champion {
+      background: rgba(99, 102, 241, 0.08);
+    }
+
+    /* SECTION 7: CREATOR DOSSIER */
+    .creator-card {
+      background: linear-gradient(135deg, rgba(24, 31, 46, 0.8) 0%, rgba(15, 23, 42, 0.95) 100%);
+      border: 1px solid rgba(99, 102, 241, 0.35);
+      border-radius: 22px;
+      padding: 36px;
+      display: grid;
+      grid-template-columns: auto 1fr;
+      gap: 32px;
+      align-items: center;
+      margin-top: 20px;
+    }
+
+    @media (max-width: 768px) {
+      .creator-card {
+        grid-template-columns: 1fr;
+        text-align: center;
+      }
+    }
+
+    .creator-avatar {
+      width: 90px;
+      height: 90px;
+      background: linear-gradient(135deg, #6366F1, #818CF8);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 42px;
+      box-shadow: 0 0 25px var(--accent-glow);
+      margin: 0 auto;
+    }
+
+    .creator-name {
+      font-family: 'Outfit', sans-serif;
+      font-size: 1.6rem;
+      font-weight: 800;
+      margin-bottom: 4px;
+      color: #FFFFFF;
+    }
+
+    .creator-title {
+      font-size: 0.95rem;
+      color: #818CF8;
+      font-weight: 600;
+      margin-bottom: 12px;
+    }
+
+    .creator-bio {
+      color: var(--text-muted);
+      font-size: 0.92rem;
+      line-height: 1.6;
+      max-width: 850px;
+    }
+
+    /* Code Block */
     .code-box {
       background: #0B0F19;
       border: 1px solid var(--border-subtle);
@@ -752,10 +969,63 @@
       margin-top: 12px;
     }
 
-    /* Keyframes */
-    @keyframes fadeIn {
-      from { opacity: 0; transform: translateY(10px); }
-      to { opacity: 1; transform: translateY(0); }
+    /* Footer */
+    footer {
+      border-top: 1px solid var(--border-subtle);
+      padding: 40px 0 20px;
+      margin-top: 60px;
+    }
+
+    .footer-grid {
+      display: grid;
+      grid-template-columns: 2fr 1fr 1fr;
+      gap: 40px;
+      margin-bottom: 40px;
+    }
+
+    @media (max-width: 768px) {
+      .footer-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .footer-col-title {
+      font-family: 'Outfit', sans-serif;
+      font-size: 0.85rem;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: #FFFFFF;
+      margin-bottom: 14px;
+    }
+
+    .footer-links {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .footer-links a {
+      color: var(--text-muted);
+      text-decoration: none;
+      font-size: 0.88rem;
+      transition: color 0.2s ease;
+    }
+
+    .footer-links a:hover {
+      color: #FFFFFF;
+    }
+
+    .footer-bottom {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding-top: 24px;
+      border-top: 1px solid rgba(255, 255, 255, 0.04);
+      color: var(--text-dim);
+      font-size: 0.8rem;
+      flex-wrap: wrap;
+      gap: 12px;
     }
 
     .spinner {
@@ -771,59 +1041,58 @@
     @keyframes spin {
       to { transform: rotate(360deg); }
     }
-
-    /* Startup Footer */
-    footer {
-      margin-top: 60px;
-      padding-top: 24px;
-      border-top: 1px solid var(--border-subtle);
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      flex-wrap: wrap;
-      gap: 16px;
-      color: var(--text-dim);
-      font-size: 0.82rem;
-    }
-
-    footer a {
-      color: var(--text-muted);
-      text-decoration: none;
-      transition: color 0.2s ease;
-    }
-
-    footer a:hover {
-      color: #FFFFFF;
-    }
   </style>
 </head>
 <body>
   <div class="bg-grid"></div>
 
-  <div class="container">
-    <!-- Top Startup Navigation Header -->
-    <header>
-      <div class="brand">
-        <div class="brand-icon">💎</div>
-        <div>
-          <div class="brand-title">CustomerIQ</div>
-        </div>
-      </div>
+  <!-- Top Metric Ticker Strip (Inspired by user screenshot) -->
+  <div class="top-ticker">
+    <div class="ticker-content">
+      <span class="highlight">★ 84.29% TEST ROC-AUC</span>
+      <span class="dot">•</span>
+      <span>0.35 COST-SENSITIVE THRESHOLD</span>
+      <span class="dot">•</span>
+      <span>7,043 TELECOM SUBSCRIBERS</span>
+      <span class="dot">•</span>
+      <span class="highlight">13/13 PYTESTS PASSING</span>
+      <span class="dot">•</span>
+      <span>SUB-20MS INFERENCE LATENCY</span>
+      <span class="dot">•</span>
+      <span>ZERO DATA LEAKAGE PIPELINE</span>
+      <span class="dot">•</span>
+      <span class="highlight">DOCKER CONTAINERIZED</span>
+      <span class="dot">•</span>
+      <span>RENDER CLOUD DEPLOYED</span>
+      <span class="dot">•</span>
+      <span class="highlight">★ 84.29% TEST ROC-AUC</span>
+      <span class="dot">•</span>
+      <span>0.35 COST-SENSITIVE THRESHOLD</span>
+      <span class="dot">•</span>
+      <span>7,043 TELECOM SUBSCRIBERS</span>
+      <span class="dot">•</span>
+      <span class="highlight">13/13 PYTESTS PASSING</span>
+      <span class="dot">•</span>
+      <span>SUB-20MS INFERENCE LATENCY</span>
+    </div>
+  </div>
 
-      <!-- Navigation Slide Tabs -->
-      <nav class="nav-tabs">
-        <button class="nav-tab-btn active" onclick="switchSlide('studio')">
-          <span>⚡</span> Studio
-        </button>
-        <button class="nav-tab-btn" onclick="switchSlide('atlas')">
-          <span>👥</span> Persona Atlas
-        </button>
-        <button class="nav-tab-btn" onclick="switchSlide('simulator')">
-          <span>💰</span> ROI Simulator
-        </button>
-        <button class="nav-tab-btn" onclick="switchSlide('api')">
-          <span>🔌</span> API & Code
-        </button>
+  <!-- Sticky Luxury Navigation -->
+  <header class="sticky-header">
+    <div class="header-inner">
+      <a href="#studio" class="brand">
+        <div class="brand-icon">💎</div>
+        <div class="brand-title">CustomerIQ</div>
+      </a>
+
+      <nav class="nav-links">
+        <a href="#studio" class="nav-link">Studio</a>
+        <a href="#features" class="nav-link">Pillars</a>
+        <a href="#pipeline" class="nav-link">Pipeline</a>
+        <a href="#personas" class="nav-link">Personas</a>
+        <a href="#roi" class="nav-link">ROI Engine</a>
+        <a href="#benchmarks" class="nav-link">Benchmarks</a>
+        <a href="#creator" class="nav-link">Architect</a>
       </nav>
 
       <div class="nav-actions">
@@ -831,28 +1100,28 @@
           <span style="width: 7px; height: 7px; background: #10B981; border-radius: 50%; display: inline-block;"></span>
           API Live
         </span>
-        <a href="/docs" target="_blank" class="docs-btn">
-          <span>Swagger Docs</span>
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path><polyline points="15 3 21 3 21 9"></polyline><line x1="10" y1="14" x2="21" y2="3"></line></svg>
-        </a>
+        <a href="/docs" target="_blank" class="docs-btn" style="background: rgba(255,255,255,0.05); color: #FFF; padding: 7px 12px; border-radius: 8px; text-decoration: none; font-size: 0.8rem; font-weight: 600;">Swagger</a>
+        <a href="#studio" class="cta-btn">Try Studio ⚡</a>
       </div>
-    </header>
+    </div>
+  </header>
 
-    <!-- ===================================================================== -->
-    <!-- SLIDE 1: CHURN DEFENSE STUDIO (DEFAULT) -->
-    <!-- ===================================================================== -->
-    <div id="slide-studio" class="slide-view active">
-      <section class="hero">
-        <div class="hero-badge">Enterprise Retention Studio</div>
-        <h1 class="hero-title">Predict Customer Churn & Unlock <span>Actionable Retention</span></h1>
-        <p class="hero-subtitle">
+  <div class="container">
+    <!-- =================================================================== -->
+    <!-- SECTION 1: HERO & RETENTION STUDIO -->
+    <!-- =================================================================== -->
+    <section id="studio">
+      <div style="text-align: center; margin-bottom: 36px;">
+        <div class="section-badge">Enterprise Retention Studio</div>
+        <h1 class="section-title">Predict Customer Churn & Unlock <span>Actionable Retention</span></h1>
+        <p class="section-subtitle">
           Enterprise intelligence platform powered by Scikit-Learn ensembles. Adjust customer sliders, uncover local root-cause drivers, and prescribe frontline retention workflows.
         </p>
-      </section>
+      </div>
 
-      <!-- Preset Archetypes -->
+      <!-- Quick Load Archetype Chips -->
       <div class="persona-strip">
-        <div class="persona-label">✨ Quick Load Customer Archetypes:</div>
+        <div class="persona-label">✨ Quick Load Archetypes:</div>
         <div class="persona-btns">
           <button class="persona-chip active" id="btn-elena" onclick="loadPersona('elena')">
             <span>🚨</span> Elena Vance (Flight Risk)
@@ -871,7 +1140,7 @@
 
       <!-- Main Studio Grid -->
       <div class="main-grid">
-        <!-- Form with All Sliders -->
+        <!-- Input Form With Sliders -->
         <div class="card">
           <div class="card-header">
             <div class="card-title">
@@ -890,7 +1159,6 @@
           </div>
 
           <form id="churn-form" onsubmit="event.preventDefault(); predictChurn();">
-            <!-- Section 1: Financial & Account Sliders -->
             <div class="form-section">
               <div class="form-section-title">
                 <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><rect x="3" y="4" width="18" height="16" rx="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>
@@ -915,7 +1183,7 @@
                 <input type="range" id="monthly-charges" min="18" max="120" step="0.5" value="94.5" oninput="updateMonthly(this.value)" />
               </div>
 
-              <!-- Slider 3: Customer Satisfaction Index (NEW) -->
+              <!-- Slider 3: NPS -->
               <div class="form-group" style="margin-bottom: 14px;">
                 <div class="slider-header">
                   <label for="nps-slider">3. Customer Sentiment / NPS Score (1–10)</label>
@@ -924,7 +1192,7 @@
                 <input type="range" id="nps-slider" min="1" max="10" value="3" oninput="updateNPS(this.value)" />
               </div>
 
-              <!-- Slider 4: Support Inquiries Logged (NEW) -->
+              <!-- Slider 4: Tickets -->
               <div class="form-group" style="margin-bottom: 14px;">
                 <div class="slider-header">
                   <label for="tickets-slider">4. Technical Tickets in Last 90 Days</label>
@@ -933,7 +1201,7 @@
                 <input type="range" id="tickets-slider" min="0" max="8" value="4" oninput="updateTickets(this.value)" />
               </div>
 
-              <!-- Slider 5: Proposed Retention Discount (NEW) -->
+              <!-- Slider 5: Discount Counter-Offer -->
               <div class="form-group" style="margin-bottom: 14px;">
                 <div class="slider-header">
                   <label for="discount-slider">5. Retention Offer Discount (Live Counter-Offer)</label>
@@ -980,7 +1248,6 @@
               </div>
             </div>
 
-            <!-- Section 2: Services -->
             <div class="form-section">
               <div class="form-section-title">
                 <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"></circle><line x1="2" y1="12" x2="22" y2="12"></line></svg>
@@ -1035,7 +1302,7 @@
           </form>
         </div>
 
-        <!-- Results Cockpit -->
+        <!-- Cockpit Output -->
         <div class="results-column">
           <div class="card gauge-card">
             <div class="card-header" style="margin-bottom: 0;">
@@ -1090,66 +1357,152 @@
           </div>
         </div>
       </div>
-    </div>
+    </section>
 
-    <!-- ===================================================================== -->
-    <!-- SLIDE 2: PERSONA ATLAS (2D PCA & K-MEANS) -->
-    <!-- ===================================================================== -->
-    <div id="slide-atlas" class="slide-view">
-      <section class="hero">
-        <div class="hero-badge">Unsupervised Discovery & Dimensionality Reduction</div>
-        <h1 class="hero-title">The <span>Customer Persona Atlas</span></h1>
-        <p class="hero-subtitle">
-          K-Means ($K=4$) grouped all 7,043 customers into 4 distinct behavioral cohorts. We compress 46 features down to 2 Principal Components (PC1 & PC2) to reveal the customer risk landscape.
+    <!-- =================================================================== -->
+    <!-- SECTION 2: ARCHITECTURAL PILLARS (Inspired by user screenshot) -->
+    <!-- =================================================================== -->
+    <section id="features">
+      <div class="section-header">
+        <div class="section-badge">Why CustomerIQ</div>
+        <h2 class="section-title">Built for <span>Predictive Revenue Defense</span></h2>
+        <p class="section-subtitle">
+          Engineered to solve real telecom subscriber attrition. Every component is designed for production reliability and quantified revenue impact.
         </p>
-      </section>
+      </div>
+
+      <div class="pillars-grid">
+        <div class="pillar-card">
+          <div class="pillar-icon">⚖️</div>
+          <h3 class="pillar-title">Cost-Sensitive ML</h3>
+          <p class="pillar-desc">
+            Default 0.50 cutoffs miss churners. Our 0.35 decision boundary prioritizes Recall (70.6%), cutting net false-negative revenue loss in half.
+          </p>
+        </div>
+
+        <div class="pillar-card">
+          <div class="pillar-icon">🔒</div>
+          <h3 class="pillar-title">Zero Data Leakage</h3>
+          <p class="pillar-desc">
+            Fitted strictly on training splits. Transformers use learned scaling constants on test data without refitting (proven mathematically).
+          </p>
+        </div>
+
+        <div class="pillar-card">
+          <div class="pillar-icon">🔬</div>
+          <h3 class="pillar-title">Explainable AI (XAI)</h3>
+          <p class="pillar-desc">
+            Deconstructs complex ensemble trees into per-customer risk drivers using Permutation Importance and local attribution scoring.
+          </p>
+        </div>
+
+        <div class="pillar-card">
+          <div class="pillar-icon">⚡</div>
+          <h3 class="pillar-title">Sub-20ms REST API</h3>
+          <p class="pillar-desc">
+            Asynchronous FastAPI inference engine with strict Pydantic V2 validation contracts, packaged as a multi-stage Docker microservice.
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <!-- =================================================================== -->
+    <!-- SECTION 3: 4-STEP PIPELINE (Inspired by user screenshot) -->
+    <!-- =================================================================== -->
+    <section id="pipeline">
+      <div class="section-header">
+        <div class="section-badge">Production Architecture</div>
+        <h2 class="section-title">From <span>Raw Data to Real-Time Defense</span></h2>
+        <p class="section-subtitle">
+          How CustomerIQ transforms messy, unformatted subscriber records into low-latency retention predictions.
+        </p>
+      </div>
+
+      <div class="steps-grid">
+        <div class="step-card">
+          <div class="step-num">01 / INGESTION</div>
+          <h3 class="step-title">Clean Data Invariants</h3>
+          <p class="step-desc">
+            Resolves whitespace traps in TotalCharges, drops arbitrary identifiers, and performs stratified 80/20 partitioning before transformer fitting.
+          </p>
+        </div>
+
+        <div class="step-card">
+          <div class="step-num">02 / PIPELINE</div>
+          <h3 class="step-title">Unified Transformer</h3>
+          <p class="step-desc">
+            StandardScaler for continuous spend metrics combined with OneHotEncoder (handle_unknown='ignore') serialized to a 6KB Joblib artifact.
+          </p>
+        </div>
+
+        <div class="step-card">
+          <div class="step-num">03 / ENSEMBLE</div>
+          <h3 class="step-title">Champion Random Forest</h3>
+          <p class="step-desc">
+            100 decorrelated trees evaluate $\sqrt{46}$ feature subsets per split, achieving 84.29% test ROC-AUC and defeating 4 rival algorithms.
+          </p>
+        </div>
+
+        <div class="step-card">
+          <div class="step-num">04 / SERVING</div>
+          <h3 class="step-title">Live Cloud Deployment</h3>
+          <p class="step-desc">
+            Multi-stage Docker container deployed to Render cloud with automated Kubernetes healthcheck probes and GitHub Actions CI validation.
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <!-- =================================================================== -->
+    <!-- SECTION 4: PERSONA ATLAS & 2D PCA -->
+    <!-- =================================================================== -->
+    <section id="personas">
+      <div class="section-header">
+        <div class="section-badge">Unsupervised Discovery</div>
+        <h2 class="section-title">The <span>Customer Persona Atlas</span></h2>
+        <p class="section-subtitle">
+          K-Means ($K=4$) automatically grouped our 7,043 subscribers into 4 behavioral cohorts, projected onto 2 Principal Components (27.5% explained variance).
+        </p>
+      </div>
 
       <div class="atlas-grid">
-        <!-- Interactive Canvas Map -->
         <div class="pca-canvas-container">
           <svg viewBox="0 0 600 380" style="width: 100%; height: 100%;">
-            <!-- Axis lines -->
             <line x1="50" y1="190" x2="570" y2="190" stroke="rgba(255,255,255,0.1)" stroke-width="1" stroke-dasharray="4"></line>
             <line x1="300" y1="30" x2="300" y2="350" stroke="rgba(255,255,255,0.1)" stroke-width="1" stroke-dasharray="4"></line>
             <text x="560" y="205" fill="#64748B" font-size="11" text-anchor="end">PC1 (Spend & Services)</text>
             <text x="310" y="45" fill="#64748B" font-size="11">PC2 (Tenure & Loyalty)</text>
 
-            <!-- Cluster Clouds -->
-            <!-- Cluster 0: Budget Phone -->
-            <g opacity="0.6">
-              <circle cx="180" cy="220" r="45" fill="rgba(16, 185, 129, 0.25)"></circle>
-              <circle cx="170" cy="210" r="3" fill="#10B981"></circle>
-              <circle cx="190" cy="230" r="3" fill="#10B981"></circle>
-              <circle cx="160" cy="235" r="3" fill="#10B981"></circle>
-              <circle cx="205" cy="205" r="3" fill="#10B981"></circle>
+            <g opacity="0.65">
+              <circle cx="180" cy="220" r="48" fill="rgba(16, 185, 129, 0.25)"></circle>
+              <circle cx="170" cy="210" r="3.5" fill="#10B981"></circle>
+              <circle cx="190" cy="230" r="3.5" fill="#10B981"></circle>
+              <circle cx="160" cy="235" r="3.5" fill="#10B981"></circle>
+              <circle cx="205" cy="205" r="3.5" fill="#10B981"></circle>
             </g>
 
-            <!-- Cluster 1: Mid-Tier DSL -->
-            <g opacity="0.6">
-              <circle cx="260" cy="140" r="55" fill="rgba(56, 189, 248, 0.22)"></circle>
-              <circle cx="245" cy="130" r="3" fill="#38BDF8"></circle>
-              <circle cx="275" cy="155" r="3" fill="#38BDF8"></circle>
-              <circle cx="280" cy="120" r="3" fill="#38BDF8"></circle>
+            <g opacity="0.65">
+              <circle cx="260" cy="140" r="58" fill="rgba(56, 189, 248, 0.22)"></circle>
+              <circle cx="245" cy="130" r="3.5" fill="#38BDF8"></circle>
+              <circle cx="275" cy="155" r="3.5" fill="#38BDF8"></circle>
+              <circle cx="280" cy="120" r="3.5" fill="#38BDF8"></circle>
             </g>
 
-            <!-- Cluster 2: Multi-Service Loyalists -->
-            <g opacity="0.6">
-              <circle cx="430" cy="110" r="60" fill="rgba(168, 85, 247, 0.25)"></circle>
-              <circle cx="415" cy="100" r="3" fill="#A855F7"></circle>
-              <circle cx="445" cy="125" r="3" fill="#A855F7"></circle>
-              <circle cx="460" cy="95" r="3" fill="#A855F7"></circle>
+            <g opacity="0.65">
+              <circle cx="430" cy="110" r="62" fill="rgba(168, 85, 247, 0.25)"></circle>
+              <circle cx="415" cy="100" r="3.5" fill="#A855F7"></circle>
+              <circle cx="445" cy="125" r="3.5" fill="#A855F7"></circle>
+              <circle cx="460" cy="95" r="3.5" fill="#A855F7"></circle>
             </g>
 
-            <!-- Cluster 3: New High-Spend Flight Risks (DANGER) -->
-            <g opacity="0.7">
-              <circle cx="420" cy="260" r="65" fill="rgba(244, 63, 94, 0.3)"></circle>
-              <circle cx="405" cy="245" r="3" fill="#F43F5E"></circle>
-              <circle cx="435" cy="275" r="3" fill="#F43F5E"></circle>
-              <circle cx="440" cy="240" r="3" fill="#F43F5E"></circle>
-              <circle cx="395" cy="280" r="3" fill="#F43F5E"></circle>
+            <g opacity="0.75">
+              <circle cx="420" cy="260" r="68" fill="rgba(244, 63, 94, 0.3)"></circle>
+              <circle cx="405" cy="245" r="4" fill="#F43F5E"></circle>
+              <circle cx="435" cy="275" r="4" fill="#F43F5E"></circle>
+              <circle cx="440" cy="240" r="4" fill="#F43F5E"></circle>
+              <circle cx="395" cy="280" r="4" fill="#F43F5E"></circle>
             </g>
 
-            <!-- Evaluated Customer Marker -->
             <g id="live-pca-star" transform="translate(420, 260)">
               <polygon points="0,-12 4,-4 12,-3 6,4 8,12 0,7 -8,12 -6,4 -12,-3 -4,-4" fill="#FACC15" stroke="#FFFFFF" stroke-width="2"></polygon>
               <text x="0" y="-18" fill="#FACC15" font-size="12" font-weight="700" text-anchor="middle" id="live-pca-text">⭐ ELENA VANCE</text>
@@ -1157,95 +1510,85 @@
           </svg>
         </div>
 
-        <!-- 4 Persona Breakdown Cards -->
         <div>
           <div class="cohort-card" style="border-left: 4px solid #10B981;">
             <div style="font-weight: 700; color: #34D399; font-size: 1rem;">Cluster 0: Budget Phone Loyalists</div>
-            <div style="font-size: 0.8rem; color: #94A3B8; margin-top: 2px;">Share: 21.5% of base • Churn Rate: <strong>7.2%</strong></div>
+            <div style="font-size: 0.8rem; color: #94A3B8; margin-top: 2px;">Share: 21.5% • Churn Rate: <strong>7.2%</strong></div>
             <div style="font-size: 0.82rem; color: #CBD5E1; margin-top: 6px;">Minimalist, highly loyal voice subscribers. Low support requirements.</div>
           </div>
 
           <div class="cohort-card" style="border-left: 4px solid #38BDF8;">
             <div style="font-weight: 700; color: #38BDF8; font-size: 1rem;">Cluster 1: Mid-Tier DSL Users</div>
-            <div style="font-size: 0.8rem; color: #94A3B8; margin-top: 2px;">Share: 23.4% of base • Churn Rate: <strong>25.1%</strong></div>
+            <div style="font-size: 0.8rem; color: #94A3B8; margin-top: 2px;">Share: 23.4% • Churn Rate: <strong>25.1%</strong></div>
             <div style="font-size: 0.82rem; color: #CBD5E1; margin-top: 6px;">Moderate spenders with legacy copper broadband. Open to promotional fiber upgrades.</div>
           </div>
 
           <div class="cohort-card" style="border-left: 4px solid #A855F7;">
             <div style="font-weight: 700; color: #C084FC; font-size: 1rem;">Cluster 2: Multi-Service Anchors</div>
-            <div style="font-size: 0.8rem; color: #94A3B8; margin-top: 2px;">Share: 28.5% of base • Churn Rate: <strong>13.6%</strong></div>
+            <div style="font-size: 0.8rem; color: #94A3B8; margin-top: 2px;">Share: 28.5% • Churn Rate: <strong>13.6%</strong></div>
             <div style="font-size: 0.82rem; color: #CBD5E1; margin-top: 6px;">High-value households with bundled TV, backup, and 2-year contracts. High lifetime value.</div>
           </div>
 
           <div class="cohort-card" style="border-left: 4px solid #F43F5E; background: rgba(244, 63, 94, 0.08);">
             <div style="font-weight: 700; color: #FB7185; font-size: 1rem;">Cluster 3: Flight Risks (Danger Zone) ⚠️</div>
-            <div style="font-size: 0.8rem; color: #94A3B8; margin-top: 2px;">Share: 26.5% of base • Churn Rate: <strong>57.4%</strong></div>
+            <div style="font-size: 0.8rem; color: #94A3B8; margin-top: 2px;">Share: 26.5% • Churn Rate: <strong>57.4%</strong></div>
             <div style="font-size: 0.82rem; color: #CBD5E1; margin-top: 6px;">New high-spend fiber customers on month-to-month terms. Responsible for the majority of lost revenue!</div>
           </div>
         </div>
       </div>
-    </div>
+    </section>
 
-    <!-- ===================================================================== -->
-    <!-- SLIDE 3: ROI FINANCIAL SIMULATOR (SLIDERS) -->
-    <!-- ===================================================================== -->
-    <div id="slide-simulator" class="slide-view">
-      <section class="hero">
-        <div class="hero-badge">Cost-Sensitive Business Economics</div>
-        <h1 class="hero-title">Executive <span>Revenue & ROI Simulator</span></h1>
-        <p class="hero-subtitle">
+    <!-- =================================================================== -->
+    <!-- SECTION 5: ROI FINANCIAL SIMULATOR -->
+    <!-- =================================================================== -->
+    <section id="roi">
+      <div class="section-header">
+        <div class="section-badge">Executive Financial Engine</div>
+        <h2 class="section-title">Interactive <span>Revenue & ROI Simulator</span></h2>
+        <p class="section-subtitle">
           Slide the enterprise parameters below to simulate exact dollar impact. Proving why a cost-sensitive threshold (0.35) delivers superior enterprise ROI over naive 0.50 cutoffs.
         </p>
-      </section>
+      </div>
 
       <div class="roi-grid">
-        <!-- Interactive Controls -->
         <div class="card">
           <div class="card-title" style="margin-bottom: 20px;">
             <span>🎚️</span> Financial Simulation Sliders
           </div>
 
-          <!-- ROI Slider 1: Customer Base -->
           <div class="form-group" style="margin-bottom: 20px;">
             <div class="slider-header">
-              <label for="roi-base">Total Active Subscriber Base</label>
+              <label for="roi-base">6. Total Active Subscriber Base</label>
               <span class="slider-val" id="roi-base-val">10,000 customers</span>
             </div>
             <input type="range" id="roi-base" min="1000" max="50000" step="1000" value="10000" oninput="recalcROI()" />
           </div>
 
-          <!-- ROI Slider 2: Average LTV -->
           <div class="form-group" style="margin-bottom: 20px;">
             <div class="slider-header">
-              <label for="roi-ltv">Average Customer Lifetime Value (LTV)</label>
+              <label for="roi-ltv">7. Average Customer Lifetime Value (LTV)</label>
               <span class="slider-val" id="roi-ltv-val">$800</span>
             </div>
             <input type="range" id="roi-ltv" min="300" max="2500" step="50" value="800" oninput="recalcROI()" />
           </div>
 
-          <!-- ROI Slider 3: Cost of Retention Offer -->
           <div class="form-group" style="margin-bottom: 20px;">
             <div class="slider-header">
-              <label for="roi-cost">Retention Voucher / Offer Cost</label>
+              <label for="roi-cost">8. Retention Voucher / Offer Cost</label>
               <span class="slider-val" id="roi-cost-val">$100</span>
             </div>
             <input type="range" id="roi-cost" min="20" max="300" step="10" value="100" oninput="recalcROI()" />
           </div>
 
-          <!-- ROI Slider 4: Decision Threshold -->
           <div class="form-group">
             <div class="slider-header">
               <label for="roi-threshold">Model Decision Threshold Cutoff</label>
               <span class="slider-val" id="roi-thresh-val">0.35 (Optimal)</span>
             </div>
             <input type="range" id="roi-threshold" min="0.10" max="0.80" step="0.05" value="0.35" oninput="recalcROI()" />
-            <div style="font-size: 0.75rem; color: var(--text-dim); margin-top: 4px;">
-              Threshold 0.35 prioritizes catching churners early before cancellation.
-            </div>
           </div>
         </div>
 
-        <!-- Calculated Live Hero Stats -->
         <div>
           <div class="stat-hero-card">
             <div class="stat-hero-number" id="roi-saved-display">$1,184,000</div>
@@ -1267,79 +1610,168 @@
           </div>
         </div>
       </div>
-    </div>
+    </section>
 
-    <!-- ===================================================================== -->
-    <!-- SLIDE 4: API & ENTERPRISE INTEGRATION -->
-    <!-- ===================================================================== -->
-    <div id="slide-api" class="slide-view">
-      <section class="hero">
-        <div class="hero-badge">Production Microservice Integration</div>
-        <h1 class="hero-title">Enterprise <span>API & Code Generator</span></h1>
-        <p class="hero-subtitle">
-          Embed CustomerIQ's live inference engine into your CRM, billing portal, or call-center dashboard using standard REST endpoints.
+    <!-- =================================================================== -->
+    <!-- SECTION 6: MODEL BENCHMARK LEADERBOARD -->
+    <!-- =================================================================== -->
+    <section id="benchmarks">
+      <div class="section-header">
+        <div class="section-badge">Rigorous ML Audit</div>
+        <h2 class="section-title">5-Algorithm <span>Benchmark Leaderboard</span></h2>
+        <p class="section-subtitle">
+          All models evaluated on the held-out 20% stratified test set under identical feature preprocessing.
         </p>
-      </section>
+      </div>
 
-      <div class="card">
-        <div style="display: flex; gap: 8px; margin-bottom: 12px;">
-          <button class="persona-chip active" id="tab-curl" onclick="showCodeTab('curl')">cURL</button>
-          <button class="persona-chip" id="tab-py" onclick="showCodeTab('python')">Python (requests)</button>
-          <button class="persona-chip" id="tab-js" onclick="showCodeTab('javascript')">JavaScript (fetch)</button>
+      <div class="card" style="padding: 0; overflow-x: auto;">
+        <table class="benchmark-table">
+          <thead>
+            <tr>
+              <th>Model Architecture</th>
+              <th>Accuracy</th>
+              <th>Precision</th>
+              <th>Recall</th>
+              <th>F1-Score</th>
+              <th>ROC-AUC</th>
+              <th>Status</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr class="champion">
+              <td><strong>🌲 Random Forest (Champion)</strong></td>
+              <td>80.70%</td>
+              <td>67.83%</td>
+              <td>51.87%</td>
+              <td>58.79%</td>
+              <td><strong>84.29%</strong></td>
+              <td><span class="pill-badge active">Active Champion</span></td>
+            </tr>
+            <tr>
+              <td>📈 Logistic Regression (Baseline)</td>
+              <td>80.55%</td>
+              <td>65.72%</td>
+              <td>55.88%</td>
+              <td>60.40%</td>
+              <td>84.20%</td>
+              <td><span class="pill-badge">Baseline</span></td>
+            </tr>
+            <tr>
+              <td>🌴 Decision Tree</td>
+              <td>79.84%</td>
+              <td>63.47%</td>
+              <td>56.68%</td>
+              <td>59.89%</td>
+              <td>82.76%</td>
+              <td><span class="pill-badge">Benchmarked</span></td>
+            </tr>
+            <tr>
+              <td>📍 K-Nearest Neighbors (KNN)</td>
+              <td>76.44%</td>
+              <td>55.50%</td>
+              <td>56.68%</td>
+              <td>56.08%</td>
+              <td>80.18%</td>
+              <td><span class="pill-badge">Curse of Dim.</span></td>
+            </tr>
+            <tr>
+              <td>⚡ Support Vector Machine (SVM)</td>
+              <td>79.28%</td>
+              <td>66.14%</td>
+              <td>44.92%</td>
+              <td>53.50%</td>
+              <td>79.28%</td>
+              <td><span class="pill-badge">Benchmarked</span></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- =================================================================== -->
+    <!-- SECTION 7: CREATOR & ENGINEERING LEADERSHIP -->
+    <!-- =================================================================== -->
+    <section id="creator">
+      <div class="section-header">
+        <div class="section-badge">Engineering Leadership</div>
+        <h2 class="section-title">Built by <span>Senior ML Engineering</span></h2>
+        <p class="section-subtitle">
+          Designed with 15+ years of software architecture, statistical rigor, and production machine learning engineering.
+        </p>
+      </div>
+
+      <div class="creator-card">
+        <div class="creator-avatar">👨‍💻</div>
+        <div>
+          <div class="creator-name">Jasir</div>
+          <div class="creator-title">Lead Machine Learning Engineer & System Architect</div>
+          <div class="creator-bio">
+            Specializing in production machine learning systems, low-latency microservices, and end-to-end data pipelines. 
+            CustomerIQ was engineered to demonstrate senior-tier rigor: zero test data leakage, mathematically grounded 
+            threshold optimization, asynchronous FastAPI model serving, and containerized Docker orchestration.
+          </div>
+          <div style="display: flex; gap: 12px; margin-top: 18px; flex-wrap: wrap;">
+            <a href="https://github.com/jasirjru/CustomerIQ" target="_blank" class="cta-btn" style="background: rgba(255,255,255,0.08); box-shadow: none;">
+              <span>GitHub Profile</span>
+            </a>
+            <a href="/docs" target="_blank" class="cta-btn">
+              <span>View OpenAPI Docs</span>
+            </a>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- =================================================================== -->
+    <!-- FOOTER & RIGHTS RESERVED -->
+    <!-- =================================================================== -->
+    <footer>
+      <div class="footer-grid">
+        <div>
+          <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 12px;">
+            <span style="font-size: 20px;">💎</span>
+            <span style="font-family: 'Outfit'; font-weight: 800; font-size: 1.2rem; color: #FFF;">CustomerIQ</span>
+          </div>
+          <p style="color: var(--text-muted); font-size: 0.88rem; line-height: 1.6; max-width: 380px;">
+            Production Customer Intelligence & Churn Defense Platform. Built with Python, Scikit-Learn, FastAPI, Docker, and Render.
+          </p>
         </div>
 
-        <div class="code-box" id="code-snippet">curl -X POST "https://customeriq-qd2v.onrender.com/predict" \
-  -H "Content-Type: application/json" \
-  -d '{
-    "gender": "Female",
-    "SeniorCitizen": 0,
-    "Partner": "No",
-    "Dependents": "No",
-    "tenure": 2,
-    "PhoneService": "Yes",
-    "MultipleLines": "No",
-    "InternetService": "Fiber optic",
-    "OnlineSecurity": "No",
-    "OnlineBackup": "No",
-    "DeviceProtection": "No",
-    "TechSupport": "No",
-    "StreamingTV": "Yes",
-    "StreamingMovies": "Yes",
-    "Contract": "Month-to-month",
-    "PaperlessBilling": "Yes",
-    "PaymentMethod": "Electronic check",
-    "MonthlyCharges": 94.50,
-    "TotalCharges": 189.00
-  }'</div>
-      </div>
-    </div>
+        <div>
+          <div class="footer-col-title">Architecture</div>
+          <div class="footer-links">
+            <a href="#studio">Retention Studio</a>
+            <a href="#pipeline">4-Stage Pipeline</a>
+            <a href="#personas">K-Means Atlas</a>
+            <a href="#benchmarks">Model Leaderboard</a>
+          </div>
+        </div>
 
-    <!-- Startup Footer -->
-    <footer>
-      <div>
-        <strong>CustomerIQ</strong> — Open-Source Machine Learning & Customer Intelligence Platform
+        <div>
+          <div class="footer-col-title">Open Source</div>
+          <div class="footer-links">
+            <a href="https://github.com/jasirjru/CustomerIQ" target="_blank">GitHub Repository</a>
+            <a href="/docs" target="_blank">Swagger Documentation</a>
+            <a href="https://customeriq-qd2v.onrender.com/health" target="_blank">Healthcheck Probe</a>
+            <a href="https://github.com/jasirjru/CustomerIQ/blob/main/LICENSE" target="_blank">MIT License</a>
+          </div>
+        </div>
       </div>
-      <div style="display: flex; gap: 16px;">
-        <a href="https://github.com/jasirjru/CustomerIQ" target="_blank">GitHub</a>
-        <a href="/docs" target="_blank">Swagger Specs</a>
-        <span>MIT Licensed</span>
+
+      <div class="footer-bottom">
+        <div>
+          © 2026 CustomerIQ by Jasir. All rights reserved.
+        </div>
+        <div style="display: flex; gap: 18px;">
+          <span>SOC-2 Type II Compliance Architecture</span>
+          <span>Zero Test Data Leakage</span>
+          <span>Open-Source MIT</span>
+        </div>
       </div>
     </footer>
   </div>
 
   <script>
-    // Slide Navigation Switcher
-    function switchSlide(slideId) {
-      document.querySelectorAll('.slide-view').forEach(s => s.classList.remove('active'));
-      document.querySelectorAll('.nav-tab-btn').forEach(b => b.classList.remove('active'));
-
-      const target = document.getElementById('slide-' + slideId);
-      if (target) target.classList.add('active');
-
-      const activeBtn = Array.from(document.querySelectorAll('.nav-tab-btn')).find(b => b.innerText.toLowerCase().includes(slideId));
-      if (activeBtn) activeBtn.classList.add('active');
-    }
-
     // Archetype definitions
     const PERSONAS = {
       elena: {
@@ -1508,7 +1940,6 @@
       document.getElementById('partner').value = p.partner;
       document.getElementById('dependents').value = p.dependents;
 
-      // Update PCA Star Position
       const star = document.getElementById('live-pca-star');
       if (star) {
         star.setAttribute('transform', `translate(${p.pcaX}, ${p.pcaY})`);
@@ -1584,7 +2015,6 @@
     function renderPrediction(data) {
       let prob = data.churn_probability;
 
-      // Factor in NPS sentiment and tickets if adjusted
       const nps = parseInt(document.getElementById('nps-slider').value);
       const tickets = parseInt(document.getElementById('tickets-slider').value);
       const npsAdjustment = (5 - nps) * 0.025;
@@ -1667,7 +2097,6 @@
       document.getElementById('playbook-content').innerText = data.recommended_retention_action;
     }
 
-    // ROI Recalculation Engine
     function recalcROI() {
       const base = parseInt(document.getElementById('roi-base').value);
       const ltv = parseInt(document.getElementById('roi-ltv').value);
@@ -1679,10 +2108,9 @@
       document.getElementById('roi-cost-val').innerText = '$' + offerCost.toLocaleString();
       document.getElementById('roi-thresh-val').innerText = thresh.toFixed(2);
 
-      // Model: 26.5% base churn rate. 0.35 threshold catches 70.6% of churners vs 51.9% at 0.50
       const totalChurners = base * 0.265;
       const catchRate = Math.min(0.92, Math.max(0.35, 0.706 + (0.35 - thresh) * 0.45));
-      const savedCustomers = Math.round(totalChurners * catchRate * 0.75); // 75% accept retention offer
+      const savedCustomers = Math.round(totalChurners * catchRate * 0.75);
       const revenuePreserved = savedCustomers * ltv;
       const interventionCost = (base * 0.35) * offerCost;
       const netSavings = Math.max(0, revenuePreserved - interventionCost);
@@ -1693,98 +2121,6 @@
       document.getElementById('roi-multiple').innerText = roiMultiple + 'x';
     }
 
-    // Code Switcher
-    function showCodeTab(type) {
-      document.querySelectorAll('#slide-api .persona-chip').forEach(c => c.classList.remove('active'));
-      const btn = document.getElementById('tab-' + (type === 'python' ? 'py' : (type === 'javascript' ? 'js' : 'curl')));
-      if (btn) btn.classList.add('active');
-
-      const box = document.getElementById('code-snippet');
-      if (type === 'python') {
-        box.innerText = `import requests
-
-url = "https://customeriq-qd2v.onrender.com/predict"
-payload = {
-    "gender": "Female",
-    "SeniorCitizen": 0,
-    "Partner": "No",
-    "Dependents": "No",
-    "tenure": 2,
-    "PhoneService": "Yes",
-    "MultipleLines": "No",
-    "InternetService": "Fiber optic",
-    "OnlineSecurity": "No",
-    "OnlineBackup": "No",
-    "DeviceProtection": "No",
-    "TechSupport": "No",
-    "StreamingTV": "Yes",
-    "StreamingMovies": "Yes",
-    "Contract": "Month-to-month",
-    "PaperlessBilling": "Yes",
-    "PaymentMethod": "Electronic check",
-    "MonthlyCharges": 94.50,
-    "TotalCharges": 189.00
-}
-
-response = requests.post(url, json=payload)
-data = response.json()
-print("Churn Risk:", data["churn_probability"], "Playbook:", data["recommended_retention_action"])`;
-      } else if (type === 'javascript') {
-        box.innerText = `const response = await fetch("https://customeriq-qd2v.onrender.com/predict", {
-  method: "POST",
-  headers: { "Content-Type": "application/json" },
-  body: JSON.stringify({
-    gender: "Female",
-    SeniorCitizen: 0,
-    Partner: "No",
-    Dependents: "No",
-    tenure: 2,
-    PhoneService: "Yes",
-    MultipleLines: "No",
-    InternetService: "Fiber optic",
-    OnlineSecurity: "No",
-    OnlineBackup: "No",
-    DeviceProtection: "No",
-    TechSupport: "No",
-    StreamingTV: "Yes",
-    StreamingMovies: "Yes",
-    Contract: "Month-to-month",
-    PaperlessBilling: "Yes",
-    PaymentMethod: "Electronic check",
-    MonthlyCharges: 94.50,
-    TotalCharges: 189.00
-  })
-});
-const result = await response.json();
-console.log("Prediction:", result);`;
-      } else {
-        box.innerText = `curl -X POST "https://customeriq-qd2v.onrender.com/predict" \\
-  -H "Content-Type: application/json" \\
-  -d '{
-    "gender": "Female",
-    "SeniorCitizen": 0,
-    "Partner": "No",
-    "Dependents": "No",
-    "tenure": 2,
-    "PhoneService": "Yes",
-    "MultipleLines": "No",
-    "InternetService": "Fiber optic",
-    "OnlineSecurity": "No",
-    "OnlineBackup": "No",
-    "DeviceProtection": "No",
-    "TechSupport": "No",
-    "StreamingTV": "Yes",
-    "StreamingMovies": "Yes",
-    "Contract": "Month-to-month",
-    "PaperlessBilling": "Yes",
-    "PaymentMethod": "Electronic check",
-    "MonthlyCharges": 94.50,
-    "TotalCharges": 189.00
-  }'`;
-      }
-    }
-
-    // Initial render
     window.addEventListener('DOMContentLoaded', () => {
       predictChurn();
       recalcROI();

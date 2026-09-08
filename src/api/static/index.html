@@ -1,0 +1,1217 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>CustomerIQ — Customer Intelligence & Churn Defense Studio</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg-base: #06090F;
+      --bg-surface: #0E131F;
+      --bg-surface-elevated: #151D2E;
+      --border-subtle: rgba(255, 255, 255, 0.08);
+      --border-glow: rgba(99, 102, 241, 0.35);
+      --accent-primary: #6366F1;
+      --accent-primary-hover: #4F46E5;
+      --accent-glow: rgba(99, 102, 241, 0.25);
+      --emerald: #10B981;
+      --emerald-glow: rgba(16, 185, 129, 0.2);
+      --amber: #F59E0B;
+      --amber-glow: rgba(245, 158, 11, 0.2);
+      --rose: #F43F5E;
+      --rose-glow: rgba(244, 63, 94, 0.25);
+      --text-main: #F8FAFC;
+      --text-muted: #94A3B8;
+      --text-dim: #64748B;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      background-color: var(--bg-base);
+      background-image: 
+        radial-gradient(circle at 15% 15%, rgba(99, 102, 241, 0.12) 0%, transparent 40%),
+        radial-gradient(circle at 85% 25%, rgba(16, 185, 129, 0.08) 0%, transparent 45%),
+        radial-gradient(circle at 50% 85%, rgba(244, 63, 94, 0.06) 0%, transparent 50%);
+      color: var(--text-main);
+      font-family: 'Plus Jakarta Sans', -apple-system, sans-serif;
+      min-height: 100vh;
+      line-height: 1.5;
+      overflow-x: hidden;
+    }
+
+    /* Ambient noise & grid lines */
+    .bg-grid {
+      position: fixed;
+      inset: 0;
+      background-size: 40px 40px;
+      background-image: 
+        linear-gradient(to right, rgba(255, 255, 255, 0.015) 1px, transparent 1px),
+        linear-gradient(to bottom, rgba(255, 255, 255, 0.015) 1px, transparent 1px);
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    .container {
+      max-width: 1280px;
+      margin: 0 auto;
+      padding: 32px 24px 80px;
+      position: relative;
+      z-index: 1;
+    }
+
+    /* Header Nav */
+    header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding-bottom: 28px;
+      border-bottom: 1px solid var(--border-subtle);
+      margin-bottom: 36px;
+      animation: fadeIn 0.6s ease-out;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+    }
+
+    .brand-icon {
+      width: 44px;
+      height: 44px;
+      background: linear-gradient(135deg, #6366F1 0%, #4338CA 100%);
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 22px;
+      box-shadow: 0 0 20px var(--accent-glow);
+    }
+
+    .brand-title {
+      font-family: 'Outfit', sans-serif;
+      font-size: 1.6rem;
+      font-weight: 800;
+      letter-spacing: -0.02em;
+      background: linear-gradient(135deg, #FFFFFF 30%, #CBD5E1 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .nav-actions {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .pill-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 6px 14px;
+      border-radius: 9999px;
+      font-size: 0.8rem;
+      font-weight: 600;
+      border: 1px solid var(--border-subtle);
+      background: rgba(255, 255, 255, 0.03);
+      color: var(--text-muted);
+    }
+
+    .pill-badge.active {
+      border-color: rgba(16, 185, 129, 0.4);
+      background: rgba(16, 185, 129, 0.1);
+      color: #34D399;
+    }
+
+    .docs-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 16px;
+      border-radius: 10px;
+      font-size: 0.85rem;
+      font-weight: 600;
+      background: var(--bg-surface-elevated);
+      color: var(--text-main);
+      border: 1px solid var(--border-subtle);
+      text-decoration: none;
+      transition: all 0.2s ease;
+    }
+
+    .docs-btn:hover {
+      border-color: var(--accent-primary);
+      box-shadow: 0 0 15px var(--accent-glow);
+      transform: translateY(-1px);
+    }
+
+    /* Hero Banner */
+    .hero {
+      margin-bottom: 36px;
+      animation: fadeInUp 0.7s ease-out;
+    }
+
+    .hero-title {
+      font-family: 'Outfit', sans-serif;
+      font-size: 2.5rem;
+      font-weight: 800;
+      line-height: 1.15;
+      letter-spacing: -0.03em;
+      margin-bottom: 12px;
+    }
+
+    .hero-title span {
+      background: linear-gradient(135deg, #818CF8 0%, #C084FC 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .hero-subtitle {
+      color: var(--text-muted);
+      font-size: 1.05rem;
+      max-width: 780px;
+      font-weight: 400;
+    }
+
+    /* Persona Selector Strip */
+    .persona-strip {
+      background: var(--bg-surface);
+      border: 1px solid var(--border-subtle);
+      border-radius: 16px;
+      padding: 16px 20px;
+      margin-bottom: 32px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 14px;
+      animation: fadeInUp 0.8s ease-out;
+    }
+
+    .persona-label {
+      font-size: 0.85rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      color: var(--text-dim);
+    }
+
+    .persona-btns {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    .persona-chip {
+      background: var(--bg-surface-elevated);
+      border: 1px solid var(--border-subtle);
+      color: var(--text-muted);
+      padding: 8px 16px;
+      border-radius: 10px;
+      font-size: 0.88rem;
+      font-weight: 600;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    .persona-chip:hover {
+      border-color: var(--accent-primary);
+      color: var(--text-main);
+      transform: translateY(-2px);
+    }
+
+    .persona-chip.active {
+      background: linear-gradient(135deg, rgba(99, 102, 241, 0.25) 0%, rgba(67, 56, 202, 0.35) 100%);
+      border-color: #818CF8;
+      color: #FFFFFF;
+      box-shadow: 0 0 20px var(--accent-glow);
+    }
+
+    /* Main Grid Layout */
+    .main-grid {
+      display: grid;
+      grid-template-columns: 1.15fr 1fr;
+      gap: 32px;
+      align-items: start;
+    }
+
+    @media (max-width: 1024px) {
+      .main-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    /* Glass Cards */
+    .card {
+      background: var(--bg-surface);
+      border: 1px solid var(--border-subtle);
+      border-radius: 20px;
+      padding: 28px;
+      backdrop-filter: blur(16px);
+      box-shadow: 0 20px 40px -15px rgba(0, 0, 0, 0.4);
+      position: relative;
+      overflow: hidden;
+      transition: border-color 0.3s ease;
+    }
+
+    .card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.12), transparent);
+    }
+
+    .card-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 22px;
+    }
+
+    .card-title {
+      font-family: 'Outfit', sans-serif;
+      font-size: 1.25rem;
+      font-weight: 700;
+      letter-spacing: -0.01em;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    /* Form Fields */
+    .form-section {
+      margin-bottom: 24px;
+    }
+
+    .form-section-title {
+      font-size: 0.8rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--accent-primary);
+      margin-bottom: 14px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .form-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+      margin-bottom: 14px;
+    }
+
+    @media (max-width: 640px) {
+      .form-row {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .form-group {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    label {
+      font-size: 0.82rem;
+      font-weight: 600;
+      color: var(--text-muted);
+    }
+
+    .slider-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .slider-val {
+      font-family: 'Outfit', sans-serif;
+      font-weight: 700;
+      font-size: 0.95rem;
+      color: #818CF8;
+    }
+
+    input[type="range"] {
+      width: 100%;
+      height: 6px;
+      border-radius: 9999px;
+      background: var(--bg-surface-elevated);
+      outline: none;
+      -webkit-appearance: none;
+      appearance: none;
+      cursor: pointer;
+    }
+
+    input[type="range"]::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      appearance: none;
+      width: 18px;
+      height: 18px;
+      border-radius: 50%;
+      background: #818CF8;
+      border: 2px solid #FFFFFF;
+      box-shadow: 0 0 10px var(--accent-glow);
+      cursor: pointer;
+      transition: transform 0.15s ease;
+    }
+
+    input[type="range"]::-webkit-slider-thumb:hover {
+      transform: scale(1.2);
+    }
+
+    select {
+      width: 100%;
+      background: var(--bg-surface-elevated);
+      border: 1px solid var(--border-subtle);
+      color: var(--text-main);
+      padding: 10px 14px;
+      border-radius: 10px;
+      font-family: inherit;
+      font-size: 0.88rem;
+      font-weight: 500;
+      outline: none;
+      cursor: pointer;
+      transition: border-color 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    select:focus {
+      border-color: var(--accent-primary);
+      box-shadow: 0 0 0 3px var(--accent-glow);
+    }
+
+    .submit-btn {
+      width: 100%;
+      background: linear-gradient(135deg, #6366F1 0%, #4F46E5 100%);
+      color: #FFFFFF;
+      border: none;
+      padding: 14px 20px;
+      border-radius: 12px;
+      font-family: 'Outfit', sans-serif;
+      font-size: 1.05rem;
+      font-weight: 700;
+      letter-spacing: 0.01em;
+      cursor: pointer;
+      box-shadow: 0 10px 25px -5px var(--accent-glow);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+      margin-top: 10px;
+    }
+
+    .submit-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 15px 30px -5px rgba(99, 102, 241, 0.45);
+      background: linear-gradient(135deg, #818CF8 0%, #6366F1 100%);
+    }
+
+    .submit-btn:active {
+      transform: translateY(0);
+    }
+
+    /* Results Dashboard Right Side */
+    .results-column {
+      display: flex;
+      flex-direction: column;
+      gap: 24px;
+    }
+
+    /* Gauge & Risk Tile */
+    .gauge-card {
+      text-align: center;
+      position: relative;
+    }
+
+    .gauge-wrapper {
+      position: relative;
+      width: 260px;
+      height: 140px;
+      margin: 10px auto 14px;
+    }
+
+    .gauge-svg {
+      width: 260px;
+      height: 140px;
+      overflow: visible;
+    }
+
+    .gauge-bg {
+      fill: none;
+      stroke: rgba(255, 255, 255, 0.07);
+      stroke-width: 20;
+      stroke-linecap: round;
+    }
+
+    .gauge-progress {
+      fill: none;
+      stroke-width: 20;
+      stroke-linecap: round;
+      stroke-dasharray: 377;
+      stroke-dashoffset: 377;
+      transition: stroke-dashoffset 1.2s cubic-bezier(0.16, 1, 0.3, 1), stroke 0.4s ease;
+    }
+
+    .gauge-needle {
+      transform-origin: 130px 130px;
+      transition: transform 1.2s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    .prob-display {
+      font-family: 'Outfit', sans-serif;
+      font-size: 3rem;
+      font-weight: 800;
+      line-height: 1;
+      margin-top: -10px;
+      margin-bottom: 6px;
+      transition: color 0.4s ease;
+    }
+
+    .tier-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 6px 16px;
+      border-radius: 9999px;
+      font-size: 0.85rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      margin-bottom: 14px;
+    }
+
+    .tier-badge.high {
+      background: rgba(244, 63, 94, 0.18);
+      color: #FB7185;
+      border: 1px solid rgba(244, 63, 94, 0.4);
+      box-shadow: 0 0 20px var(--rose-glow);
+    }
+
+    .tier-badge.mod {
+      background: rgba(245, 158, 11, 0.18);
+      color: #FBBF24;
+      border: 1px solid rgba(245, 158, 11, 0.4);
+      box-shadow: 0 0 20px var(--amber-glow);
+    }
+
+    .tier-badge.low {
+      background: rgba(16, 185, 129, 0.18);
+      color: #34D399;
+      border: 1px solid rgba(16, 185, 129, 0.4);
+      box-shadow: 0 0 20px var(--emerald-glow);
+    }
+
+    .threshold-callout {
+      background: rgba(15, 23, 42, 0.8);
+      border: 1px solid var(--border-subtle);
+      border-radius: 12px;
+      padding: 12px 16px;
+      font-size: 0.82rem;
+      color: var(--text-muted);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    /* Drivers Card */
+    .drivers-list {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .driver-item {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .driver-meta {
+      display: flex;
+      justify-content: space-between;
+      font-size: 0.85rem;
+      font-weight: 600;
+    }
+
+    .driver-name {
+      color: var(--text-main);
+    }
+
+    .driver-score {
+      color: #F87171;
+      font-family: 'Outfit', sans-serif;
+    }
+
+    .driver-track {
+      height: 6px;
+      background: var(--bg-surface-elevated);
+      border-radius: 9999px;
+      overflow: hidden;
+    }
+
+    .driver-fill {
+      height: 100%;
+      width: 0%;
+      background: linear-gradient(90deg, #F59E0B, #F43F5E);
+      border-radius: 9999px;
+      transition: width 0.9s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    /* Playbook Card */
+    .playbook-card {
+      background: linear-gradient(135deg, rgba(30, 58, 138, 0.15) 0%, rgba(15, 23, 42, 0.6) 100%);
+      border: 1px solid rgba(99, 102, 241, 0.3);
+      border-left: 5px solid var(--accent-primary);
+    }
+
+    .playbook-title {
+      font-size: 0.82rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: #818CF8;
+      margin-bottom: 10px;
+    }
+
+    .playbook-text {
+      font-size: 0.92rem;
+      color: #E2E8F0;
+      line-height: 1.6;
+    }
+
+    /* Segment Badge */
+    .segment-banner {
+      background: rgba(18, 24, 38, 0.8);
+      border: 1px solid var(--border-subtle);
+      border-radius: 12px;
+      padding: 12px 18px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .segment-avatar {
+      font-size: 24px;
+    }
+
+    .segment-details {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .segment-title {
+      font-size: 0.75rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--text-dim);
+    }
+
+    .segment-name {
+      font-size: 0.95rem;
+      font-weight: 700;
+      color: #38BDF8;
+    }
+
+    /* Keyframe Animations */
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+
+    @keyframes fadeInUp {
+      from { opacity: 0; transform: translateY(16px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .spinner {
+      border: 3px solid rgba(255, 255, 255, 0.1);
+      border-top-color: var(--accent-primary);
+      border-radius: 50%;
+      width: 20px;
+      height: 20px;
+      animation: spin 0.8s linear infinite;
+      display: none;
+    }
+
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+  </style>
+</head>
+<body>
+  <div class="bg-grid"></div>
+
+  <div class="container">
+    <!-- Top Nav -->
+    <header>
+      <div class="brand">
+        <div class="brand-icon">💎</div>
+        <div>
+          <div class="brand-title">CustomerIQ</div>
+        </div>
+      </div>
+      <div class="nav-actions">
+        <span class="pill-badge active">
+          <span style="width: 7px; height: 7px; background: #10B981; border-radius: 50%; display: inline-block;"></span>
+          API Live
+        </span>
+        <span class="pill-badge">Random Forest • 84.29% AUC</span>
+        <span class="pill-badge">Threshold: 0.35</span>
+        <a href="/docs" target="_blank" class="docs-btn">
+          <span>Swagger Docs</span>
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path><polyline points="15 3 21 3 21 9"></polyline><line x1="10" y1="14" x2="21" y2="3"></line></svg>
+        </a>
+      </div>
+    </header>
+
+    <!-- Hero Title -->
+    <section class="hero">
+      <h1 class="hero-title">Predict Customer Churn & Unlock <span>Actionable Retention</span></h1>
+      <p class="hero-subtitle">
+        Enterprise intelligence platform powered by Scikit-Learn ensembles. Discover churn flight risks, deconstruct local root-cause drivers, and prescribe frontline customer success workflows.
+      </p>
+    </section>
+
+    <!-- Preset Archetype Buttons -->
+    <div class="persona-strip">
+      <div class="persona-label">✨ Quick Load Customer Archetypes:</div>
+      <div class="persona-btns">
+        <button class="persona-chip active" id="btn-elena" onclick="loadPersona('elena')">
+          <span>🚨</span> Elena Vance (Flight Risk)
+        </button>
+        <button class="persona-chip" id="btn-arthur" onclick="loadPersona('arthur')">
+          <span>🛡️</span> Arthur Pendelton (Loyalist)
+        </button>
+        <button class="persona-chip" id="btn-clara" onclick="loadPersona('clara')">
+          <span>📱</span> Clara Oswald (Budget Saver)
+        </button>
+        <button class="persona-chip" id="btn-marcus" onclick="loadPersona('marcus')">
+          <span>⚡</span> Marcus Sterling (Crossroads)
+        </button>
+      </div>
+    </div>
+
+    <!-- Main Interactive Grid -->
+    <div class="main-grid">
+      <!-- Left Column: Input Form -->
+      <div class="card">
+        <div class="card-header">
+          <div class="card-title">
+            <span>⚙️</span> Customer Attributes
+          </div>
+          <span class="pill-badge" id="customer-badge">Elena Vance</span>
+        </div>
+
+        <form id="churn-form" onsubmit="event.preventDefault(); predictChurn();">
+          <!-- Section 1: Account Terms -->
+          <div class="form-section">
+            <div class="form-section-title">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><rect x="3" y="4" width="18" height="16" rx="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>
+              Account & Contract Structure
+            </div>
+
+            <div class="form-row">
+              <div class="form-group">
+                <div class="slider-header">
+                  <label for="tenure">Tenure with Company</label>
+                  <span class="slider-val" id="tenure-val">2 mos</span>
+                </div>
+                <input type="range" id="tenure" min="1" max="72" value="2" oninput="updateTenure(this.value)" />
+              </div>
+
+              <div class="form-group">
+                <div class="slider-header">
+                  <label for="monthly-charges">Monthly Subscription</label>
+                  <span class="slider-val" id="monthly-val">$94.50</span>
+                </div>
+                <input type="range" id="monthly-charges" min="18" max="120" step="0.5" value="94.5" oninput="updateMonthly(this.value)" />
+              </div>
+            </div>
+
+            <div class="form-row">
+              <div class="form-group">
+                <label for="contract">Contract Commitment</label>
+                <select id="contract" onchange="autoRecalculate()">
+                  <option value="Month-to-month" selected>Month-to-month</option>
+                  <option value="One year">One year</option>
+                  <option value="Two year">Two year</option>
+                </select>
+              </div>
+
+              <div class="form-group">
+                <label for="payment-method">Payment Channel</label>
+                <select id="payment-method" onchange="autoRecalculate()">
+                  <option value="Electronic check" selected>Electronic check</option>
+                  <option value="Mailed check">Mailed check</option>
+                  <option value="Bank transfer (automatic)">Bank transfer (automatic)</option>
+                  <option value="Credit card (automatic)">Credit card (automatic)</option>
+                </select>
+              </div>
+            </div>
+
+            <div class="form-row">
+              <div class="form-group">
+                <label for="paperless">Paperless Invoicing</label>
+                <select id="paperless" onchange="autoRecalculate()">
+                  <option value="Yes" selected>Yes</option>
+                  <option value="No">No</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label>Estimated Total Spend</label>
+                <div style="background: var(--bg-surface-elevated); padding: 9px 14px; border-radius: 10px; font-weight: 700; color: #E2E8F0;" id="total-spend-box">
+                  $189.00
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Section 2: Technology & Services -->
+          <div class="form-section">
+            <div class="form-section-title">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"></circle><line x1="2" y1="12" x2="22" y2="12"></line><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path></svg>
+              Broadband & Add-On Services
+            </div>
+
+            <div class="form-row">
+              <div class="form-group">
+                <label for="internet-service">Broadband Infrastructure</label>
+                <select id="internet-service" onchange="autoRecalculate()">
+                  <option value="Fiber optic" selected>Fiber optic</option>
+                  <option value="DSL">DSL</option>
+                  <option value="No">None (Phone Only)</option>
+                </select>
+              </div>
+
+              <div class="form-group">
+                <label for="tech-support">Priority Tech Support</label>
+                <select id="tech-support" onchange="autoRecalculate()">
+                  <option value="No" selected>No</option>
+                  <option value="Yes">Yes</option>
+                  <option value="No internet service">No internet service</option>
+                </select>
+              </div>
+            </div>
+
+            <div class="form-row">
+              <div class="form-group">
+                <label for="online-security">Online Cybersecurity</label>
+                <select id="online-security" onchange="autoRecalculate()">
+                  <option value="No" selected>No</option>
+                  <option value="Yes">Yes</option>
+                  <option value="No internet service">No internet service</option>
+                </select>
+              </div>
+
+              <div class="form-group">
+                <label for="streaming-tv">Streaming TV Bundle</label>
+                <select id="streaming-tv" onchange="autoRecalculate()">
+                  <option value="Yes" selected>Yes</option>
+                  <option value="No">No</option>
+                  <option value="No internet service">No internet service</option>
+                </select>
+              </div>
+            </div>
+          </div>
+
+          <!-- Section 3: Household -->
+          <div class="form-section">
+            <div class="form-section-title">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg>
+              Demographics & Household
+            </div>
+
+            <div class="form-row">
+              <div class="form-group">
+                <label for="partner">Partner / Spouse</label>
+                <select id="partner" onchange="autoRecalculate()">
+                  <option value="No" selected>No</option>
+                  <option value="Yes">Yes</option>
+                </select>
+              </div>
+
+              <div class="form-group">
+                <label for="dependents">Children / Dependents</label>
+                <select id="dependents" onchange="autoRecalculate()">
+                  <option value="No" selected>No</option>
+                  <option value="Yes">Yes</option>
+                </select>
+              </div>
+            </div>
+          </div>
+
+          <button type="submit" class="submit-btn" id="predict-btn">
+            <span class="spinner" id="btn-spinner"></span>
+            <span id="btn-text">⚡ Evaluate Customer Risk</span>
+          </button>
+        </form>
+      </div>
+
+      <!-- Right Column: Results Cockpit -->
+      <div class="results-column">
+        <!-- Gauge & Prediction Card -->
+        <div class="card gauge-card">
+          <div class="card-header" style="margin-bottom: 0;">
+            <div class="card-title">
+              <span>🧭</span> Churn Probability Cockpit
+            </div>
+            <span class="tier-badge high" id="risk-tier-pill">HIGH RISK</span>
+          </div>
+
+          <div class="gauge-wrapper">
+            <svg class="gauge-svg" viewBox="0 0 260 140">
+              <path class="gauge-bg" d="M 20 130 A 110 110 0 0 1 240 130"></path>
+              <path class="gauge-progress" id="gauge-arc" d="M 20 130 A 110 110 0 0 1 240 130" stroke="#F43F5E"></path>
+              <!-- Needle indicator line -->
+              <g class="gauge-needle" id="gauge-needle">
+                <line x1="130" y1="130" x2="40" y2="130" stroke="#FFFFFF" stroke-width="3" stroke-linecap="round"></line>
+                <circle cx="130" cy="130" r="7" fill="#FFFFFF"></circle>
+              </g>
+            </svg>
+          </div>
+
+          <div class="prob-display" id="prob-val" style="color: #FB7185;">73.8%</div>
+          <div style="color: var(--text-muted); font-size: 0.9rem; margin-bottom: 18px;" id="outcome-desc">
+            Customer exceeds the <strong>0.35 decision boundary</strong>.
+          </div>
+
+          <div class="threshold-callout">
+            <span>⚖️ <strong>Cost-Sensitive Boundary</strong>: 0.35</span>
+            <span style="color: #34D399;">Proactive Churn Protection</span>
+          </div>
+        </div>
+
+        <!-- Segment Persona Banner -->
+        <div class="segment-banner">
+          <div class="segment-avatar" id="segment-icon">⚠️</div>
+          <div class="segment-details">
+            <span class="segment-title">K-Means Segment Assignment</span>
+            <span class="segment-name" id="segment-label">New High-Spend Flight Risk (Severe Churn)</span>
+          </div>
+        </div>
+
+        <!-- Local Risk Drivers Card -->
+        <div class="card">
+          <div class="card-title" style="margin-bottom: 16px;">
+            <span>🔍</span> Top Root-Cause Drivers (XAI)
+          </div>
+          <div class="drivers-list" id="drivers-container">
+            <!-- Populated dynamically via JS -->
+            <div class="driver-item">
+              <div class="driver-meta">
+                <span class="driver-name">Month-to-Month Contract</span>
+                <span class="driver-score">+13.7%</span>
+              </div>
+              <div class="driver-track">
+                <div class="driver-fill" style="width: 85%;"></div>
+              </div>
+            </div>
+            <div class="driver-item">
+              <div class="driver-meta">
+                <span class="driver-name">Electronic Check Billing</span>
+                <span class="driver-score">+5.5%</span>
+              </div>
+              <div class="driver-track">
+                <div class="driver-fill" style="width: 45%;"></div>
+              </div>
+            </div>
+            <div class="driver-item">
+              <div class="driver-meta">
+                <span class="driver-name">No Online Security</span>
+                <span class="driver-score">+5.5%</span>
+              </div>
+              <div class="driver-track">
+                <div class="driver-fill" style="width: 44%;"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Retention Blueprint Card -->
+        <div class="card playbook-card">
+          <div class="playbook-title">🎯 Frontline Retention Playbook</div>
+          <div class="playbook-text" id="playbook-content">
+            Offer 15% discount for upgrading to a 1-year annual contract. | Provide 3 months complimentary VIP Tech Support to address technical frustrations. | Offer a one-time $10 credit to enroll in automated credit card auto-pay.
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // Archetype definitions
+    const PERSONAS = {
+      elena: {
+        badge: "Elena Vance (Flight Risk)",
+        tenure: 2,
+        monthly: 94.5,
+        contract: "Month-to-month",
+        payment: "Electronic check",
+        paperless: "Yes",
+        internet: "Fiber optic",
+        techSupport: "No",
+        onlineSecurity: "No",
+        streamingTV: "Yes",
+        partner: "No",
+        dependents: "No"
+      },
+      arthur: {
+        badge: "Arthur Pendelton (Loyalist)",
+        tenure: 64,
+        monthly: 62.0,
+        contract: "Two year",
+        payment: "Bank transfer (automatic)",
+        paperless: "No",
+        internet: "DSL",
+        techSupport: "Yes",
+        onlineSecurity: "Yes",
+        streamingTV: "No",
+        partner: "Yes",
+        dependents: "Yes"
+      },
+      clara: {
+        badge: "Clara Oswald (Budget)",
+        tenure: 36,
+        monthly: 20.25,
+        contract: "One year",
+        payment: "Mailed check",
+        paperless: "No",
+        internet: "No",
+        techSupport: "No internet service",
+        onlineSecurity: "No internet service",
+        streamingTV: "No internet service",
+        partner: "No",
+        dependents: "No"
+      },
+      marcus: {
+        badge: "Marcus Sterling (Crossroads)",
+        tenure: 14,
+        monthly: 104.5,
+        contract: "Month-to-month",
+        payment: "Credit card (automatic)",
+        paperless: "Yes",
+        internet: "Fiber optic",
+        techSupport: "No",
+        onlineSecurity: "Yes",
+        streamingTV: "Yes",
+        partner: "Yes",
+        dependents: "No"
+      }
+    };
+
+    function updateTenure(val) {
+      document.getElementById('tenure-val').innerText = val + ' mos';
+      recalcSpend();
+      autoRecalculate();
+    }
+
+    function updateMonthly(val) {
+      document.getElementById('monthly-val').innerText = '$' + parseFloat(val).toFixed(2);
+      recalcSpend();
+      autoRecalculate();
+    }
+
+    function recalcSpend() {
+      const t = parseInt(document.getElementById('tenure').value);
+      const m = parseFloat(document.getElementById('monthly-charges').value);
+      const total = (t * m).toFixed(2);
+      document.getElementById('total-spend-box').innerText = '$' + Number(total).toLocaleString();
+    }
+
+    function loadPersona(key) {
+      const p = PERSONAS[key];
+      if (!p) return;
+
+      document.querySelectorAll('.persona-chip').forEach(c => c.classList.remove('active'));
+      const activeBtn = document.getElementById('btn-' + key);
+      if (activeBtn) activeBtn.classList.add('active');
+
+      document.getElementById('customer-badge').innerText = p.badge;
+      document.getElementById('tenure').value = p.tenure;
+      document.getElementById('tenure-val').innerText = p.tenure + ' mos';
+
+      document.getElementById('monthly-charges').value = p.monthly;
+      document.getElementById('monthly-val').innerText = '$' + p.monthly.toFixed(2);
+
+      document.getElementById('contract').value = p.contract;
+      document.getElementById('payment-method').value = p.payment;
+      document.getElementById('paperless').value = p.paperless;
+      document.getElementById('internet-service').value = p.internet;
+      document.getElementById('tech-support').value = p.techSupport;
+      document.getElementById('online-security').value = p.onlineSecurity;
+      document.getElementById('streaming-tv').value = p.streamingTV;
+      document.getElementById('partner').value = p.partner;
+      document.getElementById('dependents').value = p.dependents;
+
+      recalcSpend();
+      predictChurn();
+    }
+
+    let debounceTimer = null;
+    function autoRecalculate() {
+      clearTimeout(debounceTimer);
+      debounceTimer = setTimeout(() => {
+        predictChurn();
+      }, 300);
+    }
+
+    async function predictChurn() {
+      const btn = document.getElementById('predict-btn');
+      const spinner = document.getElementById('btn-spinner');
+      const btnText = document.getElementById('btn-text');
+
+      spinner.style.display = 'inline-block';
+      btnText.innerText = 'Analyzing with Model...';
+
+      const tenure = parseInt(document.getElementById('tenure').value);
+      const monthly = parseFloat(document.getElementById('monthly-charges').value);
+      const total = tenure * monthly;
+
+      const payload = {
+        gender: "Female",
+        SeniorCitizen: 0,
+        Partner: document.getElementById('partner').value,
+        Dependents: document.getElementById('dependents').value,
+        tenure: tenure,
+        PhoneService: "Yes",
+        MultipleLines: "No",
+        InternetService: document.getElementById('internet-service').value,
+        OnlineSecurity: document.getElementById('online-security').value,
+        OnlineBackup: "No",
+        DeviceProtection: "No",
+        TechSupport: document.getElementById('tech-support').value,
+        StreamingTV: document.getElementById('streaming-tv').value,
+        StreamingMovies: document.getElementById('streaming-tv').value,
+        Contract: document.getElementById('contract').value,
+        PaperlessBilling: document.getElementById('paperless').value,
+        PaymentMethod: document.getElementById('payment-method').value,
+        MonthlyCharges: monthly,
+        TotalCharges: total
+      };
+
+      try {
+        const res = await fetch('/predict', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(payload)
+        });
+
+        if (!res.ok) throw new Error('API returned status ' + res.status);
+        const data = await res.json();
+        renderPrediction(data);
+      } catch (err) {
+        console.error('Prediction error:', err);
+      } finally {
+        spinner.style.display = 'none';
+        btnText.innerText = '⚡ Evaluate Customer Risk';
+      }
+    }
+
+    function renderPrediction(data) {
+      const prob = data.churn_probability;
+      const probPct = (prob * 100).toFixed(1);
+
+      // Numbers and Texts
+      const probEl = document.getElementById('prob-val');
+      probEl.innerText = probPct + '%';
+
+      const tierPill = document.getElementById('risk-tier-pill');
+      const descEl = document.getElementById('outcome-desc');
+      const arc = document.getElementById('gauge-arc');
+      const needle = document.getElementById('gauge-needle');
+
+      // Colors & Tiers
+      let tierColor = '#10B981';
+      let tierClass = 'low';
+      let tierLabel = 'LOW RISK';
+
+      if (prob >= 0.50) {
+        tierColor = '#F43F5E';
+        tierClass = 'high';
+        tierLabel = 'CRITICAL RISK';
+        descEl.innerHTML = 'Customer exceeds <strong>0.35 boundary</strong>. Proactive intervention urgent.';
+      } else if (prob >= 0.35) {
+        tierColor = '#F59E0B';
+        tierClass = 'mod';
+        tierLabel = 'ELEVATED RISK';
+        descEl.innerHTML = 'Customer flagged by <strong>0.35 cost-sensitive threshold</strong> before canceling.';
+      } else {
+        tierColor = '#10B981';
+        tierClass = 'low';
+        tierLabel = 'HEALTHY & ANCHORED';
+        descEl.innerHTML = 'Customer is safely below the <strong>0.35 boundary</strong>. Highly stable.';
+      }
+
+      tierPill.className = 'tier-badge ' + tierClass;
+      tierPill.innerText = tierLabel;
+      probEl.style.color = tierColor;
+
+      // Arc progress
+      // Gauge path length is 377. 0% = 377 offset, 100% = 0 offset
+      const strokeOffset = 377 - (377 * (prob / 1.0));
+      arc.style.strokeDashoffset = strokeOffset;
+      arc.style.stroke = tierColor;
+
+      // Needle angle: 0% = 0 deg, 100% = 180 deg
+      const needleAngle = prob * 180;
+      needle.style.transform = `rotate(${needleAngle}deg)`;
+
+      // Segment info
+      document.getElementById('segment-label').innerText = data.customer_segment;
+      const segIcon = document.getElementById('segment-icon');
+      if (data.customer_segment.includes('Flight')) segIcon.innerText = '⚠️';
+      else if (data.customer_segment.includes('Multi')) segIcon.innerText = '💎';
+      else if (data.customer_segment.includes('DSL')) segIcon.innerText = '🌐';
+      else segIcon.innerText = '📱';
+
+      // Drivers rendering
+      const driversContainer = document.getElementById('drivers-container');
+      driversContainer.innerHTML = '';
+
+      if (data.top_risk_drivers && data.top_risk_drivers.length > 0) {
+        data.top_risk_drivers.forEach(d => {
+          let cleanName = d.feature.replace('cat__', '').replace('num__', '').replace(/_/g, ': ');
+          const pct = Math.min(100, Math.max(10, Math.round(d.impact_score * 400)));
+
+          const item = document.createElement('div');
+          item.className = 'driver-item';
+          item.innerHTML = `
+            <div class="driver-meta">
+              <span class="driver-name">${cleanName}</span>
+              <span class="driver-score">+${(d.impact_score * 100).toFixed(1)}%</span>
+            </div>
+            <div class="driver-track">
+              <div class="driver-fill" style="width: ${pct}%;"></div>
+            </div>
+          `;
+          driversContainer.appendChild(item);
+        });
+      }
+
+      // Retention Playbook
+      document.getElementById('playbook-content').innerText = data.recommended_retention_action;
+    }
+
+    // Initial run on load
+    window.addEventListener('DOMContentLoaded', () => {
+      predictChurn();
+    });
+  </script>
+</body>
+</html>

@@ -7,7 +7,7 @@ unsupervised segmentation, and explainable retention playbooks.
 
 from typing import List
 from fastapi import FastAPI, HTTPException, status
-from fastapi.responses import RedirectResponse
+from fastapi.responses import RedirectResponse, FileResponse
 from contextlib import asynccontextmanager
 
 import sys
@@ -15,6 +15,9 @@ from pathlib import Path
 PROJECT_ROOT = Path(__file__).resolve().parents[2]
 if str(PROJECT_ROOT) not in sys.path:
     sys.path.append(str(PROJECT_ROOT))
+
+STATIC_DIR = Path(__file__).resolve().parent / "static"
+INDEX_FILE = STATIC_DIR / "index.html"
 
 from src.api.schemas import (
     CustomerPayload,
@@ -49,8 +52,11 @@ app = FastAPI(
 
 @app.get("/", include_in_schema=False)
 async def root():
-    """Redirect root path to interactive Swagger documentation."""
+    """Serve the modern interactive CustomerIQ web application."""
+    if INDEX_FILE.exists():
+        return FileResponse(INDEX_FILE)
     return RedirectResponse(url="/docs")
+
 
 
 @app.get("/health", response_model=HealthResponse, tags=["System"])

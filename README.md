@@ -1,12 +1,15 @@
 # CustomerIQ — Customer Intelligence & Churn Prediction Platform
 
 [![Python 3.11+](https://img.shields.io/badge/python-3.11%2B-blue.svg)](https://www.python.org/downloads/)
+[![Live API Docs](https://img.shields.io/badge/Live%20API-Render-46E3B7.svg?logo=render&logoColor=white)](https://customeriq-qd2v.onrender.com/docs)
 [![CI Pipeline](https://github.com/jasirjru/CustomerIQ/actions/workflows/ci.yml/badge.svg)](https://github.com/jasirjru/CustomerIQ/actions/workflows/ci.yml)
 [![FastAPI](https://img.shields.io/badge/FastAPI-0.111%2B-009688.svg)](https://fastapi.tiangolo.com/)
 [![Scikit-Learn](https://img.shields.io/badge/scikit--learn-1.4%2B-F7931E.svg)](https://scikit-learn.org/)
 [![Docker](https://img.shields.io/badge/Docker-Containerized-2496ED.svg)](https://www.docker.com/)
 [![Tests](https://img.shields.io/badge/Tests-13%20Passed-brightgreen.svg)]()
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+
+> **Live Production API**: [https://customeriq-qd2v.onrender.com/docs](https://customeriq-qd2v.onrender.com/docs) (Interactive Swagger UI)
 
 An enterprise-grade, end-to-end Machine Learning platform combining **Supervised Churn Prediction** and **Unsupervised Customer Segmentation** to reduce customer churn and provide actionable retention playbooks.
 

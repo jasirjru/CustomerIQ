@@ -42,7 +42,7 @@ class CalibrationSelectionResult:
     method: str
     mean_outer_brier: float
     fold_brier_scores: dict[str, tuple[float, ...]]
-    fitted_estimator: CalibratedClassifierCV
+    fitted_estimator: BaseEstimator
 
 
 def _validated_binary_inputs(
@@ -105,16 +105,17 @@ def select_and_fit_calibrator(
     base_estimator: BaseEstimator,
     X_train: Any,
     y_train: Sequence[int],
-    methods: Sequence[str] = ("sigmoid", "isotonic"),
+    methods: Sequence[str] = ("none", "sigmoid", "isotonic"),
     outer_splits: int = 5,
     inner_splits: int = 3,
     random_state: int = 42,
 ) -> CalibrationSelectionResult:
     """Select calibration by nested CV using development training data only.
 
-    The lowest mean outer-fold Brier score wins; ties prefer sigmoid because it
-    is less prone to overfitting on small calibration samples. The selected
-    calibrator is then fitted on all supplied training data.
+    The uncalibrated estimator is an explicit candidate so calibration must
+    demonstrate an improvement. The lowest mean outer-fold Brier score wins;
+    ties prefer no calibration, then sigmoid, then isotonic. The selected
+    estimator is then fitted on all supplied training data.
     """
     labels = np.asarray(y_train)
     if labels.ndim != 1 or len(labels) != len(X_train) or len(labels) == 0:
@@ -123,10 +124,10 @@ def select_and_fit_calibrator(
         raise ValueError("Training labels must contain both binary classes.")
     if outer_splits < 2 or inner_splits < 2:
         raise ValueError("outer_splits and inner_splits must be at least 2.")
-    allowed = {"sigmoid", "isotonic"}
+    allowed = {"none", "sigmoid", "isotonic"}
     unique_methods = tuple(dict.fromkeys(methods))
     if not unique_methods or set(unique_methods) - allowed:
-        raise ValueError("Calibration methods must be sigmoid and/or isotonic.")
+        raise ValueError("Calibration methods must be none, sigmoid, and/or isotonic.")
     if int(np.bincount(labels.astype(int)).min()) < max(outer_splits, inner_splits):
         raise ValueError("Each class needs at least max(outer_splits, inner_splits) rows.")
 
@@ -146,33 +147,38 @@ def select_and_fit_calibrator(
         y_outer_validation = labels[validation_indices]
 
         for method in unique_methods:
-            inner_cv = StratifiedKFold(
-                n_splits=inner_splits, shuffle=True, random_state=random_state
-            )
-            calibrator = CalibratedClassifierCV(
-                estimator=clone(base_estimator),
-                method=method,
-                cv=inner_cv,
-                ensemble=False,
-            )
-            calibrator.fit(X_outer_train, y_outer_train)
-            probabilities = calibrator.predict_proba(X_outer_validation)[:, 1]
+            if method == "none":
+                estimator = clone(base_estimator).fit(X_outer_train, y_outer_train)
+            else:
+                inner_cv = StratifiedKFold(
+                    n_splits=inner_splits, shuffle=True, random_state=random_state
+                )
+                estimator = CalibratedClassifierCV(
+                    estimator=clone(base_estimator),
+                    method=method,
+                    cv=inner_cv,
+                    ensemble=False,
+                ).fit(X_outer_train, y_outer_train)
+            probabilities = estimator.predict_proba(X_outer_validation)[:, 1]
             fold_scores[method].append(
                 float(brier_score_loss(y_outer_validation, probabilities))
             )
 
     means = {method: float(np.mean(scores)) for method, scores in fold_scores.items()}
-    chosen_method = min(unique_methods, key=lambda method: (means[method], method != "sigmoid"))
-    final_cv = StratifiedKFold(
-        n_splits=inner_splits, shuffle=True, random_state=random_state
-    )
-    fitted = CalibratedClassifierCV(
-        estimator=clone(base_estimator),
-        method=chosen_method,
-        cv=final_cv,
-        ensemble=False,
-    )
-    fitted.fit(X_train, labels)
+    preference = {"none": 0, "sigmoid": 1, "isotonic": 2}
+    chosen_method = min(unique_methods, key=lambda method: (means[method], preference[method]))
+    if chosen_method == "none":
+        fitted = clone(base_estimator).fit(X_train, labels)
+    else:
+        final_cv = StratifiedKFold(
+            n_splits=inner_splits, shuffle=True, random_state=random_state
+        )
+        fitted = CalibratedClassifierCV(
+            estimator=clone(base_estimator),
+            method=chosen_method,
+            cv=final_cv,
+            ensemble=False,
+        ).fit(X_train, labels)
     return CalibrationSelectionResult(
         method=chosen_method,
         mean_outer_brier=means[chosen_method],

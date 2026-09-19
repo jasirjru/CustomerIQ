@@ -53,6 +53,16 @@ The primary cross-validation selection metric is average precision because the
 positive class is the minority and ranking churners is the intended use. ROC-AUC,
 F1, and balanced accuracy are secondary diagnostics.
 
+Run the executable development protocol with:
+
+```powershell
+python scripts/run_development_experiment.py --output reports/development-evidence.json
+```
+
+The report records development-data hashes, Git state, package versions,
+repeated-CV model selection, and nested-CV calibration selection. It does not
+read final-test files, select a production threshold, or persist a model.
+
 ## Threshold and cost assumptions
 
 The experimental threshold minimizes:

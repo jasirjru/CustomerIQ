@@ -34,7 +34,7 @@ Runtime startup fails if hashes, estimator class, parameters, classes, feature o
 
 Development model comparison used repeated stratified cross-validation on the training partition. Those candidate metrics do not establish performance of the unchanged serving artifact. The reserved 1,409-row historical holdout is sealed in v1.1 and has not been scored. It was exposed in older notebooks, so fresh external or forward-time labeled data is required for an independent release estimate.
 
-Calibration utilities now support training-only nested-CV method selection, but no calibrator has been fitted into or attached to the production artifacts.
+Calibration utilities now support training-only nested-CV selection among no calibration, sigmoid, and isotonic methods, but no calibrator has been fitted into or attached to the production artifacts.
 
 Offline drift utilities can compare an approved reference population with a later monitoring window using PSI for numeric features and total-variation/unseen-category rates for categorical features. No production baseline has been approved, so these utilities are evidence scaffolding rather than a current drift claim.
 

@@ -42,8 +42,8 @@ def test_calibrator_selection_is_training_only_and_returns_probabilities():
         outer_splits=3,
         inner_splits=3,
     )
-    assert result.method in {"sigmoid", "isotonic"}
-    assert set(result.fold_brier_scores) == {"sigmoid", "isotonic"}
+    assert result.method in {"none", "sigmoid", "isotonic"}
+    assert set(result.fold_brier_scores) == {"none", "sigmoid", "isotonic"}
     assert all(len(scores) == 3 for scores in result.fold_brier_scores.values())
     probabilities = result.fitted_estimator.predict_proba(X[:5])[:, 1]
     assert np.isfinite(probabilities).all()

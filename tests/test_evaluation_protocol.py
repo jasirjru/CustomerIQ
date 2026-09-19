@@ -12,6 +12,10 @@ from src.models.model_selection import (
     optimize_validation_threshold,
     select_champion_repeated_cv,
 )
+from src.models.development_experiment import (
+    DevelopmentExperimentConfig,
+    run_development_experiment,
+)
 
 
 @pytest.fixture
@@ -150,3 +154,48 @@ def test_development_loader_counts_disjointness_and_access_guard(monkeypatch):
 def test_threshold_rejects_invalid_costs(cost):
     with pytest.raises(ValueError):
         optimize_validation_threshold([0, 1], [.1, .9], false_negative_cost=cost)
+
+
+def test_development_experiment_is_evidence_only(evaluation_frame):
+    partitions = split_train_validation_test(evaluation_frame)
+    report = run_development_experiment(
+        partitions.X_train,
+        partitions.X_validation,
+        partitions.y_train,
+        partitions.y_validation,
+        config=DevelopmentExperimentConfig(
+            cv_splits=3,
+            cv_repeats=1,
+            calibration_outer_splits=3,
+            calibration_inner_splits=2,
+        ),
+        candidates={"Logistic Regression": LogisticRegression(max_iter=500)},
+    )
+
+    assert report["status"] == "development_only_not_release_evidence"
+    assert report["artifact_persisted"] is False
+    assert report["decision_policy"] == "not_selected_business_costs_unapproved"
+    assert report["partition_rows"] == {"training": 120, "validation": 40}
+    assert report["model_selection"]["selected_candidate"] == "Logistic Regression"
+    assert report["calibrated_validation"]["selected_method"] in {"none", "sigmoid", "isotonic"}
+    assert "threshold" not in report
+
+
+def test_development_experiment_rejects_misaligned_labels(evaluation_frame):
+    partitions = split_train_validation_test(evaluation_frame)
+    misaligned = partitions.y_train.sample(frac=1, random_state=7)
+
+    with pytest.raises(ValueError, match="indices must match"):
+        run_development_experiment(
+            partitions.X_train,
+            partitions.X_validation,
+            misaligned,
+            partitions.y_validation,
+            config=DevelopmentExperimentConfig(
+                cv_splits=3,
+                cv_repeats=1,
+                calibration_outer_splits=3,
+                calibration_inner_splits=2,
+            ),
+            candidates={"Logistic Regression": LogisticRegression(max_iter=500)},
+        )

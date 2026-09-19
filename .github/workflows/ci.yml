@@ -36,6 +36,9 @@ jobs:
     - name: Validate Operational Configuration
       run: python -c "import pathlib, yaml; yaml.safe_load(pathlib.Path('ops/prometheus-alerts.yml').read_text(encoding='utf-8'))"
 
+    - name: Reproduce Development-Only ML Evidence
+      run: python scripts/run_development_experiment.py --output development-evidence.ci.json
+
     - name: Run Pytest Test Suite
       run: |
         python -m pytest -q

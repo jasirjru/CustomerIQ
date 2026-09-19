@@ -10,7 +10,7 @@
 [![Tests](https://img.shields.io/badge/Tests-pytest-brightgreen.svg)]()
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
-> 🚀 **Live Production Platform**: [https://customeriq-qd2v.onrender.com/](https://customeriq-qd2v.onrender.com/) (Interactive Customer Studio)
+> 🚀 **Live demonstration**: [https://customeriq-qd2v.onrender.com/](https://customeriq-qd2v.onrender.com/) (not release-approved for real customer decisions)
 > 📖 **OpenAPI schema**: [https://customeriq-qd2v.onrender.com/docs](https://customeriq-qd2v.onrender.com/docs)
 
 CustomerIQ v1.1 serves a legacy Random Forest churn score through a manifest-verified API with strict request validation and a reserved final-test protocol.
@@ -21,7 +21,7 @@ CustomerIQ v1.1 serves a legacy Random Forest churn score through a manifest-ver
 
 ## 📌 Executive Summary & Business Problem
 
-In telecommunications and subscription services, **acquiring a new customer costs 5–7x more than retaining an existing one**. This platform solves two core business challenges:
+CustomerIQ demonstrates four foundations required for governed churn decision support:
 
 1. **Churn scoring**: returns the estimator's positive-class score unchanged.
 2. **Strict contracts**: rejects unknown categories, extra fields, inconsistent telecom services, oversized batches, and non-finite numbers.
@@ -34,28 +34,22 @@ In telecommunications and subscription services, **acquiring a new customer cost
 
 ```mermaid
 flowchart TD
-    subgraph Data["1. Data Pipeline"]
-        Raw["Raw Telecom Dataset\n(7,043 x 21)"] --> Clean["Data Cleaning\n- TotalCharges whitespace fix\n- customerID drop"]
-        Clean --> Split["Stratified Split\n60% Train / 20% Validation / 20% Final Test"]
-        Split --> Trans["ColumnTransformer\n- StandardScaler (Num)\n- OneHotEncoder (Cat)"]
+    subgraph Development["Governed development path"]
+        DevData["Development partitions only"] --> CV["Repeated cross-validation\npreprocessing refit in every fold"]
+        CV --> Candidate["Candidate model + calibrator\ndevelopment evidence only"]
+        Fresh["Fresh forward-time data\nrequired for release"] -. future gate .-> Candidate
     end
 
-    subgraph ML["2. Modeling & Intelligence"]
-        Trans --> Supervised["Part A: Supervised Classification\n- Logistic Regression (Baseline)\n- KNN, SVM, Decision Tree\n- Random Forest (Champion)"]
-        Supervised --> Threshold["Validation-only candidate threshold\nNot deployed"]
-        
-        Trans --> Unsupervised["Part B: Customer Segmentation\n- K-Means++ (K = 4)\n- Elbow & Silhouette Analysis\n- 4 Business Personas"]
-        
-        Trans --> PCA["Part C: 2D Visualization\n- PCA Projection (PC1 & PC2)\n- 2D Churn Landscape Map"]
-        
-        Threshold --> XAI["Global model importance\nNo local attribution"]
+    subgraph Artifacts["Current legacy serving artifacts"]
+        Manifest["Manifest\nschema + hashes + limitations"] --> Verify["Verify before deserialization"]
+        Model["Preprocessor + Random Forest\nuncalibrated score"] --> Verify
     end
 
-    subgraph Serving["3. Production Serving Layer"]
-        XAI --> ModelArtifacts["Hash-verified serving artifacts\n(.joblib + manifest)"]
-        Unsupervised --> ModelArtifacts
-        ModelArtifacts --> FastAPI["FastAPI REST Engine\n- GET /health\n- GET /model-info\n- POST /predict\n- POST /predict-batch"]
-        FastAPI --> Docker["Docker Container\n(python:3.11-slim)"]
+    subgraph Serving["Hardened demonstration service"]
+        Verify --> FastAPI["Validated FastAPI boundary"]
+        FastAPI --> Endpoints["health · model-info · metrics\npredict · predict-batch"]
+        FastAPI --> Web["Self-contained accessible web UI"]
+        FastAPI --> Container["Non-root container"]
     end
 ```
 
@@ -93,16 +87,16 @@ The serving threshold remains `0.35` only for backward compatibility and is labe
 
 ---
 
-## 👥 Unsupervised Customer Segmentation (K-Means)
+## 👥 Historical exploratory segmentation (K-Means)
 
-Using K-Means++ and validating via the **Elbow Method** and **Silhouette Analysis**, we segmented the customer base into **4 distinct business personas**:
+Legacy exploratory work grouped the historical dataset into four descriptive clusters. These associations are not causal treatment recommendations, are not returned by the v1.1 API, and require fresh-data validation before operational use.
 
-| Cluster | Segment Name | Cohort Size | Avg Tenure | Avg Monthly Bill | Churn Rate | Strategic Retention Playbook |
-|:---:|:---|:---:|:---:|:---:|:---:|:---|
-| **0** | **Budget Phone Loyalists** | 21.5% | 30.2 mos | $21.11 | **7.2%** | Stable low-maintenance users. Protect with simple automated renewal incentives. |
-| **1** | **Mid-Tier DSL Subscribers** | 23.4% | 20.5 mos | $50.74 | **25.1%** | Moderate churn risk. Prime candidates for fiber upgrades and bundled tech support. |
-| **2** | **High-Value Multi-Service Loyalists** | 28.5% | **59.6 mos** | **$91.20** | **13.6%** | Core revenue drivers ($5,400+ total spend). Maintain relationship with VIP perks. |
-| **3** | **New High-Spend Flight Risks** | 26.5% | **15.8 mos** | **$84.80** | **57.4%** ⚠️ | New subscribers on month-to-month contracts experiencing bill shock. **Over 57% churn!** Immediate target for annual discounts and onboarding check-ins. |
+| Cluster | Descriptive legacy label | Cohort size | Avg tenure | Avg monthly bill | Observed churn rate |
+|:---:|:---|:---:|:---:|:---:|:---:|
+| **0** | Budget phone users | 21.5% | 30.2 mos | $21.11 | 7.2% |
+| **1** | Mid-tier DSL users | 23.4% | 20.5 mos | $50.74 | 25.1% |
+| **2** | Multi-service users | 28.5% | 59.6 mos | $91.20 | 13.6% |
+| **3** | Newer high-spend users | 26.5% | 15.8 mos | $84.80 | 57.4% |
 
 ---
 
@@ -114,10 +108,10 @@ Local attribution has not been implemented or validated. Prediction responses th
 
 ---
 
-## 🚀 Production API (FastAPI)
+## 🚀 Hardened demonstration API (FastAPI)
 
 ### Endpoints
-- `GET /health` — Kubernetes liveness & readiness check.
+- `GET /health` — Process and verified-artifact health check.
 - `GET /model-info` — Verified artifact metadata, provenance gaps, and release limitations.
 - `GET /metrics` — Authenticated, payload-free Prometheus metrics.
 - `POST /predict` — Real-time single-customer scoring.
@@ -171,10 +165,7 @@ curl -X POST "http://localhost:8000/predict" \
 
 ## 🧪 Automated Testing Suite (Pytest)
 
-The project includes targeted tests covering:
-- **Data Invariants**: Missing value handling, identifier removal, 46-dimensional transformer output.
-- **Model Invariants**: Bounded probabilities $\in [0, 1]$, risk monotonicity testing.
-- **API Boundary Contracts**: HTTP 200 on valid inputs, HTTP 422 on negative tenure or missing fields.
+The project includes more than 120 Python tests and 14 Chromium desktop/mobile scenarios covering data and model invariants, API boundary and security contracts, artifact integrity, release governance, accessibility, XSS resistance, and responsive behavior.
 
 Run tests:
 ```bash
@@ -227,7 +218,9 @@ Production mode requires API-key authentication and fails closed if keys are abs
 
 ---
 
-## ☁️ Deployment Guide
+## ☁️ Demonstration deployment options
+
+These targets can host the demonstration service. Deployment alone does not satisfy the release gates in `docs/RELEASE_RUNBOOK.md`.
 
 | Platform | Best For | Deployment Instructions |
 |---|---|---|
@@ -273,7 +266,7 @@ CustomerIQ/
 │   ├── models/                    # Training harnesses (baseline, comparison, clustering)
 │   ├── evaluation/                # Metrics & explainability (MDI, Permutation)
 │   └── visualization/             # PCA & plotting utilities
-├── tests/                         # Pytest test suite (13/13 passing)
+├── tests/                         # Python and browser quality suites
 ├── Dockerfile                     # Production multi-stage Dockerfile
 ├── docker-compose.yml             # Orchestration & healthcheck probes
 ├── .dockerignore
@@ -286,11 +279,11 @@ CustomerIQ/
 
 **Jasir** — *Lead Machine Learning Engineer & System Architect*
 - **GitHub**: [@jasirjru](https://github.com/jasirjru)
-- **Live Platform**: [customeriq-qd2v.onrender.com](https://customeriq-qd2v.onrender.com/)
+- **Live Demo**: [customeriq-qd2v.onrender.com](https://customeriq-qd2v.onrender.com/)
 - **API Documentation**: [customeriq-qd2v.onrender.com/docs](https://customeriq-qd2v.onrender.com/docs)
 
 ---
 
 ## 📄 License
 This project is open-source under the [MIT License](LICENSE).
-Copyright © 2026 CustomerIQ by Jasir. All rights reserved.
+Copyright © 2026 Jasir.

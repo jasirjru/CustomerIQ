@@ -1,0 +1,92 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>CustomerIQ trustworthy inference</title>
+  <style>
+    :root { color-scheme: dark; --bg:#08111f; --panel:#111d30; --line:#2b3b54; --text:#edf4ff; --muted:#9fb0c8; --accent:#6ee7b7; --warn:#fbbf24; --danger:#fb7185; }
+    * { box-sizing: border-box; }
+    body { margin:0; background:linear-gradient(145deg,#08111f,#0d1728); color:var(--text); font:15px/1.5 system-ui,sans-serif; }
+    header, main { width:min(1120px,calc(100% - 32px)); margin:auto; }
+    header { display:flex; justify-content:space-between; align-items:center; padding:24px 0; }
+    header a { color:var(--accent); }
+    h1 { margin:0; font-size:1.7rem; }
+    h2 { margin-top:0; font-size:1.15rem; }
+    .notice { border:1px solid #6b571e; background:#251f10; color:#fde68a; padding:12px 16px; border-radius:10px; margin-bottom:18px; }
+    .layout { display:grid; grid-template-columns:minmax(0,1.4fr) minmax(290px,.8fr); gap:18px; padding-bottom:36px; }
+    .panel { background:rgba(17,29,48,.96); border:1px solid var(--line); border-radius:14px; padding:20px; }
+    .grid { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:13px; }
+    label { display:block; color:var(--muted); font-size:.8rem; font-weight:650; }
+    input, select { width:100%; margin-top:5px; padding:9px 10px; border:1px solid var(--line); border-radius:8px; background:#091425; color:var(--text); }
+    button { width:100%; margin-top:18px; padding:11px; border:0; border-radius:9px; background:var(--accent); color:#052016; font-weight:800; cursor:pointer; }
+    button:disabled { opacity:.55; cursor:wait; }
+    .metric { padding:14px 0; border-bottom:1px solid var(--line); }
+    .metric span { display:block; color:var(--muted); font-size:.78rem; }
+    .metric strong { display:block; margin-top:4px; overflow-wrap:anywhere; }
+    #probability { color:var(--accent); font:800 2rem ui-monospace,monospace; }
+    #error { color:#fecdd3; min-height:1.5em; }
+    .small { color:var(--muted); font-size:.82rem; }
+    .status { color:var(--warn); }
+    @media (max-width:780px) { .layout,.grid { grid-template-columns:1fr; } }
+  </style>
+  <script src="/assets/app.js" defer></script>
+</head>
+<body>
+  <header>
+    <div><h1>CustomerIQ</h1><div class="small">Trustworthy churn inference v1.1</div></div>
+    <nav><a href="/docs">OpenAPI schema</a></nav>
+  </header>
+  <main>
+    <div class="notice">Scores are not calibrated probabilities. The 0.35 decision threshold is a retained, unapproved legacy policy—not a business-optimal threshold.</div>
+    <div class="layout">
+      <section class="panel">
+        <h2>Customer attributes</h2>
+        <form id="prediction-form">
+          <div class="grid">
+            <label>API key (when required)<input id="api-key" type="password" maxlength="256" autocomplete="off"></label>
+            <label>Customer ID (optional)<input name="customer_id" maxlength="64" autocomplete="off"></label>
+            <label>Gender<select name="gender"><option>Female</option><option>Male</option></select></label>
+            <label>Senior citizen<select name="SeniorCitizen"><option value="0">No</option><option value="1">Yes</option></select></label>
+            <label>Partner<select name="Partner"><option>No</option><option>Yes</option></select></label>
+            <label>Dependents<select name="Dependents"><option>No</option><option>Yes</option></select></label>
+            <label>Tenure (months)<input name="tenure" type="number" min="0" max="120" value="2" required></label>
+            <label>Phone service<select name="PhoneService"><option>Yes</option><option>No</option></select></label>
+            <label>Multiple lines<select name="MultipleLines"><option>No</option><option>Yes</option><option>No phone service</option></select></label>
+            <label>Internet service<select name="InternetService"><option>Fiber optic</option><option>DSL</option><option>No</option></select></label>
+            <label>Online security<select name="OnlineSecurity" data-internet-addon><option>No</option><option>Yes</option><option>No internet service</option></select></label>
+            <label>Online backup<select name="OnlineBackup" data-internet-addon><option>No</option><option>Yes</option><option>No internet service</option></select></label>
+            <label>Device protection<select name="DeviceProtection" data-internet-addon><option>No</option><option>Yes</option><option>No internet service</option></select></label>
+            <label>Tech support<select name="TechSupport" data-internet-addon><option>No</option><option>Yes</option><option>No internet service</option></select></label>
+            <label>Streaming TV<select name="StreamingTV" data-internet-addon><option>Yes</option><option>No</option><option>No internet service</option></select></label>
+            <label>Streaming movies<select name="StreamingMovies" data-internet-addon><option>Yes</option><option>No</option><option>No internet service</option></select></label>
+            <label>Contract<select name="Contract"><option>Month-to-month</option><option>One year</option><option>Two year</option></select></label>
+            <label>Paperless billing<select name="PaperlessBilling"><option>Yes</option><option>No</option></select></label>
+            <label>Payment method<select name="PaymentMethod"><option>Electronic check</option><option>Mailed check</option><option>Bank transfer (automatic)</option><option>Credit card (automatic)</option></select></label>
+            <label>Monthly charges<input name="MonthlyCharges" type="number" min="0" max="1000" step="0.01" value="85.50" required></label>
+            <label>Total charges<input name="TotalCharges" type="number" min="0" max="120000" step="0.01" value="171.00" required></label>
+          </div>
+          <button id="submit" type="submit">Request prediction</button>
+          <p id="error" role="alert"></p>
+        </form>
+      </section>
+      <aside>
+        <section class="panel">
+          <h2>API response</h2>
+          <div class="metric"><span>churn_probability (exact API value)</span><strong id="probability">—</strong></div>
+          <div class="metric"><span>decision</span><strong id="decision">—</strong></div>
+          <div class="metric"><span>threshold</span><strong id="threshold">—</strong></div>
+          <div class="metric"><span>calibration</span><strong id="calibration">—</strong></div>
+          <div class="metric"><span>local explanation</span><strong id="explanation">Not available</strong></div>
+          <p class="small">No customer-specific drivers or retention actions are inferred. Global feature importance is population-level model metadata only.</p>
+        </section>
+        <section class="panel" style="margin-top:18px">
+          <h2>Loaded artifact</h2>
+          <div class="metric"><span>model ID</span><strong id="model-id">Loading…</strong></div>
+          <div class="metric"><span>final-test status</span><strong id="final-test" class="status">Loading…</strong></div>
+        </section>
+      </aside>
+    </div>
+  </main>
+</body>
+</html>

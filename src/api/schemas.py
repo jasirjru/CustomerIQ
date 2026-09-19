@@ -1,82 +1,82 @@
-"""
-CustomerIQ — Pydantic Request & Response Schemas
+"""Validated prediction inputs and honest, versioned response contracts."""
 
-Defines type validation, field ranges, and API request/response contracts.
-Prevents invalid customer data payloads from reaching the model.
-"""
+from typing import Annotated, Literal
+from pydantic import BaseModel, ConfigDict, Field, field_validator, model_validator
 
-from typing import List, Dict, Any, Optional
-from pydantic import BaseModel, Field
+YesNo = Literal["Yes", "No"]
+InternetAddon = Literal["Yes", "No", "No internet service"]
+INTERNET_ADDONS = ("OnlineSecurity", "OnlineBackup", "DeviceProtection", "TechSupport", "StreamingTV", "StreamingMovies")
 
 
 class CustomerPayload(BaseModel):
-    """
-    Schema representing a single customer profile for inference.
-    Matches the raw incoming customer format before any preprocessing.
-    """
-    gender: str = Field(..., examples=["Female"], description="Customer biological gender ('Male' or 'Female')")
-    SeniorCitizen: int = Field(..., ge=0, le=1, examples=[0], description="Whether customer is a senior citizen (1 or 0)")
-    Partner: str = Field(..., examples=["No"], description="'Yes' or 'No'")
-    Dependents: str = Field(..., examples=["No"], description="'Yes' or 'No'")
-    tenure: int = Field(..., ge=0, le=120, examples=[2], description="Number of months customer has stayed with the company")
-    PhoneService: str = Field(..., examples=["Yes"], description="'Yes' or 'No'")
-    MultipleLines: str = Field(..., examples=["No"], description="'Yes', 'No', or 'No phone service'")
-    InternetService: str = Field(..., examples=["Fiber optic"], description="'DSL', 'Fiber optic', or 'No'")
-    OnlineSecurity: str = Field(..., examples=["No"], description="'Yes', 'No', or 'No internet service'")
-    OnlineBackup: str = Field(..., examples=["No"], description="'Yes', 'No', or 'No internet service'")
-    DeviceProtection: str = Field(..., examples=["No"], description="'Yes', 'No', or 'No internet service'")
-    TechSupport: str = Field(..., examples=["No"], description="'Yes', 'No', or 'No internet service'")
-    StreamingTV: str = Field(..., examples=["Yes"], description="'Yes', 'No', or 'No internet service'")
-    StreamingMovies: str = Field(..., examples=["Yes"], description="'Yes', 'No', or 'No internet service'")
-    Contract: str = Field(..., examples=["Month-to-month"], description="'Month-to-month', 'One year', 'Two year'")
-    PaperlessBilling: str = Field(..., examples=["Yes"], description="'Yes' or 'No'")
-    PaymentMethod: str = Field(..., examples=["Electronic check"], description="'Electronic check', 'Mailed check', 'Bank transfer (automatic)', 'Credit card (automatic)'")
-    MonthlyCharges: float = Field(..., ge=0.0, examples=[85.50], description="Monthly subscription charge in USD")
-    TotalCharges: Optional[float] = Field(None, ge=0.0, examples=[171.0], description="Total historical spend. If null, automatically estimated.")
+    model_config = ConfigDict(extra="forbid", allow_inf_nan=False)
+    customer_id: str | None = Field(None, max_length=64, description="Optional correlation ID, never a model feature.")
+    gender: Literal["Female", "Male"]
+    SeniorCitizen: int = Field(ge=0, le=1, strict=True)
+    Partner: YesNo
+    Dependents: YesNo
+    tenure: int = Field(ge=0, le=120, strict=True)
+    PhoneService: YesNo
+    MultipleLines: Literal["Yes", "No", "No phone service"]
+    InternetService: Literal["DSL", "Fiber optic", "No"]
+    OnlineSecurity: InternetAddon
+    OnlineBackup: InternetAddon
+    DeviceProtection: InternetAddon
+    TechSupport: InternetAddon
+    StreamingTV: InternetAddon
+    StreamingMovies: InternetAddon
+    Contract: Literal["Month-to-month", "One year", "Two year"]
+    PaperlessBilling: YesNo
+    PaymentMethod: Literal["Electronic check", "Mailed check", "Bank transfer (automatic)", "Credit card (automatic)"]
+    MonthlyCharges: float = Field(ge=0, le=1000, strict=True)
+    TotalCharges: float | None = Field(None, ge=0, le=120000, strict=True, description="Observed spend. Null allowed only when tenure is zero.")
 
-    model_config = {
-        "json_schema_extra": {
-            "example": {
-                "gender": "Female",
-                "SeniorCitizen": 0,
-                "Partner": "No",
-                "Dependents": "No",
-                "tenure": 2,
-                "PhoneService": "Yes",
-                "MultipleLines": "No",
-                "InternetService": "Fiber optic",
-                "OnlineSecurity": "No",
-                "OnlineBackup": "No",
-                "DeviceProtection": "No",
-                "TechSupport": "No",
-                "StreamingTV": "Yes",
-                "StreamingMovies": "Yes",
-                "Contract": "Month-to-month",
-                "PaperlessBilling": "Yes",
-                "PaymentMethod": "Electronic check",
-                "MonthlyCharges": 85.50,
-                "TotalCharges": 171.0,
-            }
-        }
-    }
+    @field_validator("*", mode="before")
+    @classmethod
+    def normalize(cls, value):
+        if isinstance(value, str):
+            value = value.strip()
+            if not value or len(value) > 64:
+                raise ValueError("Strings must contain 1 to 64 non-whitespace characters.")
+        if isinstance(value, bool):
+            raise ValueError("Boolean values are not valid customer fields.")
+        return value
+
+    @model_validator(mode="after")
+    def services_and_charges(self):
+        if (self.PhoneService == "No") != (self.MultipleLines == "No phone service"):
+            raise ValueError("MultipleLines must be 'No phone service' exactly when PhoneService is 'No'.")
+        for name in INTERNET_ADDONS:
+            if (self.InternetService == "No") != (getattr(self, name) == "No internet service"):
+                raise ValueError(f"{name} must be 'No internet service' exactly when InternetService is 'No'.")
+        if self.tenure == 0:
+            if self.TotalCharges not in (None, 0):
+                raise ValueError("TotalCharges must be zero for tenure=0.")
+            self.TotalCharges = 0.0
+        elif self.TotalCharges is None:
+            raise ValueError("Observed TotalCharges is required when tenure is positive.")
+        elif self.TotalCharges > self.tenure * 1000:
+            raise ValueError("TotalCharges exceeds the maximum possible charges for tenure.")
+        return self
 
 
-class RiskFactor(BaseModel):
-    feature: str
-    impact_weight: float
+CustomerBatch = Annotated[list[CustomerPayload], Field(min_length=1, max_length=100)]
 
 
 class PredictionResponse(BaseModel):
-    """
-    Standardized inference response contract returned to clients.
-    """
-    churn_prediction: int = Field(..., description="1 = Likely to Churn, 0 = Likely to Stay")
-    churn_probability: float = Field(..., description="Calibrated churn probability [0.0, 1.0]")
-    risk_level: str = Field(..., description="'HIGH', 'MODERATE', or 'LOW'")
-    decision_threshold: float = Field(..., description="Classification threshold applied")
-    customer_segment: Optional[str] = Field(None, description="Discovered unsupervised customer persona")
-    top_risk_drivers: List[Dict[str, Any]] = Field(default_factory=list, description="Top positive drivers toward churn")
-    recommended_retention_action: str = Field(..., description="Tailored business retention guidance")
+    customer_id: str | None = None
+    churn_prediction: Literal[0, 1]
+    churn_probability: float = Field(ge=0, le=1, allow_inf_nan=False, description="Unrounded estimated churn probability; no fitted calibrator.")
+    risk_level: Literal["REVIEW", "BELOW_THRESHOLD"]
+    decision_threshold: float
+    threshold_status: str
+    model_version: str
+    calibration_status: str
+    explanation_status: Literal["not_available"] = "not_available"
+    # Retained empty/null for clients migrating from v1.0. No invalid attribution.
+    top_risk_drivers: list[dict] = Field(default_factory=list)
+    recommended_retention_action: str | None = None
+    customer_segment: str | None = None
 
 
 class HealthResponse(BaseModel):
@@ -84,12 +84,6 @@ class HealthResponse(BaseModel):
     service: str
     model_loaded: bool
     preprocessor_loaded: bool
-
-
-class ModelInfoResponse(BaseModel):
-    model_name: str
-    model_type: str
-    decision_threshold: float
-    test_roc_auc: float
-    test_accuracy: float
-    engineered_features_count: int
+    manifest_available: bool
+    schema_version: str
+    environment: str

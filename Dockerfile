@@ -21,6 +21,10 @@ COPY requirements-api.lock .
 # Install Python dependencies without storing pip wheel cache (reduces image size)
 RUN python -m pip install --no-cache-dir --require-hashes -r requirements-api.lock
 
+# Packaging tools are not needed after dependency installation and would add
+# unnecessary runtime vulnerability surface to the serving image.
+RUN python -m pip uninstall --yes pip setuptools wheel
+
 # Copy only inference source, registered serving artifacts, and configuration
 COPY src/__init__.py /app/src/__init__.py
 COPY src/api/ /app/src/api/

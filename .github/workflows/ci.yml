@@ -88,6 +88,7 @@ jobs:
         exit-code: 1
 
     - name: Start Runtime Image
+      id: start-runtime
       run: |
         docker run --detach --name customeriq-ci --publish 8000:8000 \
           --env CUSTOMERIQ_ENVIRONMENT=production \
@@ -121,7 +122,7 @@ jobs:
           http://127.0.0.1:8000/metrics | grep --fixed-strings customeriq_inference_requests_total
 
     - name: Show Container Logs on Failure
-      if: failure()
+      if: failure() && steps.start-runtime.outcome == 'success'
       run: docker logs customeriq-ci
 
     - name: Stop Runtime Image

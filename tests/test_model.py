@@ -3,7 +3,7 @@ CustomerIQ — Tests for Machine Learning Models
 
 Validates:
 1. Model artifacts existence and deserialization.
-2. Probability calibration properties (probabilities bounded in [0, 1] and sum to 1).
+2. Probability invariants (bounded in [0, 1] and sum to 1; not calibration).
 3. Risk monotonicity (high-risk features yield higher probability than low-risk features).
 """
 
@@ -44,8 +44,8 @@ def test_champion_model_attributes(champion_model):
 
 def test_prediction_probabilities_bounded(champion_model, preprocessor):
     """Verify that predicted probabilities fall strictly between 0 and 1."""
-    X_test_proc = pd.read_csv(DATA_PROCESSED / "X_test_processed.csv").head(20)
-    probas = champion_model.predict_proba(X_test_proc)
+    X_train_proc = pd.read_csv(DATA_PROCESSED / "X_train_processed.csv").head(20)
+    probas = champion_model.predict_proba(X_train_proc)
 
     # Must have 2 classes (0 and 1)
     assert probas.shape[1] == 2

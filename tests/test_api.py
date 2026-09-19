@@ -68,9 +68,10 @@ def test_model_info_endpoint(client):
     response = client.get("/model-info")
     assert response.status_code == 200
     data = response.json()
-    assert "Random Forest" in data["model_name"]
-    assert data["decision_threshold"] == 0.35
-    assert data["engineered_features_count"] == 46
+    assert data["model"]["class"] == "RandomForestClassifier"
+    assert data["threshold"] == 0.35
+    assert len(data["feature_schema"]["transformed_features"]) == 46
+    assert data["final_test"]["metrics"] is None
 
 
 def test_predict_endpoint_valid_payload(client, valid_customer_payload):
@@ -81,11 +82,12 @@ def test_predict_endpoint_valid_payload(client, valid_customer_payload):
 
     assert data["churn_prediction"] in [0, 1]
     assert 0.0 <= data["churn_probability"] <= 1.0
-    assert data["risk_level"] in ["LOW", "MODERATE", "HIGH"]
+    assert data["risk_level"] in ["BELOW_THRESHOLD", "REVIEW"]
     assert data["decision_threshold"] == 0.35
     assert "customer_segment" in data
-    assert len(data["top_risk_drivers"]) > 0
-    assert "recommended_retention_action" in data
+    assert data["top_risk_drivers"] == []
+    assert data["recommended_retention_action"] is None
+    assert data["explanation_status"] == "not_available"
 
 
 def test_predict_batch_endpoint(client, valid_customer_payload):

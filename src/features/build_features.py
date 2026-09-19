@@ -27,7 +27,11 @@ def get_feature_lists(X: pd.DataFrame) -> Tuple[List[str], List[str]]:
     # Numerical features are int or float
     numerical_features = X.select_dtypes(include=["int64", "float64"]).columns.tolist()
     # Categorical features are object or category
-    categorical_features = X.select_dtypes(include=["object", "category"]).columns.tolist()
+    # Pandas 3 includes string dtype in object selection only as a temporary
+    # compatibility behavior. Name it explicitly so pandas 4 keeps the schema.
+    categorical_features = X.select_dtypes(
+        include=["object", "string", "category"]
+    ).columns.tolist()
 
     # Note: SeniorCitizen is already 0/1 integer, so it might be treated as numerical or categorical.
     # If we want to treat SeniorCitizen as categorical:

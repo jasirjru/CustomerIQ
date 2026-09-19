@@ -22,8 +22,26 @@ notebooks/
 .ipynb_checkpoints/
 
 # Raw data (large; not needed for model inference)
-data/raw/
-reports/figures/
+data/
+reports/
+
+# Development-only sources and documentation
+tests/
+scripts/
+docs/
+src/dashboard/
+src/data/
+src/evaluation/
+src/features/
+src/models/
+src/visualization/
+src/api/static/
+
+# Local secrets and overrides
+.env
+.env.*
+*.pem
+*.key
 
 # Local IDE configuration
 .idea/

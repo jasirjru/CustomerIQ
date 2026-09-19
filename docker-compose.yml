@@ -11,9 +11,14 @@ services:
       - "8000:8000"
     environment:
       - PORT=8000
+      - CUSTOMERIQ_ENVIRONMENT=production
+      - CUSTOMERIQ_MAX_BODY_BYTES=262144
+      - CUSTOMERIQ_RATE_LIMIT=60
+      - CUSTOMERIQ_REQUIRE_API_KEY=true
+      - CUSTOMERIQ_API_KEYS=${CUSTOMERIQ_API_KEYS:?CUSTOMERIQ_API_KEYS must be set}
     restart: unless-stopped
     healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:8000/health"]
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://127.0.0.1:8000/health', timeout=4).read()"]
       interval: 30s
       timeout: 5s
       retries: 3

@@ -7,6 +7,9 @@ Responsible for:
 3. Splitting into stratified train and test sets to prevent data leakage.
 """
 
+from dataclasses import dataclass
+from contextlib import contextmanager
+from contextvars import ContextVar
 from typing import Tuple
 import pandas as pd
 from sklearn.model_selection import train_test_split
@@ -25,7 +28,65 @@ from config import (
     COLUMNS_TO_DROP,
     TEST_SIZE,
     RANDOM_STATE,
+    FINAL_TEST_SIZE,
+    VALIDATION_SIZE_WITHIN_DEVELOPMENT,
+    DATA_PROCESSED,
 )
+
+
+_sealed_data = ContextVar("sealed_customeriq_data", default=False)
+
+
+def _deny_reserved_data(event, args):
+    """Reject filesystem access before opening historical test or raw data."""
+    if event == "open" and _sealed_data.get() and isinstance(args[0], (str, bytes)):
+        path = Path(args[0].decode() if isinstance(args[0], bytes) else args[0])
+        name = path.name.lower()
+        if (name.startswith(("x_test", "y_test", "final_test"))
+                or name == "telco_customer_churn.csv"):
+            raise PermissionError("Reserved final-test/full-raw data access is sealed.")
+
+
+sys.addaudithook(_deny_reserved_data)
+
+
+@contextmanager
+def final_test_sealed():
+    """Guard development runs; the full raw CSV also contains reserved labels."""
+    token = _sealed_data.set(True)
+    try:
+        yield
+    finally:
+        _sealed_data.reset(token)
+
+
+def load_development_partitions():
+    """Split the previously materialized 80% development pool, without test IO.
+
+    Original CSV row order is preserved, so seed 42 reproduces the earlier
+    4,225/1,409 development split. Do not regenerate it from the full raw CSV.
+    """
+    with final_test_sealed():
+        X = pd.read_csv(DATA_PROCESSED / "X_train_raw.csv")
+        y = pd.read_csv(DATA_PROCESSED / "y_train.csv").squeeze("columns")
+        if len(X) != len(y) or set(y.unique()) != {0, 1}:
+            raise ValueError("Development features/labels are not aligned binary data.")
+        return train_test_split(
+            X, y, test_size=VALIDATION_SIZE_WITHIN_DEVELOPMENT,
+            random_state=RANDOM_STATE, stratify=y,
+        )
+
+
+@dataclass(frozen=True)
+class EvaluationPartitions:
+    """Isolated partitions for model selection and final evaluation."""
+
+    X_train: pd.DataFrame
+    X_validation: pd.DataFrame
+    X_final_test: pd.DataFrame
+    y_train: pd.Series
+    y_validation: pd.Series
+    y_final_test: pd.Series
 
 
 def load_raw_data(filepath: Path = RAW_DATASET_PATH) -> pd.DataFrame:
@@ -115,3 +176,58 @@ def split_data(
     )
 
     return X_train, X_test, y_train, y_test
+
+
+def split_train_validation_test(
+    df: pd.DataFrame,
+    target_column: str = TARGET_COLUMN,
+    final_test_size: float = FINAL_TEST_SIZE,
+    validation_size_within_development: float = VALIDATION_SIZE_WITHIN_DEVELOPMENT,
+    random_state: int = RANDOM_STATE,
+) -> EvaluationPartitions:
+    """Create isolated train, validation, and final-test partitions.
+
+    The final test set is separated first and must not be passed to model
+    selection or threshold optimization. The validation fraction is expressed
+    relative to the remaining development data. With the default values this
+    produces a 60/20/20 allocation.
+
+    All splits are stratified by the binary target and retain their original
+    indices so callers and tests can verify that the partitions are disjoint.
+    """
+    if target_column not in df.columns:
+        raise KeyError(f"Target column '{target_column}' not found in DataFrame.")
+    if not 0.0 < final_test_size < 1.0:
+        raise ValueError("final_test_size must be strictly between 0 and 1.")
+    if not 0.0 < validation_size_within_development < 1.0:
+        raise ValueError(
+            "validation_size_within_development must be strictly between 0 and 1."
+        )
+
+    X = df.drop(columns=[target_column])
+    y = df[target_column]
+
+    X_development, X_final_test, y_development, y_final_test = train_test_split(
+        X,
+        y,
+        test_size=final_test_size,
+        random_state=random_state,
+        stratify=y,
+    )
+
+    X_train, X_validation, y_train, y_validation = train_test_split(
+        X_development,
+        y_development,
+        test_size=validation_size_within_development,
+        random_state=random_state,
+        stratify=y_development,
+    )
+
+    return EvaluationPartitions(
+        X_train=X_train,
+        X_validation=X_validation,
+        X_final_test=X_final_test,
+        y_train=y_train,
+        y_validation=y_validation,
+        y_final_test=y_final_test,
+    )

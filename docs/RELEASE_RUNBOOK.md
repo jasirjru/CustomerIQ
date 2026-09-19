@@ -2,6 +2,8 @@
 
 This runbook describes gates only. It does not authorize evaluation, artifact replacement, deployment, or release.
 
+Start with `docs/release-evidence.template.json`, attach reviewable evidence and accountable approvers, then run `python scripts/check_release_readiness.py --evidence <candidate-evidence.json>`. The command is read-only and exits non-zero while any gate remains open. A successful report is necessary but does not itself authorize release.
+
 ## 1. Define and approve
 
 - Name the business owner, ML owner, security owner, and rollback decision-maker.

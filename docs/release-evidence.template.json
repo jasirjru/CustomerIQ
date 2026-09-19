@@ -1,0 +1,53 @@
+{
+  "schema_version": "1.0",
+  "candidate_model_id": "legacy-rf-09608a080c72",
+  "frozen_git_commit": null,
+  "fresh_external_evaluation": {
+    "status": "pending",
+    "evidence_ref": null,
+    "approved_by": null,
+    "note": "Requires a frozen protocol and fresh forward-time or external labeled data."
+  },
+  "calibration": {
+    "status": "pending",
+    "evidence_ref": null,
+    "approved_by": null,
+    "note": "Calibration has not been fitted or evaluated."
+  },
+  "cohort_risk_review": {
+    "status": "pending",
+    "evidence_ref": null,
+    "approved_by": null,
+    "note": "Cohort definitions, uncertainty, and acceptance limits require approval."
+  },
+  "privacy_security_review": {
+    "status": "pending",
+    "evidence_ref": null,
+    "approved_by": null,
+    "note": "Formal privacy and security review is outstanding."
+  },
+  "load_soak_test": {
+    "status": "pending",
+    "evidence_ref": null,
+    "approved_by": null,
+    "note": "Run only against an authorized environment and traffic profile."
+  },
+  "rollback_rehearsal": {
+    "status": "pending",
+    "evidence_ref": null,
+    "approved_by": null,
+    "note": "Rollback has not been rehearsed against an immutable candidate."
+  },
+  "shadow_observation": {
+    "status": "pending",
+    "evidence_ref": null,
+    "approved_by": null,
+    "note": "No shadow deployment is authorized or completed."
+  },
+  "release_approval": {
+    "status": "pending",
+    "evidence_ref": null,
+    "approved_by": null,
+    "note": "Human release approval is required after all evidence is complete."
+  }
+}

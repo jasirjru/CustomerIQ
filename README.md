@@ -201,7 +201,7 @@ pip install --require-hashes -r requirements-test.lock
 # 4. Start API server
 uvicorn src.api.main:app --reload --host 127.0.0.1 --port 8000
 ```
-Open the browser interface at **`http://127.0.0.1:8000/`** and the generated OpenAPI schema at **`http://127.0.0.1:8000/docs`**.
+Open the browser interface at **`http://127.0.0.1:8000/`**, the self-contained API reference at **`http://127.0.0.1:8000/docs`**, and the raw OpenAPI document at **`http://127.0.0.1:8000/openapi.json`**.
 
 ### Option 2: Docker & Docker Compose
 ```bash

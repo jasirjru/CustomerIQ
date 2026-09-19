@@ -36,9 +36,13 @@ Development model comparison used repeated stratified cross-validation on the tr
 
 Calibration utilities now support training-only nested-CV method selection, but no calibrator has been fitted into or attached to the production artifacts.
 
+Offline drift utilities can compare an approved reference population with a later monitoring window using PSI for numeric features and total-variation/unseen-category rates for categorical features. No production baseline has been approved, so these utilities are evidence scaffolding rather than a current drift claim.
+
 ## Explanations
 
 The manifest contains global impurity-based feature importance for the fitted forest. This describes aggregate model behavior and is not a local explanation. The API correctly returns `explanation_status: "not_available"`, no local drivers, and no retention recommendation.
+
+Offline utilities can aggregate transformed-feature contributions and test additivity and top-feature stability when a future, validated attribution method supplies those contributions. They do not generate explanations and are not connected to serving.
 
 ## Fairness and risk
 

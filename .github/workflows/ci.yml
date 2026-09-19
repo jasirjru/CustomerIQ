@@ -33,9 +33,27 @@ jobs:
     - name: Verify Dependency Consistency
       run: python -m pip check
 
+    - name: Validate Operational Configuration
+      run: python -c "import pathlib, yaml; yaml.safe_load(pathlib.Path('ops/prometheus-alerts.yml').read_text(encoding='utf-8'))"
+
     - name: Run Pytest Test Suite
       run: |
         python -m pytest -q
+
+    - name: Set up Node.js 22
+      uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4
+      with:
+        node-version: "22"
+        cache: npm
+
+    - name: Install Browser Test Dependencies
+      run: |
+        npm ci --ignore-scripts
+        npm audit --audit-level=high
+        npx playwright install --with-deps chromium
+
+    - name: Run Desktop and Mobile Browser Tests
+      run: npm run test:e2e
 
   container-smoke:
     needs: test-and-lint

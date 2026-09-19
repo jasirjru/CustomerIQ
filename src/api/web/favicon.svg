@@ -1,0 +1,5 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-label="CustomerIQ">
+  <rect width="64" height="64" rx="16" fill="#07111f"/>
+  <path d="M14 18 32 8l18 10v28L32 56 14 46Z" fill="none" stroke="#67f0bc" stroke-width="4" stroke-linejoin="round"/>
+  <path d="m23 27 9-5 9 5v10l-9 5-9-5Z" fill="#67f0bc" opacity=".2" stroke="#67f0bc" stroke-width="3" stroke-linejoin="round"/>
+</svg>

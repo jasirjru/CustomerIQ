@@ -11,6 +11,7 @@ from fastapi.exceptions import RequestValidationError
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import FileResponse, JSONResponse, PlainTextResponse
 from fastapi.staticfiles import StaticFiles
+from starlette.middleware.gzip import GZipMiddleware
 
 from src.api.manifest import ArtifactManifest
 from src.api.observability import MetricsRegistry
@@ -36,6 +37,7 @@ def create_app(settings: SecuritySettings | None = None, service_factory=ModelSe
     application = FastAPI(title="CustomerIQ inference API", version="1.1.0", lifespan=lifespan, docs_url=None, redoc_url=None)
     application.state.metrics = metrics
     application.add_middleware(SecurityMiddleware, settings=settings, metrics=metrics)
+    application.add_middleware(GZipMiddleware, minimum_size=1000, compresslevel=5)
     if settings.allowed_origins:
         application.add_middleware(CORSMiddleware, allow_origins=list(settings.allowed_origins),
                                    allow_methods=["GET", "POST"], allow_headers=["Content-Type", "X-API-Key"],
@@ -134,7 +136,6 @@ def create_app(settings: SecuritySettings | None = None, service_factory=ModelSe
             raise HTTPException(422, detail=duplicates)
         return infer(customers, request, "/predict-batch")
 
-    # The legacy static prototype contains unsupported claims and is never mounted.
     application.mount("/assets", StaticFiles(directory=WEB_DIR), name="assets")
     return application
 

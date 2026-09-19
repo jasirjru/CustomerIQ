@@ -59,3 +59,15 @@ test("layout does not overflow the viewport", async ({ page }) => {
   const sizes = await page.evaluate(() => ({ width: document.documentElement.scrollWidth, viewport: document.documentElement.clientWidth }));
   expect(sizes.width).toBeLessThanOrEqual(sizes.viewport);
 });
+
+test("loads the product without third-party or failed asset requests", async ({ page }) => {
+  const failures = [];
+  page.on("requestfailed", (request) => failures.push(request.url()));
+  const responses = [];
+  page.on("response", (response) => responses.push({ url: response.url(), status: response.status() }));
+  await page.goto("/");
+  await expect(page.getByText("Service healthy")).toBeVisible();
+  expect(failures).toEqual([]);
+  expect(responses.every(({ url }) => new URL(url).origin === "http://127.0.0.1:8765")).toBe(true);
+  expect(responses.filter(({ status }) => status >= 400)).toEqual([]);
+});

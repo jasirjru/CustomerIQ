@@ -18,3 +18,5 @@ Suggested alerts:
 Do not use high-cardinality customer identifiers, raw categories, payloads, keys, or free-form paths as metric labels. Aggregate multiple workers through a supported Prometheus deployment pattern or replace the in-memory registry with an external telemetry backend before horizontal scaling.
 
 Use `scripts/load_test.py` only against localhost by default. Remote use requires the explicit `--allow-remote` flag and prior authorization. The script sends a fixed synthetic customer, never repository datasets.
+
+The current developer-machine measurements and their limitations are recorded in `docs/PERFORMANCE_BASELINE.md`. They are diagnostic evidence only and do not satisfy the production load/soak release gate.

@@ -29,6 +29,7 @@ Start with `docs/release-evidence.template.json`, attach reviewable evidence and
 
 - Build from `requirements-api.lock`; run unit, adversarial, container smoke, vulnerability, and license checks.
 - Run authorized load and soak tests at expected peak traffic plus headroom.
+- Treat `docs/PERFORMANCE_BASELINE.md` only as a local diagnostic; repeat against the immutable candidate in the approved production-like topology.
 - Verify TLS, managed secrets, key rotation, gateway rate limits, timeouts, log redaction, metrics collection, alerts, backups, and incident contacts.
 - Rehearse rollback to the preceding immutable image and policy configuration.
 

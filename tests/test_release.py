@@ -323,3 +323,13 @@ def test_docs_are_local_and_csp_safe(client):
     assert script.status_code == 200
     assert "innerHTML" not in script.text
     assert "unsafe-inline" not in response.headers["content-security-policy"]
+
+
+def test_web_assets_are_self_contained_compressed_and_bounded(client):
+    favicon = client.get("/assets/favicon.svg")
+    stylesheet = client.get("/assets/styles.css", headers={"Accept-Encoding": "gzip"})
+    scripts = [client.get("/assets/app.js"), client.get("/assets/docs.js")]
+    assert favicon.status_code == 200
+    assert favicon.headers["content-type"].startswith("image/svg+xml")
+    assert stylesheet.headers.get("content-encoding") == "gzip"
+    assert sum(len(response.content) for response in [stylesheet, *scripts]) < 40_000

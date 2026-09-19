@@ -1,0 +1,689 @@
+{
+  "schema_version": "1.1",
+  "model_id": "legacy-rf-09608a080c72",
+  "created_at": "2026-09-19T09:52:54.032754+00:00",
+  "artifact_created_at": null,
+  "git_commit": null,
+  "dataset_hash": null,
+  "development_data_hashes": {
+    "X_train_raw.csv": "94f8904d72c3ec60683fdd8310b89145e53b862636648e8227dd8411914cc3ee",
+    "y_train.csv": "96fbe309257ce30655894b01f34bc77f161a9c27448118950ade23e4a9f5d6f1"
+  },
+  "feature_schema": {
+    "request": {
+      "additionalProperties": false,
+      "properties": {
+        "customer_id": {
+          "anyOf": [
+            {
+              "maxLength": 64,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Optional correlation ID, never a model feature.",
+          "title": "Customer Id"
+        },
+        "gender": {
+          "enum": [
+            "Female",
+            "Male"
+          ],
+          "title": "Gender",
+          "type": "string"
+        },
+        "SeniorCitizen": {
+          "maximum": 1,
+          "minimum": 0,
+          "title": "Seniorcitizen",
+          "type": "integer"
+        },
+        "Partner": {
+          "enum": [
+            "Yes",
+            "No"
+          ],
+          "title": "Partner",
+          "type": "string"
+        },
+        "Dependents": {
+          "enum": [
+            "Yes",
+            "No"
+          ],
+          "title": "Dependents",
+          "type": "string"
+        },
+        "tenure": {
+          "maximum": 120,
+          "minimum": 0,
+          "title": "Tenure",
+          "type": "integer"
+        },
+        "PhoneService": {
+          "enum": [
+            "Yes",
+            "No"
+          ],
+          "title": "Phoneservice",
+          "type": "string"
+        },
+        "MultipleLines": {
+          "enum": [
+            "Yes",
+            "No",
+            "No phone service"
+          ],
+          "title": "Multiplelines",
+          "type": "string"
+        },
+        "InternetService": {
+          "enum": [
+            "DSL",
+            "Fiber optic",
+            "No"
+          ],
+          "title": "Internetservice",
+          "type": "string"
+        },
+        "OnlineSecurity": {
+          "enum": [
+            "Yes",
+            "No",
+            "No internet service"
+          ],
+          "title": "Onlinesecurity",
+          "type": "string"
+        },
+        "OnlineBackup": {
+          "enum": [
+            "Yes",
+            "No",
+            "No internet service"
+          ],
+          "title": "Onlinebackup",
+          "type": "string"
+        },
+        "DeviceProtection": {
+          "enum": [
+            "Yes",
+            "No",
+            "No internet service"
+          ],
+          "title": "Deviceprotection",
+          "type": "string"
+        },
+        "TechSupport": {
+          "enum": [
+            "Yes",
+            "No",
+            "No internet service"
+          ],
+          "title": "Techsupport",
+          "type": "string"
+        },
+        "StreamingTV": {
+          "enum": [
+            "Yes",
+            "No",
+            "No internet service"
+          ],
+          "title": "Streamingtv",
+          "type": "string"
+        },
+        "StreamingMovies": {
+          "enum": [
+            "Yes",
+            "No",
+            "No internet service"
+          ],
+          "title": "Streamingmovies",
+          "type": "string"
+        },
+        "Contract": {
+          "enum": [
+            "Month-to-month",
+            "One year",
+            "Two year"
+          ],
+          "title": "Contract",
+          "type": "string"
+        },
+        "PaperlessBilling": {
+          "enum": [
+            "Yes",
+            "No"
+          ],
+          "title": "Paperlessbilling",
+          "type": "string"
+        },
+        "PaymentMethod": {
+          "enum": [
+            "Electronic check",
+            "Mailed check",
+            "Bank transfer (automatic)",
+            "Credit card (automatic)"
+          ],
+          "title": "Paymentmethod",
+          "type": "string"
+        },
+        "MonthlyCharges": {
+          "maximum": 1000,
+          "minimum": 0,
+          "title": "Monthlycharges",
+          "type": "number"
+        },
+        "TotalCharges": {
+          "anyOf": [
+            {
+              "maximum": 120000,
+              "minimum": 0,
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Observed spend. Null allowed only when tenure is zero.",
+          "title": "Totalcharges"
+        }
+      },
+      "required": [
+        "gender",
+        "SeniorCitizen",
+        "Partner",
+        "Dependents",
+        "tenure",
+        "PhoneService",
+        "MultipleLines",
+        "InternetService",
+        "OnlineSecurity",
+        "OnlineBackup",
+        "DeviceProtection",
+        "TechSupport",
+        "StreamingTV",
+        "StreamingMovies",
+        "Contract",
+        "PaperlessBilling",
+        "PaymentMethod",
+        "MonthlyCharges"
+      ],
+      "title": "CustomerPayload",
+      "type": "object"
+    },
+    "raw_features": [
+      "gender",
+      "SeniorCitizen",
+      "Partner",
+      "Dependents",
+      "tenure",
+      "PhoneService",
+      "MultipleLines",
+      "InternetService",
+      "OnlineSecurity",
+      "OnlineBackup",
+      "DeviceProtection",
+      "TechSupport",
+      "StreamingTV",
+      "StreamingMovies",
+      "Contract",
+      "PaperlessBilling",
+      "PaymentMethod",
+      "MonthlyCharges",
+      "TotalCharges"
+    ],
+    "transformed_features": [
+      "num__MonthlyCharges",
+      "num__TotalCharges",
+      "num__tenure",
+      "cat__Contract_Month-to-month",
+      "cat__Contract_One year",
+      "cat__Contract_Two year",
+      "cat__Dependents_No",
+      "cat__Dependents_Yes",
+      "cat__DeviceProtection_No",
+      "cat__DeviceProtection_No internet service",
+      "cat__DeviceProtection_Yes",
+      "cat__InternetService_DSL",
+      "cat__InternetService_Fiber optic",
+      "cat__InternetService_No",
+      "cat__MultipleLines_No",
+      "cat__MultipleLines_No phone service",
+      "cat__MultipleLines_Yes",
+      "cat__OnlineBackup_No",
+      "cat__OnlineBackup_No internet service",
+      "cat__OnlineBackup_Yes",
+      "cat__OnlineSecurity_No",
+      "cat__OnlineSecurity_No internet service",
+      "cat__OnlineSecurity_Yes",
+      "cat__PaperlessBilling_No",
+      "cat__PaperlessBilling_Yes",
+      "cat__Partner_No",
+      "cat__Partner_Yes",
+      "cat__PaymentMethod_Bank transfer (automatic)",
+      "cat__PaymentMethod_Credit card (automatic)",
+      "cat__PaymentMethod_Electronic check",
+      "cat__PaymentMethod_Mailed check",
+      "cat__PhoneService_No",
+      "cat__PhoneService_Yes",
+      "cat__SeniorCitizen_0",
+      "cat__SeniorCitizen_1",
+      "cat__StreamingMovies_No",
+      "cat__StreamingMovies_No internet service",
+      "cat__StreamingMovies_Yes",
+      "cat__StreamingTV_No",
+      "cat__StreamingTV_No internet service",
+      "cat__StreamingTV_Yes",
+      "cat__TechSupport_No",
+      "cat__TechSupport_No internet service",
+      "cat__TechSupport_Yes",
+      "cat__gender_Female",
+      "cat__gender_Male"
+    ],
+    "categorical_vocabularies": {
+      "Contract": [
+        "Month-to-month",
+        "One year",
+        "Two year"
+      ],
+      "Dependents": [
+        "No",
+        "Yes"
+      ],
+      "DeviceProtection": [
+        "No",
+        "No internet service",
+        "Yes"
+      ],
+      "InternetService": [
+        "DSL",
+        "Fiber optic",
+        "No"
+      ],
+      "MultipleLines": [
+        "No",
+        "No phone service",
+        "Yes"
+      ],
+      "OnlineBackup": [
+        "No",
+        "No internet service",
+        "Yes"
+      ],
+      "OnlineSecurity": [
+        "No",
+        "No internet service",
+        "Yes"
+      ],
+      "PaperlessBilling": [
+        "No",
+        "Yes"
+      ],
+      "Partner": [
+        "No",
+        "Yes"
+      ],
+      "PaymentMethod": [
+        "Bank transfer (automatic)",
+        "Credit card (automatic)",
+        "Electronic check",
+        "Mailed check"
+      ],
+      "PhoneService": [
+        "No",
+        "Yes"
+      ],
+      "SeniorCitizen": [
+        0,
+        1
+      ],
+      "StreamingMovies": [
+        "No",
+        "No internet service",
+        "Yes"
+      ],
+      "StreamingTV": [
+        "No",
+        "No internet service",
+        "Yes"
+      ],
+      "TechSupport": [
+        "No",
+        "No internet service",
+        "Yes"
+      ],
+      "gender": [
+        "Female",
+        "Male"
+      ]
+    }
+  },
+  "preprocessor": {
+    "class": "ColumnTransformer",
+    "training_package_version": null
+  },
+  "model": {
+    "class": "RandomForestClassifier",
+    "hyperparameters": {
+      "bootstrap": true,
+      "ccp_alpha": 0,
+      "class_weight": null,
+      "criterion": "gini",
+      "max_depth": 8,
+      "max_features": "sqrt",
+      "max_leaf_nodes": null,
+      "max_samples": null,
+      "min_impurity_decrease": 0,
+      "min_samples_leaf": 5,
+      "min_samples_split": 10,
+      "min_weight_fraction_leaf": 0,
+      "monotonic_cst": null,
+      "n_estimators": 100,
+      "n_jobs": -1,
+      "oob_score": false,
+      "random_state": 42,
+      "verbose": 0,
+      "warm_start": false
+    },
+    "training_rows": 5634,
+    "training_provenance": "Legacy notebooks; original training commit/time not recorded."
+  },
+  "calibration": {
+    "status": "not_fitted",
+    "method": null,
+    "validation_metrics": null
+  },
+  "cv_metrics": [
+    {
+      "model": "Random Forest",
+      "folds": 15,
+      "average_precision_mean": 0.6708798300252775,
+      "average_precision_std": 0.022903280015451465,
+      "roc_auc_mean": 0.8480067293968647,
+      "f1_mean": 0.5715831435248621,
+      "balanced_accuracy_mean": 0.7048721658862497
+    },
+    {
+      "model": "Logistic Regression",
+      "folds": 15,
+      "average_precision_mean": 0.6679660931856203,
+      "average_precision_std": 0.030056603553996468,
+      "roc_auc_mean": 0.8486038913253734,
+      "f1_mean": 0.5972144214670365,
+      "balanced_accuracy_mean": 0.7224509184433215
+    },
+    {
+      "model": "Calibrated SVM",
+      "folds": 15,
+      "average_precision_mean": 0.6415607258035837,
+      "average_precision_std": 0.02476561038718105,
+      "roc_auc_mean": 0.7981812330095405,
+      "f1_mean": 0.5547975216366408,
+      "balanced_accuracy_mean": 0.6944298954166882
+    },
+    {
+      "model": "Decision Tree",
+      "folds": 15,
+      "average_precision_mean": 0.5985561525894313,
+      "average_precision_std": 0.022723953504249817,
+      "roc_auc_mean": 0.8197957278657136,
+      "f1_mean": 0.5307685026203959,
+      "balanced_accuracy_mean": 0.6821409175404617
+    },
+    {
+      "model": "K-Nearest Neighbors",
+      "folds": 15,
+      "average_precision_mean": 0.5411525335904009,
+      "average_precision_std": 0.01868556353925273,
+      "roc_auc_mean": 0.8010297809513917,
+      "f1_mean": 0.5587498102688435,
+      "balanced_accuracy_mean": 0.6995093232633555
+    }
+  ],
+  "development_evaluation": {
+    "status": "separate_candidate_experiment",
+    "protocol": "60/20/20; 5-fold stratified CV repeated 3 times on 4225 training rows; seed 42",
+    "primary_metric": "average_precision",
+    "selected_candidate": "Random Forest",
+    "ap_difference": 0.0029137368396572,
+    "experimental_threshold": 0.13503908770159245,
+    "threshold_deployable": false,
+    "validation_rows": 1409,
+    "validation_cost": 63900,
+    "illustrative_costs": {
+      "false_negative": 500,
+      "false_positive": 100
+    },
+    "artifact_replaced": false
+  },
+  "threshold": 0.35,
+  "threshold_status": "legacy_unapproved",
+  "threshold_selection": "Retained legacy policy; not approved as a business-optimal production threshold.",
+  "business_costs": {
+    "status": "not_approved",
+    "false_negative": null,
+    "false_positive": null,
+    "approval_record": "docs/business-costs.json"
+  },
+  "package_versions": {
+    "python": "3.11.16",
+    "numpy": "2.4.5",
+    "pandas": "3.0.5",
+    "scikit-learn": "1.9.0",
+    "joblib": "1.6.0",
+    "fastapi": "0.141.1",
+    "pydantic": "2.13.5",
+    "uvicorn": "0.52.4",
+    "starlette": "1.6.0"
+  },
+  "package_versions_provenance": "CustomerIQ v1.1 release verification environment on CPython 3.11.16; not asserted original training versions.",
+  "artifact_hashes": {
+    "preprocessor.joblib": "56d14058ff09f1a6f59f5a460207a8443b9da51d4c24d06e3f5a51e5735c58b2",
+    "champion_model.joblib": "09608a080c720820305a24bf629f218ff9f114cd5f3f6baf45387f9c383b8d11"
+  },
+  "final_test": {
+    "status": "not_evaluated_in_v1_1",
+    "rows_reserved": 1409,
+    "metrics": null,
+    "historical_exposure": "Previously evaluated by legacy notebooks and audit. Fresh external data is required for an independent release estimate."
+  },
+  "global_importance": [
+    {
+      "feature": "cat__Contract_Month-to-month",
+      "importance": 0.137320915991466
+    },
+    {
+      "feature": "num__tenure",
+      "importance": 0.13188053447311016
+    },
+    {
+      "feature": "num__TotalCharges",
+      "importance": 0.11584778054071494
+    },
+    {
+      "feature": "num__MonthlyCharges",
+      "importance": 0.06628202649928659
+    },
+    {
+      "feature": "cat__PaymentMethod_Electronic check",
+      "importance": 0.05501494842829154
+    },
+    {
+      "feature": "cat__OnlineSecurity_No",
+      "importance": 0.054847245725623314
+    },
+    {
+      "feature": "cat__InternetService_Fiber optic",
+      "importance": 0.05158152972400032
+    },
+    {
+      "feature": "cat__TechSupport_No",
+      "importance": 0.04925100341034246
+    },
+    {
+      "feature": "cat__Contract_Two year",
+      "importance": 0.0457218833104409
+    },
+    {
+      "feature": "cat__InternetService_DSL",
+      "importance": 0.026482390290093725
+    },
+    {
+      "feature": "cat__OnlineBackup_No",
+      "importance": 0.018767544282415283
+    },
+    {
+      "feature": "cat__Contract_One year",
+      "importance": 0.017854770563416934
+    },
+    {
+      "feature": "cat__OnlineSecurity_Yes",
+      "importance": 0.017026257774246392
+    },
+    {
+      "feature": "cat__TechSupport_Yes",
+      "importance": 0.016542662927118958
+    },
+    {
+      "feature": "cat__DeviceProtection_No",
+      "importance": 0.013463993827594703
+    },
+    {
+      "feature": "cat__PaperlessBilling_Yes",
+      "importance": 0.01047491743422784
+    },
+    {
+      "feature": "cat__PaperlessBilling_No",
+      "importance": 0.010377131013628879
+    },
+    {
+      "feature": "cat__OnlineBackup_Yes",
+      "importance": 0.009591499458360221
+    },
+    {
+      "feature": "cat__StreamingMovies_No internet service",
+      "importance": 0.009004564048421192
+    },
+    {
+      "feature": "cat__StreamingTV_No internet service",
+      "importance": 0.00897047834802841
+    },
+    {
+      "feature": "cat__TechSupport_No internet service",
+      "importance": 0.008391028323351936
+    },
+    {
+      "feature": "cat__OnlineBackup_No internet service",
+      "importance": 0.008121393051056006
+    },
+    {
+      "feature": "cat__InternetService_No",
+      "importance": 0.007767169203432457
+    },
+    {
+      "feature": "cat__MultipleLines_Yes",
+      "importance": 0.006358549355542517
+    },
+    {
+      "feature": "cat__MultipleLines_No",
+      "importance": 0.006124106755004652
+    },
+    {
+      "feature": "cat__OnlineSecurity_No internet service",
+      "importance": 0.005828195059377687
+    },
+    {
+      "feature": "cat__StreamingTV_No",
+      "importance": 0.00576395751327144
+    },
+    {
+      "feature": "cat__StreamingMovies_No",
+      "importance": 0.005654726091599359
+    },
+    {
+      "feature": "cat__Partner_Yes",
+      "importance": 0.0055913296101129184
+    },
+    {
+      "feature": "cat__Dependents_No",
+      "importance": 0.005548020025131864
+    },
+    {
+      "feature": "cat__StreamingMovies_Yes",
+      "importance": 0.005502595796714394
+    },
+    {
+      "feature": "cat__StreamingTV_Yes",
+      "importance": 0.0054112443640718984
+    },
+    {
+      "feature": "cat__SeniorCitizen_1",
+      "importance": 0.005358185031115966
+    },
+    {
+      "feature": "cat__gender_Female",
+      "importance": 0.005315479388338346
+    },
+    {
+      "feature": "cat__gender_Male",
+      "importance": 0.005271126730535812
+    },
+    {
+      "feature": "cat__Partner_No",
+      "importance": 0.005024309280346263
+    },
+    {
+      "feature": "cat__PaymentMethod_Bank transfer (automatic)",
+      "importance": 0.005011566205150009
+    },
+    {
+      "feature": "cat__PaymentMethod_Credit card (automatic)",
+      "importance": 0.004940054578775404
+    },
+    {
+      "feature": "cat__SeniorCitizen_0",
+      "importance": 0.004895453789740351
+    },
+    {
+      "feature": "cat__Dependents_Yes",
+      "importance": 0.004419628286530685
+    },
+    {
+      "feature": "cat__DeviceProtection_Yes",
+      "importance": 0.003829582583034044
+    },
+    {
+      "feature": "cat__DeviceProtection_No internet service",
+      "importance": 0.0037849407663367463
+    },
+    {
+      "feature": "cat__PaymentMethod_Mailed check",
+      "importance": 0.0036233110737967293
+    },
+    {
+      "feature": "cat__MultipleLines_No phone service",
+      "importance": 0.00212202464093755
+    },
+    {
+      "feature": "cat__PhoneService_Yes",
+      "importance": 0.0021160131788033896
+    },
+    {
+      "feature": "cat__PhoneService_No",
+      "importance": 0.0019219312470630135
+    }
+  ],
+  "limitations": [
+    "Retrospective dataset: prospective label horizon and point-in-time availability unresolved.",
+    "Score estimates are not calibrated; no causal retention or revenue claims.",
+    "Legacy threshold retained pending approved costs and release freeze.",
+    "Development CV results belong to new candidates, not the serving artifact.",
+    "Legacy held-out rows are sealed now but are historically exposed.",
+    "Gender and senior status are model features; cohort fairness is not established.",
+    "Operational drift monitoring and persisted prediction history are not configured."
+  ]
+}

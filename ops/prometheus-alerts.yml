@@ -1,0 +1,54 @@
+groups:
+  - name: customeriq-api
+    rules:
+      - alert: CustomerIQHighServerErrorRate
+        expr: |
+          sum(rate(customeriq_http_requests_total{status=~"5.."}[5m]))
+          /
+          clamp_min(sum(rate(customeriq_http_requests_total[5m])), 0.001) > 0.01
+        for: 5m
+        labels:
+          severity: critical
+        annotations:
+          summary: "CustomerIQ server error ratio exceeds 1%"
+          runbook: "ops/runbooks/alerts.md#high-server-error-rate"
+
+      - alert: CustomerIQHighPredictionLatency
+        expr: |
+          histogram_quantile(
+            0.95,
+            sum by (le) (rate(customeriq_http_request_duration_seconds_bucket{route="/predict"}[10m]))
+          ) > 0.25
+        for: 10m
+        labels:
+          severity: warning
+        annotations:
+          summary: "CustomerIQ p95 single-prediction latency exceeds 250 ms"
+          runbook: "ops/runbooks/alerts.md#high-prediction-latency"
+
+      - alert: CustomerIQAuthenticationFailures
+        expr: sum(rate(customeriq_http_requests_total{status="401"}[5m])) > 1
+        for: 5m
+        labels:
+          severity: warning
+        annotations:
+          summary: "CustomerIQ authentication failures exceed baseline"
+          runbook: "ops/runbooks/alerts.md#authentication-failures"
+
+      - alert: CustomerIQModelUnavailable
+        expr: absent(customeriq_build_info)
+        for: 3m
+        labels:
+          severity: critical
+        annotations:
+          summary: "CustomerIQ build information is absent"
+          runbook: "ops/runbooks/alerts.md#model-unavailable"
+
+      - alert: CustomerIQValidationSpike
+        expr: sum(rate(customeriq_validation_errors_total[10m])) > 2
+        for: 10m
+        labels:
+          severity: warning
+        annotations:
+          summary: "CustomerIQ validation errors exceed initial threshold"
+          runbook: "ops/runbooks/alerts.md#validation-spike"

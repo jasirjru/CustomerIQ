@@ -58,6 +58,25 @@ COLUMNS_TO_DROP = ["customerID"]
 # Test set size (20% held out for evaluation)
 TEST_SIZE = 0.2
 
+# Evaluation protocol
+#
+# The final test partition is reserved for a single evaluation after model,
+# hyperparameter, preprocessing, and decision-threshold choices are frozen.
+# The remaining 80% development partition is split 75/25, which yields an
+# overall 60/20/20 train/validation/final-test allocation.
+FINAL_TEST_SIZE = 0.20
+VALIDATION_SIZE_WITHIN_DEVELOPMENT = 0.25
+
+# Repeated cross-validation is performed on the model-training partition only.
+CV_N_SPLITS = 5
+CV_N_REPEATS = 3
+MODEL_SELECTION_METRIC = "average_precision"
+
+# Illustrative validation-time decision costs. These values are not considered
+# production-approved until their business provenance is documented.
+FALSE_NEGATIVE_COST = 500.0
+FALSE_POSITIVE_COST = 100.0
+
 # ============================================================================
 # FEATURE GROUPS (will be refined during EDA)
 # ============================================================================

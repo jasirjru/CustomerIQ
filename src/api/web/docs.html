@@ -1,0 +1,61 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="CustomerIQ inference API reference.">
+  <meta name="theme-color" content="#07111f">
+  <title>CustomerIQ API Reference</title>
+  <link rel="icon" href="/assets/favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="/assets/styles.css">
+  <script src="/assets/docs.js" defer></script>
+</head>
+<body class="docs-page">
+  <a class="skip-link" href="#reference">Skip to API reference</a>
+  <header class="site-header">
+    <div class="shell nav-shell">
+      <a class="brand" href="/" aria-label="CustomerIQ home"><span class="brand-mark" aria-hidden="true"><svg viewBox="0 0 40 40"><path d="M8 10.5 20 4l12 6.5v19L20 36 8 29.5z"></path><path d="M14 24V16l6-3.2 6 3.2v8l-6 3.2z"></path></svg></span><span><strong>CustomerIQ</strong><small>API reference</small></span></a>
+      <nav class="main-nav" aria-label="Documentation navigation"><a href="/">Product</a><a href="/openapi.json">OpenAPI JSON</a></nav>
+      <span class="badge">v1.1.0</span>
+    </div>
+  </header>
+  <main id="reference">
+    <section class="docs-hero shell">
+      <span class="kicker">Developer contract</span>
+      <h1>Inference API,<br><em>without surprises.</em></h1>
+      <p>A strict, manifest-backed interface for single and batch telecom churn scoring. Production inference endpoints require an API key in the <code>X-API-Key</code> header.</p>
+      <div class="docs-pills"><span>JSON</span><span>Strict validation</span><span>Request IDs</span><span>Maximum batch: 100</span></div>
+    </section>
+    <section class="section shell docs-layout">
+      <aside class="docs-sidebar" aria-label="Documentation sections">
+        <strong>Reference</strong>
+        <a href="#authentication">Authentication</a>
+        <a href="#endpoints">Endpoints</a>
+        <a href="#schema">Input schema</a>
+        <a href="#errors">Error contract</a>
+      </aside>
+      <div class="docs-content">
+        <article id="authentication" class="doc-section">
+          <span class="kicker">Authentication</span><h2>Fail-closed in production</h2>
+          <p>Send an assigned API key as <code>X-API-Key</code>. Never include keys in URLs, logs, source control, or customer payloads. Health remains public for orchestration.</p>
+          <pre><code>X-API-Key: your-secret-key</code></pre>
+        </article>
+        <article id="endpoints" class="doc-section">
+          <span class="kicker">Generated reference</span><h2>Endpoints</h2>
+          <div id="api-endpoints" class="api-reference" aria-live="polite"><p>Loading the OpenAPI contract…</p></div>
+        </article>
+        <article id="schema" class="doc-section">
+          <span class="kicker">Request body</span><h2>Customer schema</h2>
+          <p>Unknown properties are rejected. Categorical values are closed vocabularies, numbers are finite and bounded, and service combinations must be internally consistent.</p>
+          <pre class="schema-view" tabindex="0" aria-label="Customer payload JSON schema"><code id="schema-json">Loading schema…</code></pre>
+        </article>
+        <article id="errors" class="doc-section">
+          <span class="kicker">Error handling</span><h2>Safe, actionable failures</h2>
+          <div class="error-grid"><div><b>401</b><span>Authentication required</span></div><div><b>413</b><span>Request body too large</span></div><div><b>422</b><span>Schema validation failed</span></div><div><b>429</b><span>Rate limit reached</span></div><div><b>500</b><span>Generic failure plus request ID</span></div></div>
+        </article>
+      </div>
+    </section>
+  </main>
+  <footer class="site-footer"><div class="shell footer-inner"><div><strong>CustomerIQ API</strong><p>Contract-first, evidence-aware inference.</p></div><div class="footer-links"><a href="/">Product</a><a href="/openapi.json">OpenAPI JSON</a><a href="#reference">Back to top ↑</a></div></div></footer>
+</body>
+</html>

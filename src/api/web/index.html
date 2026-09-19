@@ -3,90 +3,131 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>CustomerIQ trustworthy inference</title>
-  <style>
-    :root { color-scheme: dark; --bg:#08111f; --panel:#111d30; --line:#2b3b54; --text:#edf4ff; --muted:#9fb0c8; --accent:#6ee7b7; --warn:#fbbf24; --danger:#fb7185; }
-    * { box-sizing: border-box; }
-    body { margin:0; background:linear-gradient(145deg,#08111f,#0d1728); color:var(--text); font:15px/1.5 system-ui,sans-serif; }
-    header, main { width:min(1120px,calc(100% - 32px)); margin:auto; }
-    header { display:flex; justify-content:space-between; align-items:center; padding:24px 0; }
-    header a { color:var(--accent); }
-    h1 { margin:0; font-size:1.7rem; }
-    h2 { margin-top:0; font-size:1.15rem; }
-    .notice { border:1px solid #6b571e; background:#251f10; color:#fde68a; padding:12px 16px; border-radius:10px; margin-bottom:18px; }
-    .layout { display:grid; grid-template-columns:minmax(0,1.4fr) minmax(290px,.8fr); gap:18px; padding-bottom:36px; }
-    .panel { background:rgba(17,29,48,.96); border:1px solid var(--line); border-radius:14px; padding:20px; }
-    .grid { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:13px; }
-    label { display:block; color:var(--muted); font-size:.8rem; font-weight:650; }
-    input, select { width:100%; margin-top:5px; padding:9px 10px; border:1px solid var(--line); border-radius:8px; background:#091425; color:var(--text); }
-    button { width:100%; margin-top:18px; padding:11px; border:0; border-radius:9px; background:var(--accent); color:#052016; font-weight:800; cursor:pointer; }
-    button:disabled { opacity:.55; cursor:wait; }
-    .metric { padding:14px 0; border-bottom:1px solid var(--line); }
-    .metric span { display:block; color:var(--muted); font-size:.78rem; }
-    .metric strong { display:block; margin-top:4px; overflow-wrap:anywhere; }
-    #probability { color:var(--accent); font:800 2rem ui-monospace,monospace; }
-    #error { color:#fecdd3; min-height:1.5em; }
-    .small { color:var(--muted); font-size:.82rem; }
-    .status { color:var(--warn); }
-    @media (max-width:780px) { .layout,.grid { grid-template-columns:1fr; } }
-  </style>
+  <meta name="description" content="CustomerIQ trustworthy telecom churn scoring with verified model provenance.">
+  <meta name="theme-color" content="#07111f">
+  <title>CustomerIQ — Trustworthy churn intelligence</title>
+  <link rel="stylesheet" href="/assets/styles.css">
   <script src="/assets/app.js" defer></script>
 </head>
 <body>
-  <header>
-    <div><h1>CustomerIQ</h1><div class="small">Trustworthy churn inference v1.1</div></div>
-    <nav><a href="/docs">OpenAPI schema</a></nav>
-  </header>
-  <main>
-    <div class="notice">Scores are not calibrated probabilities. The 0.35 decision threshold is a retained, unapproved legacy policy—not a business-optimal threshold.</div>
-    <div class="layout">
-      <section class="panel">
-        <h2>Customer attributes</h2>
-        <form id="prediction-form">
-          <div class="grid">
-            <label>API key (when required)<input id="api-key" type="password" maxlength="256" autocomplete="off"></label>
-            <label>Customer ID (optional)<input name="customer_id" maxlength="64" autocomplete="off"></label>
-            <label>Gender<select name="gender"><option>Female</option><option>Male</option></select></label>
-            <label>Senior citizen<select name="SeniorCitizen"><option value="0">No</option><option value="1">Yes</option></select></label>
-            <label>Partner<select name="Partner"><option>No</option><option>Yes</option></select></label>
-            <label>Dependents<select name="Dependents"><option>No</option><option>Yes</option></select></label>
-            <label>Tenure (months)<input name="tenure" type="number" min="0" max="120" value="2" required></label>
-            <label>Phone service<select name="PhoneService"><option>Yes</option><option>No</option></select></label>
-            <label>Multiple lines<select name="MultipleLines"><option>No</option><option>Yes</option><option>No phone service</option></select></label>
-            <label>Internet service<select name="InternetService"><option>Fiber optic</option><option>DSL</option><option>No</option></select></label>
-            <label>Online security<select name="OnlineSecurity" data-internet-addon><option>No</option><option>Yes</option><option>No internet service</option></select></label>
-            <label>Online backup<select name="OnlineBackup" data-internet-addon><option>No</option><option>Yes</option><option>No internet service</option></select></label>
-            <label>Device protection<select name="DeviceProtection" data-internet-addon><option>No</option><option>Yes</option><option>No internet service</option></select></label>
-            <label>Tech support<select name="TechSupport" data-internet-addon><option>No</option><option>Yes</option><option>No internet service</option></select></label>
-            <label>Streaming TV<select name="StreamingTV" data-internet-addon><option>Yes</option><option>No</option><option>No internet service</option></select></label>
-            <label>Streaming movies<select name="StreamingMovies" data-internet-addon><option>Yes</option><option>No</option><option>No internet service</option></select></label>
-            <label>Contract<select name="Contract"><option>Month-to-month</option><option>One year</option><option>Two year</option></select></label>
-            <label>Paperless billing<select name="PaperlessBilling"><option>Yes</option><option>No</option></select></label>
-            <label>Payment method<select name="PaymentMethod"><option>Electronic check</option><option>Mailed check</option><option>Bank transfer (automatic)</option><option>Credit card (automatic)</option></select></label>
-            <label>Monthly charges<input name="MonthlyCharges" type="number" min="0" max="1000" step="0.01" value="85.50" required></label>
-            <label>Total charges<input name="TotalCharges" type="number" min="0" max="120000" step="0.01" value="171.00" required></label>
-          </div>
-          <button id="submit" type="submit">Request prediction</button>
-          <p id="error" role="alert"></p>
-        </form>
-      </section>
-      <aside>
-        <section class="panel">
-          <h2>API response</h2>
-          <div class="metric"><span>churn_probability (exact API value)</span><strong id="probability">—</strong></div>
-          <div class="metric"><span>decision</span><strong id="decision">—</strong></div>
-          <div class="metric"><span>threshold</span><strong id="threshold">—</strong></div>
-          <div class="metric"><span>calibration</span><strong id="calibration">—</strong></div>
-          <div class="metric"><span>local explanation</span><strong id="explanation">Not available</strong></div>
-          <p class="small">No customer-specific drivers or retention actions are inferred. Global feature importance is population-level model metadata only.</p>
-        </section>
-        <section class="panel" style="margin-top:18px">
-          <h2>Loaded artifact</h2>
-          <div class="metric"><span>model ID</span><strong id="model-id">Loading…</strong></div>
-          <div class="metric"><span>final-test status</span><strong id="final-test" class="status">Loading…</strong></div>
-        </section>
-      </aside>
+  <a class="skip-link" href="#studio">Skip to scoring studio</a>
+  <header class="site-header">
+    <div class="shell nav-shell">
+      <a class="brand" href="#top" aria-label="CustomerIQ home">
+        <span class="brand-mark" aria-hidden="true"><svg viewBox="0 0 40 40"><path d="M8 10.5 20 4l12 6.5v19L20 36 8 29.5z"></path><path d="M14 24V16l6-3.2 6 3.2v8l-6 3.2z"></path></svg></span>
+        <span><strong>CustomerIQ</strong><small>Inference control plane</small></span>
+      </a>
+      <nav class="main-nav" aria-label="Primary navigation"><a href="#studio">Studio</a><a href="#assurance">Assurance</a><a href="#developers">Developers</a></nav>
+      <div class="service-chip" id="service-chip" data-state="checking" aria-live="polite"><span class="status-dot" aria-hidden="true"></span><span id="service-status">Checking service</span></div>
     </div>
+  </header>
+
+  <main id="top">
+    <section class="hero shell" aria-labelledby="hero-title">
+      <div class="hero-copy">
+        <div class="eyebrow"><span>CustomerIQ v1.1</span> · Trustworthy inference</div>
+        <h1 id="hero-title">Churn intelligence that shows its <em>work.</em></h1>
+        <p class="hero-lede">A hardened decision-support interface for telecom churn scoring—built around exact model output, traceable artifacts, and explicit limitations.</p>
+        <div class="hero-actions"><a class="button button-primary" href="#studio">Open scoring studio</a><a class="button button-secondary" href="#assurance">Inspect assurance</a></div>
+        <ul class="trust-list" aria-label="Platform guarantees"><li><span aria-hidden="true">✓</span> Exact API score</li><li><span aria-hidden="true">✓</span> Hash-verified artifacts</li><li><span aria-hidden="true">✓</span> Strict input contract</li></ul>
+      </div>
+      <aside class="hero-card" aria-label="Current release status">
+        <div class="hero-card-head"><span class="kicker">Release posture</span><span class="badge badge-caution">Decision support only</span></div>
+        <div class="signal-orbit" aria-hidden="true"><span class="orbit orbit-one"></span><span class="orbit orbit-two"></span><span class="signal-core">IQ</span></div>
+        <dl class="release-grid"><div><dt>Score</dt><dd>Uncalibrated</dd></div><div><dt>Threshold</dt><dd>0.35 · Legacy</dd></div><div><dt>Local XAI</dt><dd>Unavailable</dd></div><div><dt>Final test</dt><dd>Sealed</dd></div></dl>
+      </aside>
+    </section>
+
+    <section class="integrity-band" aria-label="Important model limitation"><div class="shell integrity-inner"><div class="integrity-icon" aria-hidden="true">!</div><p><strong>Interpretation boundary:</strong> Scores are not calibrated probabilities. The 0.35 threshold is retained for compatibility and is not an approved business-optimal policy.</p><a href="#assurance">Read the evidence</a></div></section>
+
+    <section class="section shell" id="studio" aria-labelledby="studio-title">
+      <div class="section-heading"><div><span class="kicker">01 · Scoring studio</span><h2 id="studio-title">Evaluate a customer profile</h2></div><p>Every field is validated against the serving contract. Inputs stay in this request and are never used to adjust the returned score in the browser.</p></div>
+      <div class="studio-layout">
+        <section class="form-card">
+          <div class="connection-panel" aria-labelledby="connection-title">
+            <div><span class="kicker" id="connection-title">Secure connection</span><p>Production endpoints require an API key. It is held only in this field and is never stored.</p></div>
+            <div class="key-control"><label for="api-key">API key</label><div class="key-input-row"><input id="api-key" type="password" minlength="32" maxlength="256" autocomplete="off" spellcheck="false" placeholder="Enter key when required"><button class="icon-button" id="toggle-key" type="button" aria-label="Show API key" aria-pressed="false">Show</button><button class="icon-button" id="refresh-model" type="button">Connect</button></div></div>
+          </div>
+          <form id="prediction-form">
+            <fieldset>
+              <legend><span>1</span> Customer profile</legend>
+              <div class="field-grid field-grid-three">
+                <label class="field"><span>Customer ID <small>optional</small></span><input name="customer_id" maxlength="64" autocomplete="off" placeholder="Internal reference"></label>
+                <label class="field"><span>Gender</span><select name="gender"><option>Female</option><option>Male</option></select></label>
+                <label class="field"><span>Senior citizen</span><select name="SeniorCitizen"><option value="0">No</option><option value="1">Yes</option></select></label>
+                <label class="field"><span>Partner</span><select name="Partner"><option>No</option><option>Yes</option></select></label>
+                <label class="field"><span>Dependents</span><select name="Dependents"><option>No</option><option>Yes</option></select></label>
+                <label class="field"><span>Tenure <small>months</small></span><input name="tenure" type="number" min="0" max="120" value="2" inputmode="numeric" required></label>
+              </div>
+            </fieldset>
+            <fieldset>
+              <legend><span>2</span> Services</legend>
+              <div class="field-grid field-grid-three">
+                <label class="field"><span>Phone service</span><select name="PhoneService"><option>Yes</option><option>No</option></select></label>
+                <label class="field"><span>Multiple lines</span><select name="MultipleLines"><option>No</option><option>Yes</option><option>No phone service</option></select></label>
+                <label class="field"><span>Internet service</span><select name="InternetService"><option>Fiber optic</option><option>DSL</option><option>No</option></select></label>
+                <label class="field"><span>Online security</span><select name="OnlineSecurity" data-internet-addon><option>No</option><option>Yes</option><option>No internet service</option></select></label>
+                <label class="field"><span>Online backup</span><select name="OnlineBackup" data-internet-addon><option>No</option><option>Yes</option><option>No internet service</option></select></label>
+                <label class="field"><span>Device protection</span><select name="DeviceProtection" data-internet-addon><option>No</option><option>Yes</option><option>No internet service</option></select></label>
+                <label class="field"><span>Tech support</span><select name="TechSupport" data-internet-addon><option>No</option><option>Yes</option><option>No internet service</option></select></label>
+                <label class="field"><span>Streaming TV</span><select name="StreamingTV" data-internet-addon><option>Yes</option><option>No</option><option>No internet service</option></select></label>
+                <label class="field"><span>Streaming movies</span><select name="StreamingMovies" data-internet-addon><option>Yes</option><option>No</option><option>No internet service</option></select></label>
+              </div>
+            </fieldset>
+            <fieldset>
+              <legend><span>3</span> Contract and billing</legend>
+              <div class="field-grid field-grid-three">
+                <label class="field"><span>Contract</span><select name="Contract"><option>Month-to-month</option><option>One year</option><option>Two year</option></select></label>
+                <label class="field"><span>Paperless billing</span><select name="PaperlessBilling"><option>Yes</option><option>No</option></select></label>
+                <label class="field"><span>Payment method</span><select name="PaymentMethod"><option>Electronic check</option><option>Mailed check</option><option>Bank transfer (automatic)</option><option>Credit card (automatic)</option></select></label>
+                <label class="field"><span>Monthly charges</span><span class="money-input"><span aria-hidden="true">$</span><input name="MonthlyCharges" type="number" min="0" max="1000" step="0.01" value="85.50" inputmode="decimal" required></span></label>
+                <label class="field"><span>Total charges</span><span class="money-input"><span aria-hidden="true">$</span><input name="TotalCharges" type="number" min="0" max="2000" step="0.01" value="171.00" inputmode="decimal" required></span></label>
+              </div>
+            </fieldset>
+            <div class="form-actions"><button class="button button-primary submit-button" id="submit" type="submit"><span id="submit-label">Run verified prediction</span><span aria-hidden="true">→</span></button><button class="button button-quiet" id="reset-form" type="button">Reset sample</button></div>
+            <p class="form-error" id="error" role="alert" aria-live="assertive"></p>
+          </form>
+        </section>
+
+        <aside class="result-column" aria-labelledby="result-title">
+          <section class="result-card" id="result-card" data-state="empty" aria-live="polite">
+            <div class="result-head"><div><span class="kicker">Verified API response</span><h3 id="result-title">Churn score</h3></div><span class="badge" id="decision-badge">Awaiting input</span></div>
+            <div class="score-display"><output id="probability" aria-label="Exact churn probability">—</output><span id="score-percent">Exact model score</span></div>
+            <progress id="score-progress" value="0" max="1" aria-label="Churn score visual scale"></progress>
+            <div class="scale-labels" aria-hidden="true"><span>0</span><span>Legacy threshold 0.35</span><span>1</span></div>
+            <dl class="result-details"><div><dt>Decision</dt><dd id="decision">—</dd></div><div><dt>Policy threshold</dt><dd id="threshold">0.35 · legacy · unapproved</dd></div><div><dt>Calibration</dt><dd id="calibration">Not fitted</dd></div><div><dt>Local explanation</dt><dd id="explanation">Not available</dd></div><div><dt>Request ID</dt><dd id="request-id">—</dd></div></dl>
+            <div class="truth-note"><span aria-hidden="true">i</span><p>This score is returned unchanged by the API. It is not a causal estimate or a promise that an intervention will prevent churn.</p></div>
+          </section>
+          <section class="mini-card"><span class="kicker">Loaded artifact</span><dl class="artifact-summary"><div><dt>Model ID</dt><dd id="model-id">Connect to inspect</dd></div><div><dt>Final-test status</dt><dd id="final-test">Connect to inspect</dd></div></dl></section>
+        </aside>
+      </div>
+    </section>
+
+    <section class="section assurance-section" id="assurance" aria-labelledby="assurance-title">
+      <div class="shell">
+        <div class="section-heading light-heading"><div><span class="kicker">02 · Model assurance</span><h2 id="assurance-title">Evidence before confidence</h2></div><p>The interface separates verified facts from unresolved release risks. No development metric is presented as an independent production claim.</p></div>
+        <div class="assurance-grid">
+          <article class="assurance-card accent-card"><div class="card-number">A</div><span class="kicker">Artifact integrity</span><h3>Verified before deserialization</h3><p>Serving artifacts must match registered SHA-256 digests, estimator type, parameters, classes, feature order, and request schema.</p><span class="evidence-state evidence-good">Enforced at startup</span></article>
+          <article class="assurance-card"><div class="card-number">B</div><span class="kicker">Probability quality</span><h3>Calibration is not fitted</h3><p>The output is useful as a model score, but observed outcome frequency has not been validated against score levels.</p><span class="evidence-state evidence-open">Open release gate</span></article>
+          <article class="assurance-card"><div class="card-number">C</div><span class="kicker">Decision policy</span><h3>Threshold is unapproved</h3><p>The active 0.35 threshold is retained for compatibility. Development-only cost assumptions cannot authorize production policy.</p><span class="evidence-state evidence-open">Business approval required</span></article>
+          <article class="assurance-card"><div class="card-number">D</div><span class="kicker">Independent evidence</span><h3>Fresh evaluation required</h3><p>The historical holdout was exposed by legacy analysis. A forward-time or external labeled dataset is required for a release estimate.</p><span class="evidence-state evidence-open">Data required</span></article>
+        </div>
+        <div class="importance-panel"><div class="importance-copy"><span class="kicker">Global model behavior</span><h3>Aggregate feature importance</h3><p>These values summarize the fitted forest across the model—not this customer. They are not causal effects or local explanations.</p></div><div id="global-importance" class="importance-list" aria-live="polite"><p id="importance-placeholder">Connect with an API key to inspect manifest-backed global importance.</p></div></div>
+      </div>
+    </section>
+
+    <section class="section shell" id="developers" aria-labelledby="developers-title">
+      <div class="section-heading"><div><span class="kicker">03 · Developer interface</span><h2 id="developers-title">One strict contract</h2></div><p>The browser and every external client use the same validated API. Unknown fields, invalid categories, inconsistent services, and oversized batches fail closed.</p></div>
+      <div class="developer-grid">
+        <div class="endpoint-list" aria-label="API endpoints"><a href="/openapi.json"><span class="http-method get">GET</span><span><strong>/openapi.json</strong><small>Machine-readable contract</small></span><b>↗</b></a><div><span class="http-method get">GET</span><span><strong>/health</strong><small>Public readiness signal</small></span><b>200</b></div><div><span class="http-method post">POST</span><span><strong>/predict</strong><small>Single strict prediction</small></span><b>Auth</b></div><div><span class="http-method post">POST</span><span><strong>/predict-batch</strong><small>Maximum 100 customers</small></span><b>Auth</b></div><div><span class="http-method get">GET</span><span><strong>/model-info</strong><small>Verified artifact manifest</small></span><b>Auth</b></div></div>
+        <div class="code-card"><div class="code-head"><span>Example request</span><span>curl</span></div><pre><code>curl -X POST http://127.0.0.1:8000/predict \
+  -H "Content-Type: application/json" \
+  -H "X-API-Key: $CUSTOMERIQ_API_KEY" \
+  --data @synthetic-customer.json</code></pre><p>Use synthetic or approved data. Never place API keys or customer attributes in URLs.</p></div>
+      </div>
+    </section>
   </main>
+
+  <footer class="site-footer"><div class="shell footer-inner"><div><strong>CustomerIQ</strong><p>Trustworthy inference before automated action.</p></div><div class="footer-links"><a href="/openapi.json">OpenAPI</a><a href="#assurance">Model assurance</a><a href="#top">Back to top ↑</a></div></div></footer>
 </body>
 </html>

@@ -88,7 +88,7 @@ class SecurityMiddleware:
             nonlocal response_status
             if message["type"] == "http.response.start":
                 response_status = message["status"]
-                csp = ("default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; "
+                csp = ("default-src 'self'; script-src 'self'; style-src 'self'; "
                        "img-src 'self' data:; connect-src 'self'; object-src 'none'; base-uri 'none'; "
                        "frame-ancestors 'none'; form-action 'self'")
                 message.setdefault("headers", []).extend([

@@ -314,7 +314,12 @@ def test_browser_uses_exact_api_score_and_safe_dom(client):
     assert "top_risk_drivers" not in script.text
 
 
-def test_docs_redirects_to_generated_openapi(client):
-    response = client.get("/docs", follow_redirects=False)
-    assert response.status_code in (302, 307)
-    assert response.headers["location"] == "/openapi.json"
+def test_docs_are_local_and_csp_safe(client):
+    response = client.get("/docs")
+    script = client.get("/assets/docs.js")
+    assert response.status_code == 200
+    assert "CustomerIQ API Reference" in response.text
+    assert "https://" not in response.text
+    assert script.status_code == 200
+    assert "innerHTML" not in script.text
+    assert "unsafe-inline" not in response.headers["content-security-policy"]

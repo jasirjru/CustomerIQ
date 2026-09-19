@@ -9,7 +9,7 @@ import time
 from fastapi import FastAPI, HTTPException, Request
 from fastapi.exceptions import RequestValidationError
 from fastapi.middleware.cors import CORSMiddleware
-from fastapi.responses import FileResponse, JSONResponse, PlainTextResponse, RedirectResponse
+from fastapi.responses import FileResponse, JSONResponse, PlainTextResponse
 from fastapi.staticfiles import StaticFiles
 
 from src.api.manifest import ArtifactManifest
@@ -61,7 +61,7 @@ def create_app(settings: SecuritySettings | None = None, service_factory=ModelSe
 
     @application.get("/docs", include_in_schema=False)
     def api_docs():
-        return RedirectResponse("/openapi.json")
+        return FileResponse(WEB_DIR / "docs.html")
 
     @application.get("/health", response_model=HealthResponse)
     def health(request: Request):

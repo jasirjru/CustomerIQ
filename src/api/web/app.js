@@ -200,6 +200,28 @@ function resetSample() {
   syncCharges();
 }
 
+function setupRevealAnimations() {
+  const targets = [
+    ...document.querySelectorAll(".hero-copy, .hero-card, .integrity-band, .section-heading, .studio-layout > *, .assurance-card, .importance-panel, .developer-grid > *"),
+  ];
+  targets.forEach((target) => target.classList.add("reveal-target"));
+  document.body.classList.add("motion-ready");
+
+  if (!window.IntersectionObserver) {
+    targets.forEach((target) => target.classList.add("is-visible"));
+    return;
+  }
+
+  const observer = new IntersectionObserver((entries, activeObserver) => {
+    entries.forEach((entry) => {
+      if (!entry.isIntersecting) return;
+      entry.target.classList.add("is-visible");
+      activeObserver.unobserve(entry.target);
+    });
+  }, {threshold: 0.12, rootMargin: "0px 0px -8% 0px"});
+  targets.forEach((target) => observer.observe(target));
+}
+
 internetService.addEventListener("change", syncInternetServices);
 phoneService.addEventListener("change", syncPhoneServices);
 tenure.addEventListener("input", syncCharges);
@@ -211,5 +233,6 @@ apiKey.addEventListener("change", loadModelInfo);
 syncInternetServices();
 syncPhoneServices();
 syncCharges();
+setupRevealAnimations();
 loadHealth();
 loadModelInfo();

@@ -1,0 +1,12 @@
+{
+  "status": "not_approved",
+  "currency": null,
+  "false_negative": null,
+  "false_positive": null,
+  "contact_capacity": null,
+  "intervention_success_assumption": null,
+  "approved_by": null,
+  "approved_at": null,
+  "evidence_source": null,
+  "note": "Populate only after business review. The development experiment's 500/100 costs are illustrative."
+}

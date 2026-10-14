@@ -332,4 +332,6 @@ def test_web_assets_are_self_contained_compressed_and_bounded(client):
     assert favicon.status_code == 200
     assert favicon.headers["content-type"].startswith("image/svg+xml")
     assert stylesheet.headers.get("content-encoding") == "gzip"
-    assert sum(len(response.content) for response in [stylesheet, *scripts]) < 40_000
+    # Decoded CSS + JS budget. Raised from 40 KB to 45 KB for the redesigned
+    # review workspace (about 44 KB after removing unused styles).
+    assert sum(len(response.content) for response in [stylesheet, *scripts]) < 45_000

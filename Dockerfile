@@ -12,6 +12,12 @@ FROM python:3.11.16-slim-bookworm
 ENV PYTHONDONTWRITEBYTECODE=1 \
     PYTHONUNBUFFERED=1
 
+# Apply Debian security updates released after the base image was published
+# (the CI vulnerability scan fails on fixable HIGH/CRITICAL OS packages).
+RUN apt-get update && \
+    apt-get upgrade --yes --no-install-recommends && \
+    rm -rf /var/lib/apt/lists/*
+
 # Set the working directory inside the container
 WORKDIR /app
 

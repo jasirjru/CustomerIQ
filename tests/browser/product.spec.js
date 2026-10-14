@@ -38,6 +38,15 @@ test("does not execute customer-controlled markup", async ({ page }) => {
 
 test("has no automatically detectable WCAG A/AA violations", async ({ page }) => {
   await page.goto("/");
+  // Audit the settled page: colours sampled mid fade-in are not what users read.
+  await page.evaluate(() =>
+    Promise.all(
+      document
+        .getAnimations()
+        .filter((animation) => animation.effect?.getTiming().iterations !== Infinity)
+        .map((animation) => animation.finished.catch(() => undefined)),
+    ),
+  );
   const results = await new AxeBuilder({ page })
     .withTags(["wcag2a", "wcag2aa", "wcag21a", "wcag21aa", "wcag22aa"])
     .analyze();

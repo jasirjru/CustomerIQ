@@ -367,8 +367,8 @@ body {
 .hero-lede { color: var(--muted-strong); }
 .button { border-radius: 980px; transition: transform 220ms cubic-bezier(.2, .8, .2, 1), box-shadow 220ms ease, background 220ms ease, border-color 220ms ease; }
 .button:hover { transform: translateY(-2px) scale(1.01); }
-.button-primary { background: var(--cyan); color: #fff; box-shadow: 0 10px 24px rgba(0, 113, 227, .2); }
-.button-primary:hover { background: #0077ed; box-shadow: 0 14px 28px rgba(0, 113, 227, .25); }
+.button-primary { background: #0062cc; color: #fff; box-shadow: 0 10px 24px rgba(0, 98, 204, .2); }
+.button-primary:hover { background: #0058b8; box-shadow: 0 14px 28px rgba(0, 88, 184, .25); }
 .button-quiet { color: var(--muted-strong); }
 .trust-list { color: var(--muted); }
 .trust-list span { color: var(--cyan); }

@@ -275,10 +275,11 @@ CustomerIQ/
 └── README.md
 ```
 
-## 👨‍💻 Author & Engineering Leadership
+## 👨‍💻 Author
 
-**Jasir** — *Lead Machine Learning Engineer & System Architect*
+**Jasir Abdul Hameed** — project author (personal project)
 - **GitHub**: [@jasirjru](https://github.com/jasirjru)
+- **Portfolio**: [jasirjru-portfolio.vercel.app](https://jasirjru-portfolio.vercel.app)
 - **Live Demo**: [customeriq-qd2v.onrender.com](https://customeriq-qd2v.onrender.com/)
 - **API Documentation**: [customeriq-qd2v.onrender.com/docs](https://customeriq-qd2v.onrender.com/docs)
 

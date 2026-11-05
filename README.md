@@ -10,6 +10,8 @@
 [![Tests](https://img.shields.io/badge/Tests-pytest-brightgreen.svg)]()
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
+> **Learning project.** I built this with heavy help from AI coding tools. I am now rebuilding its core myself to understand every part, and this note will be updated when that rebuild is done.
+
 > 🚀 **Live demonstration**: [https://customeriq-qd2v.onrender.com/](https://customeriq-qd2v.onrender.com/) (not release-approved for real customer decisions)
 > 📖 **OpenAPI schema**: [https://customeriq-qd2v.onrender.com/docs](https://customeriq-qd2v.onrender.com/docs)
 
